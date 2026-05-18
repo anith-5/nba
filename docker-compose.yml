@@ -1,0 +1,12 @@
+# Optional: run API only for local dev. Add postgres/redis in Phase 1+.
+services:
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - CORS_ORIGINS=http://localhost:5174
+    volumes:
+      - ./services/api:/app
