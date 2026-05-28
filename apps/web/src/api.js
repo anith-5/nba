@@ -18,6 +18,9 @@ export const api = {
   teams: () => request("/teams"),
   searchPlayers: (q) => request(`/players/search?q=${encodeURIComponent(q)}`),
   playerProfile: (id) => request(`/players/${id}/profile`),
+  predictionStatus: () => request("/predictions/status"),
+  setupPrediction: () =>
+    request("/predictions/setup", { method: "POST" }),
   predictGame: (body) =>
     request("/predictions/game", { method: "POST", body: JSON.stringify(body) }),
   validateTrade: (body) =>

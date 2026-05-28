@@ -1,62 +1,94 @@
-"""Baseline game prediction — replace with ML model in Phase 3."""
+"""Game prediction router — stacked logistic regression ensemble."""
 
-import math
+import threading
+from typing import Optional
 
-from fastapi import APIRouter
-from pydantic import BaseModel, Field
+import numpy as np
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 
-
-class GamePredictionRequest(BaseModel):
-    home_team_id: int
-    away_team_id: int
-    home_win_pct: float = Field(0.5, ge=0, le=1, description="Season win % proxy")
-    away_win_pct: float = Field(0.5, ge=0, le=1)
-    home_rest_days: int = Field(1, ge=0, le=7)
-    away_rest_days: int = Field(1, ge=0, le=7)
+_predictor = None
+_training_lock = threading.Lock()
+_is_training = False
+_train_error: Optional[str] = None
 
 
-class GamePredictionResponse(BaseModel):
-    home_win_prob: float
-    away_win_prob: float
-    projected_home_score: float
-    projected_away_score: float
-    confidence: str
-    upset_alert: bool
-    model_version: str
-    notes: str
+class PredictRequest(BaseModel):
+    home_abbr: str
+    away_abbr: str
 
 
-@router.post("/game", response_model=GamePredictionResponse)
-def predict_game(body: GamePredictionRequest):
-    # Heuristic: win% + home court (+3.5 pts) + rest edge
-    home_court_pts = 3.5
-    rest_edge = (body.home_rest_days - body.away_rest_days) * 0.4
+@router.get("/status")
+def model_status():
+    return {
+        "is_trained": _predictor is not None and _predictor.model.is_fitted,
+        "is_training": _is_training,
+        "error": _train_error,
+    }
 
-    home_strength = body.home_win_pct * 100 + home_court_pts + rest_edge
-    away_strength = body.away_win_pct * 100
 
-    diff = home_strength - away_strength
-    home_win_prob = 1 / (1 + math.exp(-diff / 8))
-    away_win_prob = 1 - home_win_prob
+@router.post("/setup")
+def setup_model():
+    global _predictor, _is_training, _train_error
 
-    league_avg = 114.0
-    projected_home = league_avg + (body.home_win_pct - 0.5) * 12 + home_court_pts / 2
-    projected_away = league_avg + (body.away_win_pct - 0.5) * 12
+    if not _training_lock.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="Model is already training")
 
-    confidence = "high" if abs(home_win_prob - 0.5) > 0.2 else "medium" if abs(home_win_prob - 0.5) > 0.1 else "low"
-    upset_alert = (home_win_prob < 0.4 and body.home_win_pct > body.away_win_pct) or (
-        home_win_prob > 0.6 and body.home_win_pct < body.away_win_pct
-    )
+    try:
+        if _predictor is not None and _predictor.model.is_fitted:
+            return {"status": "already_trained", "message": "Model is ready"}
 
-    return GamePredictionResponse(
-        home_win_prob=round(home_win_prob, 3),
-        away_win_prob=round(away_win_prob, 3),
-        projected_home_score=round(projected_home, 1),
-        projected_away_score=round(projected_away, 1),
-        confidence=confidence,
-        upset_alert=upset_alert,
-        model_version="heuristic_v0.1",
-        notes="Baseline heuristic. ML pipeline will replace this in Phase 3.",
-    )
+        _is_training = True
+        _train_error = None
+
+        from app.predictor import NBAGamePredictor
+
+        p = NBAGamePredictor()
+        train_results = p.setup()
+        avg_acc = float(np.mean([v["cv_accuracy"] for v in train_results.values()]))
+        _predictor = p
+        return {
+            "status": "trained",
+            "accuracy": round(avg_acc, 4),
+            "model_details": train_results,
+        }
+
+    except Exception as e:
+        _train_error = str(e)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        _is_training = False
+        _training_lock.release()
+
+
+@router.post("/game")
+def predict_game(body: PredictRequest):
+    if _predictor is None or not _predictor.model.is_fitted:
+        raise HTTPException(
+            status_code=400,
+            detail="Model not trained. POST to /predictions/setup first.",
+        )
+    try:
+        result = _predictor.predict(
+            home_abbr=body.home_abbr,
+            away_abbr=body.away_abbr,
+            verbose=False,
+        )
+        return {
+            "home_team": result.home_team,
+            "away_team": result.away_team,
+            "predicted_winner": result.predicted_winner,
+            "home_win_prob": result.home_win_prob,
+            "away_win_prob": result.away_win_prob,
+            "predicted_margin": result.predicted_margin,
+            "confidence": result.confidence,
+            "model_votes": result.model_votes,
+            "features": result.features,
+            "model_version": "stacked_lr_v1.0",
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
