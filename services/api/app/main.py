@@ -3,11 +3,23 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routers import live, players, predictions, teams, trades
+from app.routers import (
+    shot_quality,
+    win_probability,
+    lineup_optimizer,
+    defense_scanner,
+    player_trajectory,
+    clutch_dna,
+    scouting_report,
+    prospects,
+    rule_simulator,
+    gm_assistant,
+)
 
 app = FastAPI(
-    title="NBA Analytics Platform API",
-    description="Gateway for live data, predictions, trades, and analytics.",
-    version="0.1.0",
+    title="HoopIQ API",
+    description="NBA analytics platform — 11 AI/ML features.",
+    version="2.0.0",
 )
 
 app.add_middleware(
@@ -18,17 +30,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Original routers
 app.include_router(live.router)
 app.include_router(teams.router)
 app.include_router(players.router)
 app.include_router(predictions.router)
 app.include_router(trades.router)
 
+# New feature routers
+app.include_router(shot_quality.router)
+app.include_router(win_probability.router)
+app.include_router(lineup_optimizer.router)
+app.include_router(defense_scanner.router)
+app.include_router(player_trajectory.router)
+app.include_router(clutch_dna.router)
+app.include_router(scouting_report.router)
+app.include_router(prospects.router)
+app.include_router(rule_simulator.router)
+app.include_router(gm_assistant.router)
+
 
 @app.get("/health")
 def health():
     return {
         "status": "ok",
-        "service": "nba-platform-api",
-        "scoreboard_fetch": "cdn+v3",
+        "service": "hoopiq-api",
+        "version": "2.0.0",
+        "features": 11,
     }
