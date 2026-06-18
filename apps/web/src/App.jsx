@@ -17,6 +17,7 @@ import ScoutingReport from "./pages/ScoutingReport.jsx";
 import Prospects from "./pages/Prospects.jsx";
 import RuleSimulator from "./pages/RuleSimulator.jsx";
 import GMAssistant from "./pages/GMAssistant.jsx";
+import ShotEvaluator from "./pages/ShotEvaluator.jsx";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="prospects" element={<Prospects />} />
           <Route path="rules" element={<RuleSimulator />} />
           <Route path="gm" element={<GMAssistant />} />
+          <Route path="shot-evaluator" element={<ShotEvaluator />} />
         </Route>
       </Routes>
     </div>

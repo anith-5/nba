@@ -12,3 +12,4 @@ pydantic-settings==2.6.1
 python-multipart==0.0.17
 httpx==0.28.1
 requests==2.32.3
+lxml>=5.0.0

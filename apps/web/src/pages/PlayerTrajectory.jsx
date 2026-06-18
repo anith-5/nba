@@ -1,29 +1,41 @@
 import { useState } from "react";
 import { api } from "../api.js";
 
-const TIER_COLOR = {
-  superstar: "text-court-glow",
-  star: "text-blue-400",
-  starter: "text-slate-300",
-  underachiever: "text-orange-400",
-  bust: "text-red-400",
+const BADGE_TIER_COLOR = {
+  Gold: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
+  Silver: "text-slate-300 border-slate-400/30 bg-slate-400/10",
+  Bronze: "text-orange-400 border-orange-500/30 bg-orange-500/10",
 };
 
-function CompCard({ comp, rank }) {
+function BadgePill({ name, tier }) {
   return (
-    <div className="card p-4">
+    <span className={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${BADGE_TIER_COLOR[tier] ?? "text-slate-400 border-slate-700"}`}>
+      {tier} · {name}
+    </span>
+  );
+}
+
+function CompCard({ comp }) {
+  const badgeEntries = Object.entries(comp.badges || {});
+  return (
+    <div className="card p-4 space-y-2">
       <div className="flex items-start justify-between">
         <div>
           <p className="font-semibold text-white">{comp.name}</p>
           <p className="text-xs text-slate-500">{comp.archetype}</p>
         </div>
         <div className="text-right">
-          <p className={`font-mono font-bold ${TIER_COLOR[comp.tier] ?? "text-white"}`}>
-            {comp.tier}
-          </p>
-          <p className="text-xs text-slate-600">{(comp.similarity * 100).toFixed(0)}% match</p>
+          <p className="font-mono font-bold text-court-glow">{(comp.similarity * 100).toFixed(0)}%</p>
+          <p className="text-xs text-slate-600">match · age {comp.matched_age}</p>
         </div>
       </div>
+      {badgeEntries.length > 0 && (
+        <div className="flex flex-wrap gap-1 pt-1">
+          {badgeEntries.map(([name, tier]) => (
+            <BadgePill key={name} name={name} tier={tier} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -51,7 +63,7 @@ export default function PlayerTrajectory() {
     if (q.length < 2) { setSearchResults([]); return; }
     try {
       const data = await api.searchPlayers(q);
-      setSearchResults(data.slice(0, 8));
+      setSearchResults((data.players ?? data).slice(0, 8));
     } catch {}
   }
 
@@ -119,10 +131,27 @@ export default function PlayerTrajectory() {
 
       {result && (
         <div className="space-y-5 animate-slide-up">
-          <h2 className="text-xl font-bold text-white">
-            {result.player_name}
-            <span className="ml-2 text-sm text-slate-500 font-normal">Age {result.current_age}</span>
-          </h2>
+          <div>
+            <h2 className="text-xl font-bold text-white">
+              {result.player_name}
+              <span className="ml-2 text-sm text-slate-500 font-normal">Age {result.current_age}</span>
+            </h2>
+            {result.archetype && (
+              <p className="text-sm text-court-glow mt-0.5">{result.archetype}</p>
+            )}
+          </div>
+
+          {/* This player's own badge profile */}
+          {result.badges && Object.keys(result.badges).length > 0 && (
+            <div className="card p-4">
+              <p className="stat-label mb-2">Badge Profile</p>
+              <div className="flex flex-wrap gap-1.5">
+                {Object.entries(result.badges).map(([name, tier]) => (
+                  <BadgePill key={name} name={name} tier={tier} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Historical scoring arc */}
           <div className="card p-4">
@@ -179,7 +208,7 @@ export default function PlayerTrajectory() {
           )}
 
           <p className="text-xs text-slate-600">
-            Model: cosine similarity on scoring arc vs curated comp library · Data: NBA API PlayerCareerStats
+            Model: two-layer similarity (primary archetype + badge overlap) vs curated comp database · Data: NBA API + Basketball-Reference
           </p>
         </div>
       )}

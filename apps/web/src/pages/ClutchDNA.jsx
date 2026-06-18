@@ -76,7 +76,7 @@ export default function ClutchDNA() {
     if (q.length < 2) { setPlayerSearch([]); return; }
     try {
       const data = await api.searchPlayers(q);
-      setPlayerSearch(data.slice(0, 6));
+      setPlayerSearch((data.players ?? data).slice(0, 6));
     } catch {}
   }
 

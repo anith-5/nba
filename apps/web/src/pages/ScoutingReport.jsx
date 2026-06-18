@@ -162,7 +162,7 @@ export default function ScoutingReport() {
     if (q.length < 2) { setSearchResults([]); return; }
     try {
       const data = await api.searchPlayers(q);
-      setSearchResults(data.slice(0, 8));
+      setSearchResults((data.players ?? data).slice(0, 8));
     } catch {}
   }
 

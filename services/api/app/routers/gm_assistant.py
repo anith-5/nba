@@ -1,4 +1,5 @@
-"""GM Assistant — Claude-powered natural language Q&A with NBA context."""
+from app.config import settings
+"""GM Assistant  " Claude-powered natural language Q&A with NBA context."""
 
 import asyncio
 import time
@@ -11,7 +12,7 @@ from nba_api.stats.static import teams as static_teams
 from app.claude_client import chat_completion, is_available
 
 router = APIRouter(prefix="/gm-assistant", tags=["gm-assistant"])
-SEASON = "2024-25"
+SEASON = settings.current_season
 MODEL = "claude-haiku-4-5-20251001"
 
 _context_cache: Optional[str] = None
@@ -23,7 +24,7 @@ SYSTEM_TEMPLATE = """You are an expert NBA GM assistant with deep knowledge of b
 You have access to the following current season ({season}) data:
 {context}
 
-Answer the user's question analytically and concisely. Be specific — reference team names, player names, and data when available. If a question requires data you don't have, say so clearly rather than guessing.
+Answer the user's question analytically and concisely. Be specific  " reference team names, player names, and data when available. If a question requires data you don't have, say so clearly rather than guessing.
 
 Key rules to know:
 - Salary cap 2024-25: ~$141M. Luxury tax line: ~$170M. First apron: ~$178M. Second apron: ~$189M.
@@ -50,7 +51,7 @@ def _build_context() -> str:
         _sleep()
         player_df = leaguedashplayerstats.LeagueDashPlayerStats(
             season=SEASON,
-            per_mode_simple="PerGame",
+            per_mode_detailed="PerGame",
             timeout=60,
         ).get_data_frames()[0]
 
@@ -134,3 +135,5 @@ async def gm_chat(body: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     return ChatResponse(reply=reply, model=MODEL, tokens_used=tokens)
+
+

@@ -1,4 +1,4 @@
-"""Game prediction router — stacked logistic regression ensemble."""
+"""Game prediction router - stacked logistic regression ensemble."""
 
 import threading
 from typing import Optional

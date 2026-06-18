@@ -1,4 +1,4 @@
-"""Reliable scoreboard fetching — direct HTTP, not nba_api live ScoreBoard."""
+"""Reliable scoreboard fetching - direct HTTP, not nba_api live ScoreBoard."""
 
 from __future__ import annotations
 

@@ -1,4 +1,5 @@
-"""Clutch DNA Scorer — compares clutch vs regular stats, outputs 0-100 score."""
+from app.config import settings
+"""Clutch DNA Scorer  " compares clutch vs regular stats, outputs 0-100 score."""
 
 import time
 from typing import Optional
@@ -7,8 +8,8 @@ from nba_api.stats.endpoints import leaguedashplayerclutch, leaguedashplayerstat
 from nba_api.stats.static import players as static_players
 
 router = APIRouter(prefix="/clutch", tags=["clutch"])
-SEASON = "2024-25"
-MIN_CLUTCH_MINUTES = 10.0
+SEASON = settings.current_season
+MIN_CLUTCH_MINUTES = 1.0
 
 _leaderboard_cache: Optional[dict] = None
 _cache_ts: float = 0.0
@@ -45,7 +46,7 @@ def _fetch_leaderboard() -> dict:
     clutch_df = leaguedashplayerclutch.LeagueDashPlayerClutch(
         season=SEASON,
         season_type_all_star="Regular Season",
-        per_mode_simple="PerGame",
+        per_mode_detailed="PerGame",
         clutch_time="Last 5 Minutes",
         point_diff=5,
         timeout=120,
@@ -55,7 +56,7 @@ def _fetch_leaderboard() -> dict:
     reg_df = leaguedashplayerstats.LeagueDashPlayerStats(
         season=SEASON,
         season_type_all_star="Regular Season",
-        per_mode_simple="PerGame",
+        per_mode_detailed="PerGame",
         timeout=60,
     ).get_data_frames()[0]
 
@@ -153,13 +154,13 @@ def player_clutch(player_id: int):
     player = next((p for p in data["players"] if p["player_id"] == player_id), None)
 
     if not player:
-        # Player not in clutch data — fetch individually
+        # Player not in clutch data  " fetch individually
         _sleep()
         try:
             clutch_df = leaguedashplayerclutch.LeagueDashPlayerClutch(
                 season=SEASON,
                 season_type_all_star="Regular Season",
-                per_mode_simple="PerGame",
+                per_mode_detailed="PerGame",
                 clutch_time="Last 5 Minutes",
                 point_diff=5,
                 timeout=120,
@@ -180,3 +181,5 @@ def player_clutch(player_id: int):
             raise HTTPException(status_code=502, detail=str(e))
 
     return player
+
+

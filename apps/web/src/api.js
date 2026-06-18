@@ -30,6 +30,8 @@ export const api = {
 
   // Shot Quality xFG%
   shotQuality: (playerId) => request(`/shot-quality/player/${playerId}`),
+  evaluateShot: (body) =>
+    request("/shot-quality/evaluate-shot", { method: "POST", body: JSON.stringify(body) }),
 
   // Win Probability
   winProbLive: () => request("/win-probability/live"),
@@ -39,10 +41,16 @@ export const api = {
   // Lineup Optimizer
   lineupsByTeam: (teamId) => request(`/lineups/team/${teamId}`),
   lineupTeams: () => request("/lineups/teams"),
+  lineupRoster: (teamId) => request(`/lineups/roster/${teamId}`),
+  lineupModelStatus: () => request("/lineups/model/status"),
+  lineupModelTrain: () => request("/lineups/model/train", { method: "POST" }),
+  lineupPredict: (playerIds) => request("/lineups/predict", { method: "POST", body: JSON.stringify({ player_ids: playerIds }) }),
+  lineupPlayerSearch: (q) => request(`/lineups/players/search?q=${encodeURIComponent(q)}`),
 
   // Defense Scanner
   defenseVulnerabilities: (teamId) => request(`/defense/team/${teamId}/vulnerabilities`),
   defenseTeams: () => request("/defense/teams"),
+  defenseLeague: () => request("/defense/league"),
 
   // Player Development Trajectory
   playerTrajectory: (playerId) => request(`/trajectory/player/${playerId}`),
@@ -71,4 +79,10 @@ export const api = {
   // GM Assistant
   gmChat: (body) =>
     request("/gm-assistant/chat", { method: "POST", body: JSON.stringify(body) }),
+
+  // Trade Machine
+  tradeTeams: () => request("/trades/teams"),
+  tradePlayerSearch: (q) => request(`/trades/players/search?q=${encodeURIComponent(q)}`),
+  analyzeTrade: (body) =>
+    request("/trades/analyze", { method: "POST", body: JSON.stringify(body) }),
 };

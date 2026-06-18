@@ -29,3 +29,5 @@ Thumbs.db
 # Models
 models/*.pkl
 models/*.joblib
+*.pkl
+*.joblib

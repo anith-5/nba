@@ -1,5 +1,5 @@
 """
-Video biomechanical analyzer — MediaPipe Pose + OpenCV.
+Video biomechanical analyzer - MediaPipe Pose + OpenCV.
 Extracts player tendencies from MP4/MOV footage for scouting reports.
 """
 
@@ -115,7 +115,7 @@ def _extract_frame(landmarks, w: int, h: int) -> FrameData:
         _lm(landmarks, "l_ankle", w, h),
     )
 
-    # Wrist y-positions (normalized — lower y = higher on screen = release)
+    # Wrist y-positions (normalized - lower y = higher on screen = release)
     rw = landmarks[_LM["r_wrist"]]
     lw = landmarks[_LM["l_wrist"]]
     fd.r_wrist_y = rw.y
@@ -270,7 +270,7 @@ def analyze_video(video_path: str) -> VideoMetrics:
     cap.release()
 
     if not frame_data:
-        notes.append("No pose landmarks detected — ensure the video shows a full-body player view.")
+        notes.append("No pose landmarks detected - ensure the video shows a full-body player view.")
         return VideoMetrics(
             frames_analyzed=0,
             total_frames=total_frames,
@@ -303,9 +303,9 @@ def analyze_video(video_path: str) -> VideoMetrics:
     confidence = min(1.0, avg_vis * (len(good_frames) / max(processed, 1)) * 2)
 
     if confidence < 0.4:
-        notes.append("Low confidence — consider a closer camera angle or better-lit footage.")
+        notes.append("Low confidence - consider a closer camera angle or better-lit footage.")
     if jumps == 0 and duration > 10:
-        notes.append("No jump events detected — video may not contain shooting actions.")
+        notes.append("No jump events detected - video may not contain shooting actions.")
 
     return VideoMetrics(
         dominant_hand=dom_hand,

@@ -14,6 +14,7 @@ const navGroups = [
     items: [
       { to: "/players", label: "Players" },
       { to: "/shot-quality", label: "Shot Quality xFG%" },
+      { to: "/shot-evaluator", label: "Shot Evaluator" },
       { to: "/clutch", label: "Clutch DNA" },
       { to: "/trajectory", label: "Development Tracker" },
       { to: "/scouting", label: "AI Scouting" },

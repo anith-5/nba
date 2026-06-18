@@ -1,5 +1,6 @@
+from app.config import settings
 """
-NBA Game Winner Predictor — stacked logistic regression ensemble.
+NBA Game Winner Predictor  " stacked logistic regression ensemble.
 Ported from standalone script for use as a FastAPI service module.
 """
 
@@ -27,7 +28,7 @@ from nba_api.stats.static import teams as nba_teams_static
 
 warnings.filterwarnings("ignore")
 
-SEASON = "2024-25"
+SEASON = settings.current_season
 RATE_LIMIT_SEC = 0.7
 HOME_ADVANTAGE = 3.0
 INJURY_MPG_LOSS = 0.012
@@ -189,7 +190,7 @@ def fetch_injury_impact(team_id: int, season: str = SEASON) -> float:
         _sleep()
         pstats = leaguedashplayerstats.LeagueDashPlayerStats(
             season=season,
-            per_mode_simple="PerGame",
+            per_mode_detailed="PerGame",
         ).get_data_frames()[0]
 
         team_pstats = pstats[pstats["TEAM_ID"] == team_id]
@@ -432,3 +433,5 @@ class NBAGamePredictor:
                 "h2h_record": f"{h2h_wins}-{h2h_games - h2h_wins} (home)",
             },
         )
+
+

@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8001
     anthropic_api_key: str = ""
+    current_season: str = "2025-26"
 
     @property
     def cors_origin_list(self) -> list[str]:

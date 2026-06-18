@@ -1,4 +1,4 @@
-"""Live Win Probability — mathematical model on live scoreboard data."""
+"""Live Win Probability - mathematical model on live scoreboard data."""
 
 import math
 import re

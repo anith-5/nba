@@ -1,146 +1,159 @@
-"""Player Development Trajectory — historical comps + career projection curves."""
+from app.config import settings
+"""Player Development Trajectory — two-layer comp matching (archetype + badges)."""
 
-import time
-import math
-from typing import Optional
+import threading
 from fastapi import APIRouter, HTTPException
-from nba_api.stats.endpoints import playercareerstats
 from nba_api.stats.static import players as static_players
 
+from app import comp_database
+
 router = APIRouter(prefix="/trajectory", tags=["trajectory"])
-SEASON = "2024-25"
-
-# Curated comp library: {name: {archetype, pts_by_age: {age: pts}, ast_by_age, reb_by_age}}
-# Ages represented: 19-27. None = didn't play that year.
-COMP_LIBRARY = {
-    "LeBron James":            {"archetype": "All-Time Great", "tier": "superstar",   "pts": {18:20.9, 19:27.2, 20:31.4, 21:27.3, 22:30.0, 23:28.4, 24:29.7, 25:26.7, 26:28.0}},
-    "Kevin Durant":            {"archetype": "Elite Scorer",   "tier": "superstar",   "pts": {19:20.0, 20:25.3, 21:27.7, 22:28.0, 23:28.0, 24:30.1, 25:32.0, 26:28.1, 27:25.4}},
-    "Stephen Curry":           {"archetype": "Elite Shooter",  "tier": "superstar",   "pts": {21:17.5, 22:18.6, 23:22.9, 24:23.8, 25:24.0, 26:30.1, 27:25.3}},
-    "Nikola Jokic":            {"archetype": "Playmaking Big", "tier": "superstar",   "pts": {20:10.0, 21:16.7, 22:18.6, 23:20.0, 24:20.2, 25:26.4, 26:26.4, 27:27.1}},
-    "Luka Doncic":             {"archetype": "Playmaking Wing","tier": "superstar",   "pts": {19:21.2, 20:28.8, 21:27.7, 22:28.4, 23:32.4, 24:33.9, 25:28.5}},
-    "Jayson Tatum":            {"archetype": "Two-Way Wing",   "tier": "star",        "pts": {19:13.9, 20:15.7, 21:23.0, 22:26.4, 23:26.9, 24:30.1, 25:26.9}},
-    "Anthony Edwards":         {"archetype": "Athletic Guard", "tier": "star",        "pts": {19:19.3, 20:21.3, 21:24.6, 22:25.9, 23:27.7}},
-    "Devin Booker":            {"archetype": "Volume Scorer",  "tier": "star",        "pts": {19:13.8, 20:22.1, 21:24.9, 22:26.1, 23:25.6, 24:26.8, 25:27.8}},
-    "Donovan Mitchell":        {"archetype": "Attacking Guard","tier": "star",        "pts": {21:20.5, 22:23.8, 23:26.0, 24:28.3, 25:26.0, 26:31.6}},
-    "Ja Morant":               {"archetype": "Athletic PG",    "tier": "star",        "pts": {20:17.8, 21:19.1, 22:27.4, 23:26.2, 24:25.1}},
-    "Bam Adebayo":             {"archetype": "Two-Way Big",    "tier": "starter",     "pts": {21:8.9,  22:13.5, 23:15.9, 24:19.9, 25:21.5, 26:20.4}},
-    "Draymond Green":          {"archetype": "IQ Big",         "tier": "starter",     "pts": {23:6.0,  24:11.7, 25:11.7, 26:14.0, 27:11.7}},
-    "Jimmy Butler":            {"archetype": "Late Bloomer",   "tier": "star",        "pts": {23:8.6,  24:13.1, 25:20.0, 26:23.9, 27:21.3}},
-    "Khris Middleton":         {"archetype": "Mid-Level Star", "tier": "starter",     "pts": {22:4.9,  23:12.1, 24:13.4, 25:18.3, 26:17.8, 27:20.8}},
-    "Zion Williamson":         {"archetype": "Dominant Scorer","tier": "star",        "pts": {19:22.5, 20:27.0, 21:26.4, 22:25.0}},
-    "Anthony Bennett":         {"archetype": "Physical Fwd",   "tier": "bust",        "pts": {19:4.8,  20:6.5,  21:7.0}},
-    "Kwame Brown":             {"archetype": "Athletic Big",   "tier": "bust",        "pts": {18:4.5,  19:7.1,  20:7.5,  21:7.8,  22:10.0}},
-    "Michael Beasley":         {"archetype": "Scoring Fwd",    "tier": "underachiever","pts": {19:14.3, 20:19.2, 21:13.7, 22:12.1, 23:9.6}},
-    "Markelle Fultz":          {"archetype": "PG",             "tier": "underachiever","pts": {19:7.1,  20:13.1, 21:12.1}},
-    "Derrick Rose":            {"archetype": "Explosive PG",   "tier": "superstar",   "pts": {20:16.8, 21:20.8, 22:25.0, 23:21.8}},
-}
+SEASON = settings.current_season
 
 
-def _sleep():
-    time.sleep(0.7)
+@router.get("/status")
+def trajectory_status():
+    return comp_database.get_status()
 
 
-def _cosine_sim(a: list[float], b: list[float]) -> float:
-    if not a or not b:
-        return 0.0
-    dot = sum(x * y for x, y in zip(a, b))
-    mag_a = math.sqrt(sum(x ** 2 for x in a))
-    mag_b = math.sqrt(sum(y ** 2 for y in b))
-    if mag_a == 0 or mag_b == 0:
-        return 0.0
-    return dot / (mag_a * mag_b)
+@router.post("/rebuild")
+def trajectory_rebuild():
+    """Trigger a manual rebuild of the comp database."""
+    if comp_database._is_building:
+        return {"status": "already_building"}
+    t = threading.Thread(target=comp_database._background_build, daemon=True)
+    t.start()
+    return {"status": "started", "message": "Comp database rebuilding in background. Check /trajectory/status."}
 
 
-def _align_to_ages(pts_by_age: dict, ages: list[int]) -> list[float]:
-    return [pts_by_age.get(a, 0.0) for a in ages]
+def _build_projections(comps: list[dict], current_age: int, current_ppg: float) -> dict:
+    """
+    Best/median/bust projections built from relative PPG deltas of the comps
+    (how much each comp grew or declined from the matched age), applied to
+    the query player's actual current PPG. Best/bust are determined by each
+    comp's own subsequent PPG trajectory — not a hardcoded tier label.
+    """
+    future_ages = list(range(current_age + 1, 28))
+
+    def total_growth(c):
+        base = c["pts_by_age"].get(c.get("matched_age", current_age))
+        if not base:
+            return 0.0
+        future_vals = [v for a, v in c["pts_by_age"].items() if a > c.get("matched_age", current_age)]
+        return (max(future_vals) - base) if future_vals else 0.0
+
+    ranked = sorted(comps, key=lambda c: -total_growth(c))
+    top_comps = ranked[: max(1, len(ranked) // 2)] or comps
+    bust_comps = ranked[max(1, len(ranked) // 2):] or comps
+
+    best_case, median_case, bust_case = {}, {}, {}
+
+    for age in future_ages:
+        best_deltas, med_deltas, bust_deltas = [], [], []
+
+        for c in comps:
+            base = c["pts_by_age"].get(c.get("matched_age", current_age))
+            future = c["pts_by_age"].get(age)
+            if base and future:
+                delta = future - base
+                med_deltas.append(delta)
+                if c in top_comps:
+                    best_deltas.append(delta)
+                if c in bust_comps:
+                    bust_deltas.append(delta)
+
+        if best_deltas:
+            best_case[str(age)] = round(max(4.0, current_ppg + max(best_deltas)), 1)
+        if med_deltas:
+            median_case[str(age)] = round(max(4.0, current_ppg + sum(med_deltas) / len(med_deltas)), 1)
+        if bust_deltas:
+            bust_case[str(age)] = round(max(4.0, current_ppg + min(bust_deltas)), 1)
+        else:
+            years_out = age - current_age
+            bust_case[str(age)] = round(max(4.0, current_ppg * (0.92 ** years_out)), 1)
+
+    # Guarantee ordering: bust <= median <= best at every age
+    for age in future_ages:
+        key = str(age)
+        b, m, bc = bust_case.get(key), median_case.get(key), best_case.get(key)
+        if b is not None and m is not None:
+            bust_case[key] = min(b, m)
+        if m is not None and bc is not None:
+            best_case[key] = max(bc, m)
+
+    return {"best_case": best_case, "median": median_case, "bust": bust_case}
 
 
 @router.get("/player/{player_id}")
 def player_trajectory(player_id: int):
-    _sleep()
-    try:
-        career = playercareerstats.PlayerCareerStats(player_id=player_id, timeout=60)
-        df = career.get_data_frames()[0]
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"NBA API error: {e}")
+    match = next((p for p in static_players.get_players() if p["id"] == player_id), None)
+    if not match:
+        raise HTTPException(404, "Player not found.")
+    pname = match["full_name"]
 
-    if df.empty:
-        raise HTTPException(status_code=404, detail="No career data found.")
+    db_ready = comp_database.get_database() is not None
+    if not db_ready:
+        status = comp_database.get_status()
+        raise HTTPException(
+            503,
+            f"Comp database is still building ({status['n_entries']} entries so far). "
+            f"Check /trajectory/status and retry shortly.",
+        )
 
-    pname = next(
-        (p["full_name"] for p in static_players.get_players() if p["id"] == player_id),
-        f"Player #{player_id}",
+    archetype, stats, current_age = comp_database.compute_query_archetype_and_stats(player_id, pname)
+    if not stats:
+        raise HTTPException(404, "Insufficient career data for this player.")
+
+    # Rebuild age_pts/ast/reb from the player's own entries (for the historical chart)
+    entries = comp_database._build_player_entries(pname)
+    if not entries:
+        raise HTTPException(404, "Insufficient career data for this player.")
+    if len(entries) < 2:
+        raise HTTPException(422, "Need at least 2 seasons of data to find comps.")
+
+    age_pts = {e["age"]: e["pts_by_age"].get(e["age"]) for e in entries}
+    age_pts = {a: v for a, v in age_pts.items() if v is not None}
+    age_ast = {e["age"]: e["ast_by_age"].get(e["age"]) for e in entries}
+    age_reb = {e["age"]: e["reb_by_age"].get(e["age"]) for e in entries}
+
+    query_badges = comp_database.evaluate_badges(stats)
+
+    comps = comp_database.find_comparables(
+        stats, archetype, current_age, k=6,
+        exclude_player_id=player_id, exclude_player_name=pname,
     )
 
-    # Build age → pts mapping
-    age_pts = {}
-    for _, row in df.iterrows():
-        age = int(row.get("PLAYER_AGE", 0))
-        gp = int(row.get("GP", 0))
-        pts = float(row.get("PTS", 0))
-        if age > 0 and gp > 0:
-            ppg = round(pts / gp, 1)
-            age_pts[age] = ppg
+    current_ppg = age_pts.get(current_age, 10.0)
+    projections = _build_projections(comps, current_age, current_ppg) if comps else {
+        "best_case": {}, "median": {}, "bust": {},
+    }
 
-    if not age_pts:
-        raise HTTPException(status_code=404, detail="Insufficient career data.")
-
-    current_age = max(age_pts.keys())
-    target_vector = [age_pts.get(a, 0.0) for a in range(19, current_age + 1)]
-
-    if len(target_vector) < 2:
-        raise HTTPException(status_code=422, detail="Need at least 2 seasons of data to find comps.")
-
-    # Compare to COMP_LIBRARY
-    scores = []
-    for name, data in COMP_LIBRARY.items():
-        comp_ages = list(range(19, current_age + 1))
-        comp_vec = _align_to_ages(data["pts"], comp_ages)
-        sim = _cosine_sim(target_vector, comp_vec)
-        scores.append((name, sim, data))
-
-    scores.sort(key=lambda x: -x[1])
-    top_comps = scores[:3]
-    worst = scores[-1]
-
-    # Build projection curves (ages current → 27)
-    future_ages = list(range(current_age + 1, 28))
-    best_case = {}
-    median_case = {}
-    bust_case = {}
-
-    for age in future_ages:
-        best = [d["pts"].get(age) for _, _, d in top_comps if d["pts"].get(age) is not None]
-        med_vals = [v for _, _, d in scores[1:4] for v in [d["pts"].get(age)] if v is not None]
-        worst_val = [d["pts"].get(age) for _, _, d in [worst] if d["pts"].get(age) is not None]
-
-        best_case[age] = round(max(best), 1) if best else None
-        median_case[age] = round(sum(med_vals) / len(med_vals), 1) if med_vals else None
-        bust_case[age] = round(min(worst_val), 1) if worst_val else None
-
-    # Historical arc (actual stats)
-    historical = [{"age": a, "pts": p} for a, p in sorted(age_pts.items())]
+    historical = [
+        {"age": a, "pts": age_pts[a], "ast": age_ast.get(a), "reb": age_reb.get(a)}
+        for a in sorted(age_pts)
+    ]
 
     comps_out = [
         {
-            "name": name,
-            "similarity": round(sim, 3),
-            "archetype": data["archetype"],
-            "tier": data["tier"],
-            "pts_at_ages": {str(k): v for k, v in data["pts"].items()},
+            "name":        c["player_name"],
+            "player_id":   c.get("player_id"),
+            "similarity":  c["similarity"],
+            "archetype":   c["archetype"],
+            "badges":      c["badges"],
+            "matched_age": c.get("matched_age"),
+            "pts_at_ages": {str(k): v for k, v in c["pts_by_age"].items()},
         }
-        for name, sim, data in top_comps
+        for c in comps[:5]
     ]
 
     return {
-        "player_id": player_id,
+        "player_id":   player_id,
         "player_name": pname,
         "current_age": current_age,
-        "historical": historical,
-        "comps": comps_out,
-        "projections": {
-            "best_case": {str(k): v for k, v in best_case.items() if v is not None},
-            "median": {str(k): v for k, v in median_case.items() if v is not None},
-            "bust": {str(k): v for k, v in bust_case.items() if v is not None},
-        },
+        "archetype":   archetype,
+        "badges":      {b: t for b, t in query_badges.items() if t is not None},
+        "badges_unavailable": comp_database.UNAVAILABLE_BADGES,
+        "historical":  historical,
+        "comps":       comps_out,
+        "projections": projections,
     }

@@ -1,4 +1,4 @@
-"""International Prospect Radar — curated EuroLeague / ACB / NBL prospects."""
+"""International Prospect Radar - curated EuroLeague / ACB / NBL prospects."""
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -227,7 +227,7 @@ def all_prospects():
     return {
         "prospects": PROSPECTS,
         "filters": {"archetypes": ARCHETYPES, "leagues": LEAGUES, "positions": POSITIONS},
-        "note": "Demo dataset — production version would integrate SkillCorner / Synergy EuroLeague data.",
+        "note": "Demo dataset - production version would integrate SkillCorner / Synergy EuroLeague data.",
     }
 
 

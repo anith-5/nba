@@ -1,6 +1,9 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app import comp_database
 from app.config import settings
 from app.routers import live, players, predictions, teams, trades
 from app.routers import (
@@ -16,10 +19,16 @@ from app.routers import (
     gm_assistant,
 )
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    comp_database.init_database_async()
+    yield
+
 app = FastAPI(
     title="HoopIQ API",
-    description="NBA analytics platform — 11 AI/ML features.",
+    description="NBA analytics platform - 11 AI/ML features.",
     version="2.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(

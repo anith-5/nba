@@ -1,5 +1,6 @@
-"""Rule Change Simulator — models impact of NBA rule changes on teams and players."""
+"""Rule Change Simulator - models impact of NBA rule changes on teams and players."""
 
+import asyncio
 import time
 from enum import Enum
 from fastapi import APIRouter, HTTPException
@@ -7,8 +8,10 @@ from pydantic import BaseModel
 from typing import Optional
 from nba_api.stats.endpoints import leaguedashteamstats, leaguedashplayerstats
 
+from app.config import settings
+
 router = APIRouter(prefix="/rules", tags=["rules"])
-SEASON = "2024-25"
+SEASON = settings.current_season
 
 _team_cache: Optional[dict] = None
 _player_cache: Optional[dict] = None
@@ -32,7 +35,7 @@ SCENARIO_META = {
         "description": "Corner 3s revert to 2-point shots. Spacing-dependent offenses lose significant value.",
     },
     RuleScenario.WIDER_LANE: {
-        "label": "Widen the Lane (16→20 ft)",
+        "label": "Widen the Lane (16â†'20 ft)",
         "description": "The paint widens by 4 feet. Post players get more space; corner shooters crowd changes.",
     },
     RuleScenario.FOUR_POINT_LINE: {
@@ -78,25 +81,43 @@ def _sleep():
     time.sleep(0.7)
 
 
+def _fetch_with_retry(fn, retries=3, delay=2.0):
+    last_err = None
+    for attempt in range(retries):
+        try:
+            return fn()
+        except Exception as e:
+            last_err = e
+            if attempt < retries - 1:
+                time.sleep(delay * (attempt + 1))
+    raise last_err
+
+
 def _load_caches():
     global _team_cache, _player_cache
     if _team_cache:
         return
 
     _sleep()
-    team_df = leaguedashteamstats.LeagueDashTeamStats(
+    team_df = _fetch_with_retry(lambda: leaguedashteamstats.LeagueDashTeamStats(
         season=SEASON,
         measure_type_detailed_defense="Base",
         per_mode_detailed="PerGame",
-        timeout=60,
-    ).get_data_frames()[0]
+        timeout=90,
+    ).get_data_frames()[0])
+
+    if team_df.empty:
+        raise ValueError(f"No team stats returned for season {SEASON}")
 
     _sleep()
-    player_df = leaguedashplayerstats.LeagueDashPlayerStats(
+    player_df = _fetch_with_retry(lambda: leaguedashplayerstats.LeagueDashPlayerStats(
         season=SEASON,
-        per_mode_simple="PerGame",
-        timeout=60,
-    ).get_data_frames()[0]
+        per_mode_detailed="PerGame",
+        timeout=90,
+    ).get_data_frames()[0])
+
+    if player_df.empty:
+        raise ValueError(f"No player stats returned for season {SEASON}")
 
     _team_cache = {int(r["TEAM_ID"]): r.to_dict() for _, r in team_df.iterrows()}
     _player_cache = {int(r["PLAYER_ID"]): r.to_dict() for _, r in player_df.iterrows()}
@@ -167,37 +188,37 @@ def _player_impact(player: dict, scenario: RuleScenario) -> Optional[str]:
 
     if scenario == RuleScenario.THREE_POINT_BACK:
         if three_rate > 0.45 and fg3_pct > 0.38:
-            return f"Moderate negative — {three_rate:.0%} of FGA from 3"
+            return f"Moderate negative - {three_rate:.0%} of FGA from 3"
         if pts > 20 and three_rate < 0.25:
-            return "Positive — low 3-point reliance, benefits from mid-range premium"
+            return "Positive - low 3-point reliance, benefits from mid-range premium"
         return None
 
     elif scenario == RuleScenario.NO_CORNER_THREE:
         if three_rate > 0.35 and fg3_pct > 0.38:
-            return f"Negative — high corner 3 volume"
+            return f"Negative - high corner 3 volume"
         if blk > 1.5:
-            return "Positive — paint presence becomes more valuable"
+            return "Positive - paint presence becomes more valuable"
         return None
 
     elif scenario == RuleScenario.WIDER_LANE:
         if blk > 1.8:
-            return "Positive — wider lane benefits shot-blocking bigs"
+            return "Positive - wider lane benefits shot-blocking bigs"
         if three_rate > 0.45:
-            return "Neutral to slightly negative — perimeter spacing shifts"
+            return "Neutral to slightly negative - perimeter spacing shifts"
         return None
 
     elif scenario == RuleScenario.FOUR_POINT_LINE:
         if three_rate > 0.40 and fg3_pct > 0.38:
-            return f"Positive — {fg3_pct:.0%} from 3, deep range adds value"
+            return f"Positive - {fg3_pct:.0%} from 3, deep range adds value"
         if three_rate < 0.15 and pts < 14:
-            return "Negative — no 4-point threat, role diminishes"
+            return "Negative - no 4-point threat, role diminishes"
         return None
 
     elif scenario == RuleScenario.SHORTER_SHOT_CLOCK:
         if pts > 22 and fg_pct > 0.48:
-            return "Positive — high-efficiency scorers benefit from pace increase"
+            return "Positive - high-efficiency scorers benefit from pace increase"
         if float(player.get("TOV", 0)) > 3.5:
-            return "Negative — high-turnover players punished by faster pace"
+            return "Negative - high-turnover players punished by faster pace"
         return None
 
     return None
@@ -208,9 +229,9 @@ class SimulateRequest(BaseModel):
 
 
 @router.post("/simulate")
-def simulate_rule(body: SimulateRequest):
+async def simulate_rule(body: SimulateRequest):
     try:
-        _load_caches()
+        await asyncio.to_thread(_load_caches)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"NBA API error: {e}")
 
@@ -267,3 +288,5 @@ def list_scenarios():
         {"value": s.value, "label": SCENARIO_META[s]["label"], "description": SCENARIO_META[s]["description"]}
         for s in RuleScenario
     ]
+
+

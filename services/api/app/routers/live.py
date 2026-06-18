@@ -49,7 +49,7 @@ def scoreboard():
             "ok": True,
         }
     except Exception as exc:
-        # Never 502 — UI can show a soft message instead of breaking
+        # Never 502 - UI can show a soft message instead of breaking
         return {
             "games": [],
             "raw_date": None,

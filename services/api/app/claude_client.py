@@ -1,4 +1,4 @@
-"""Lazy-initialized Anthropic client — degrades gracefully if key not set."""
+"""Lazy-initialized Anthropic client - degrades gracefully if key not set."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def get_client():
     from app.config import settings
     key = settings.anthropic_api_key
     if not key:
-        logger.warning("ANTHROPIC_API_KEY not set — AI features disabled")
+        logger.warning("ANTHROPIC_API_KEY not set - AI features disabled")
         return None
 
     try:

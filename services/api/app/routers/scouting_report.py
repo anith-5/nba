@@ -1,4 +1,5 @@
-"""AI Scouting Report — stats-based and video biomechanical analysis + PDF export."""
+from app.config import settings
+"""AI Scouting Report  " stats-based and video biomechanical analysis + PDF export."""
 
 import asyncio
 import io
@@ -14,7 +15,7 @@ from app.claude_client import chat_completion, is_available
 from app.video_analyzer import analyze_video, metrics_to_dict, CV_AVAILABLE
 
 router = APIRouter(prefix="/scouting", tags=["scouting"])
-SEASON = "2024-25"
+SEASON = settings.current_season
 SONNET = "claude-sonnet-4-6"
 HAIKU  = "claude-haiku-4-5-20251001"
 
@@ -28,11 +29,11 @@ STATS_SYSTEM = """You are a professional NBA scout writing a report for a front 
 Write in the style of a real NBA scouting report: concise, analytical, data-backed.
 Structure exactly:
 
-**Overview** (2 sentences — role and value)
+**Overview** (2 sentences  " role and value)
 **Offensive Profile** (3 bullets)
 **Defensive Profile** (2 bullets)
 **Best Comparable** (1 historical player with brief reason)
-**Outlook** (1 sentence — ceiling/floor)
+**Outlook** (1 sentence  " ceiling/floor)
 **Trade Value** (1 sentence)
 
 Be specific. Reference the stats provided. No filler."""
@@ -46,12 +47,12 @@ Structure your response EXACTLY as:
 **Scouting Summary** (2-3 sentences describing the player's style based on video evidence)
 
 **Key Tendencies from Video**
-• [tendency 1 — with specific biomechanical evidence]
-• [tendency 2]
-• [tendency 3]
-• [tendency 4]
+ ¢ [tendency 1  " with specific biomechanical evidence]
+ ¢ [tendency 2]
+ ¢ [tendency 3]
+ ¢ [tendency 4]
 
-**How to Stop Them — 3 Defensive Keys**
+**How to Stop Them  " 3 Defensive Keys**
 
 1. **[Strategy Name]**: [2-3 sentence explanation with tactical specifics: positioning, scheme, matchup type]
 
@@ -60,8 +61,8 @@ Structure your response EXACTLY as:
 3. **[Strategy Name]**: [2-3 sentence explanation]
 
 **Exploitable Weaknesses**
-• [weakness 1 with evidence]
-• [weakness 2]
+ ¢ [weakness 1 with evidence]
+ ¢ [weakness 2]
 
 **Matchup Recommendation**: [Which type of defender, specific physical attributes needed]
 
@@ -87,7 +88,7 @@ def _gather_player_stats(player_id: int) -> dict:
 
     _sleep()
     season_df = leaguedashplayerstats.LeagueDashPlayerStats(
-        season=SEASON, per_mode_simple="PerGame", timeout=60,
+        season=SEASON, per_mode_detailed="PerGame", timeout=60,
     ).get_data_frames()[0]
     pr = season_df[season_df["PLAYER_ID"] == player_id]
 
@@ -156,18 +157,18 @@ def _build_video_prompt(player_name: str, team_context: str, metrics: dict) -> s
 
     msg = (
         f"Player: {player_name or 'Unknown'}\n"
-        f"Video duration: {dur:.0f}s · Frames analyzed: {frames} · Analysis confidence: {conf:.0%}\n\n"
+        f"Video duration: {dur:.0f}s . Frames analyzed: {frames} . Analysis confidence: {conf:.0%}\n\n"
         f"BIOMECHANICAL FINDINGS:\n"
-        f"• Dominant/primary dribbling hand: {dom}\n"
-        f"• Primary drive direction: {drive}\n"
-        f"• Average shooting elbow angle (right arm): {elbow:.0f}° "
-        f"(ideal form ≈ 90°; above 110° = mechanical flaw)\n"
-        f"• Average knee bend: {knee:.0f}° "
+        f" ¢ Dominant/primary dribbling hand: {dom}\n"
+        f" ¢ Primary drive direction: {drive}\n"
+        f" ¢ Average shooting elbow angle (right arm): {elbow:.0f}° "
+        f"(ideal form â‰ˆ 90°; above 110° = mechanical flaw)\n"
+        f" ¢ Average knee bend: {knee:.0f}° "
         f"(180° = fully straight; under 150° = deep crouch = athletic)\n"
-        f"• Detected jump events (shot attempts): {jumps}\n"
-        f"• Release height: {rel}\n"
-        f"• Movement pace: {pace}\n"
-        f"• Lateral quickness: {lat}\n"
+        f" ¢ Detected jump events (shot attempts): {jumps}\n"
+        f" ¢ Release height: {rel}\n"
+        f" ¢ Movement pace: {pace}\n"
+        f" ¢ Lateral quickness: {lat}\n"
     )
     if team_context:
         msg += f"\nDefending team context: {team_context}\n"
@@ -218,7 +219,7 @@ def _generate_pdf(report_data: dict) -> bytes:
     season = report_data.get("season", SEASON)
 
     elements.append(Paragraph("HoopIQ Scouting Report", title_style))
-    elements.append(Paragraph(f"{player} · {season}", sub_style))
+    elements.append(Paragraph(f"{player} . {season}", sub_style))
     elements.append(HRFlowable(width="100%", thickness=2, color=GREEN, spaceAfter=12))
 
     # Metrics table if video mode
@@ -227,14 +228,14 @@ def _generate_pdf(report_data: dict) -> bytes:
         elements.append(Paragraph("Biomechanical Analysis", h2_style))
         table_data = [
             ["Metric", "Finding"],
-            ["Dominant Hand",     m.get("dominant_hand", "—").title()],
-            ["Drive Direction",   m.get("drive_direction", "—").replace("-", " ").title()],
-            ["Shooting Elbow",    f"{m.get('avg_r_elbow_angle', 0):.0f}° (ideal ≈ 90°)"],
+            ["Dominant Hand",     m.get("dominant_hand", "-").title()],
+            ["Drive Direction",   m.get("drive_direction", "-").replace("-", " ").title()],
+            ["Shooting Elbow",    f"{m.get('avg_r_elbow_angle', 0):.0f}° (ideal â‰ˆ 90°)"],
             ["Knee Bend",         f"{m.get('avg_knee_bend', 0):.0f}° (180°=straight)"],
             ["Jump Events",       str(m.get("jump_count", 0))],
-            ["Release Height",    m.get("release_height", "—").title()],
-            ["Movement Pace",     m.get("movement_pace", "—").title()],
-            ["Lateral Quickness", m.get("lateral_quickness", "—").title()],
+            ["Release Height",    m.get("release_height", "-").title()],
+            ["Movement Pace",     m.get("movement_pace", "-").title()],
+            ["Lateral Quickness", m.get("lateral_quickness", "-").title()],
             ["Confidence",        f"{m.get('confidence', 0):.0%}"],
         ]
         tbl = Table(table_data, colWidths=[2.5 * inch, 4 * inch])
@@ -258,11 +259,11 @@ def _generate_pdf(report_data: dict) -> bytes:
         stats_data = [
             ["PPG", "RPG", "APG", "FG%", "3P%", "TS%", "STL", "BLK"],
             [
-                str(s.get("pts", "—")), str(s.get("reb", "—")),
-                str(s.get("ast", "—")),
+                str(s.get("pts", "-")), str(s.get("reb", "-")),
+                str(s.get("ast", "-")),
                 f"{s.get('fg_pct',0):.1%}", f"{s.get('fg3_pct',0):.1%}",
                 f"{s.get('ts_pct',0):.1%}",
-                str(s.get("stl", "—")), str(s.get("blk", "—")),
+                str(s.get("stl", "-")), str(s.get("blk", "-")),
             ],
         ]
         st = Table(stats_data, colWidths=[0.82 * inch] * 8)
@@ -288,8 +289,8 @@ def _generate_pdf(report_data: dict) -> bytes:
             continue
         if line.startswith("**") and line.endswith("**"):
             elements.append(Paragraph(line.replace("**", ""), h2_style))
-        elif line.startswith("• ") or line.startswith("- "):
-            elements.append(Paragraph(f"&nbsp;&nbsp;• {line[2:]}", body_style))
+        elif line.startswith(" ¢ ") or line.startswith("- "):
+            elements.append(Paragraph(f"&nbsp;&nbsp; ¢ {line[2:]}", body_style))
         elif line[0].isdigit() and line[1:3] in (". ", ") "):
             elements.append(Paragraph(line, body_style))
         else:
@@ -297,7 +298,7 @@ def _generate_pdf(report_data: dict) -> bytes:
 
     elements.append(Spacer(1, 20))
     elements.append(HRFlowable(width="100%", thickness=0.5, color=GRAY))
-    elements.append(Paragraph(f"Generated by HoopIQ · {season} · Powered by Claude AI", note_style))
+    elements.append(Paragraph(f"Generated by HoopIQ . {season} . Powered by Claude AI", note_style))
 
     doc.build(elements)
     buf.seek(0)
@@ -419,3 +420,5 @@ async def export_pdf(report_data: dict):
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
