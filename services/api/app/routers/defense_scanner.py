@@ -111,12 +111,8 @@ def _sleep():
 
 
 def _fetch_league_defense():
-    """Cache-first: serve a pre-computed snapshot if present (the live server
-    relies on this since NBA blocks cloud IPs), else pull live."""
-    cached = data_cache.read_df(DEFENSE_CACHE)
-    if cached is not None:
-        return cached
-    return _fetch_league_defense_live()
+    """Local: live/fresh. Cloud: cached snapshot (NBA blocks cloud IPs)."""
+    return data_cache.cached_or_live(DEFENSE_CACHE, _fetch_league_defense_live, kind="df")
 
 
 def _fetch_league_defense_live():

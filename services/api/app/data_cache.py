@@ -14,13 +14,22 @@ to a live NBA call (which works locally, fails gracefully in the cloud).
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 import pandas as pd
 
 CACHE_DIR = Path(__file__).parent.parent / "data_cache"
 CACHE_DIR.mkdir(exist_ok=True)
+
+# Are we running on the deployed cloud server (where NBA blocks the IP)?
+# Render auto-sets RENDER=true on every service; PREFER_CACHE is a manual
+# override you can set on any host to force cache-first.
+IS_CLOUD = (
+    os.environ.get("RENDER", "").lower() == "true"
+    or os.environ.get("PREFER_CACHE", "").lower() == "true"
+)
 
 
 def _path(name: str) -> Path:
@@ -58,3 +67,29 @@ def read_df(name: str) -> Optional[pd.DataFrame]:
 
 def write_df(name: str, df: pd.DataFrame) -> None:
     _path(name).write_text(df.to_json(), encoding="utf-8")
+
+
+def cached_or_live(name: str, live_fn: Callable, kind: str = "json"):
+    """Environment-aware data fetch — no local/cloud tradeoff.
+
+    - On the cloud (IS_CLOUD): cache-first. NBA is blocked, so serve the
+      committed snapshot; only attempt live as a last resort.
+    - Locally: live-first for fresh data, falling back to the snapshot only if
+      the live NBA call fails (e.g. transient timeout).
+    """
+    reader = read_json if kind == "json" else read_df
+
+    if IS_CLOUD:
+        data = reader(name)
+        if data is not None:
+            return data
+        return live_fn()
+
+    # Local: prefer fresh live data, fall back to cache on failure
+    try:
+        return live_fn()
+    except Exception:
+        data = reader(name)
+        if data is not None:
+            return data
+        raise

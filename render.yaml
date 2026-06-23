@@ -14,6 +14,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.7"
+      - key: PREFER_CACHE
+        value: "true"   # cloud serves pre-computed snapshots (NBA blocks cloud IPs)
       - key: ANTHROPIC_API_KEY
         sync: false   # set in dashboard — your real Claude key
       - key: CORS_ORIGINS

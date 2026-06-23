@@ -45,12 +45,8 @@ def _clutch_score(
 
 
 def _fetch_leaderboard() -> dict:
-    """Cache-first: serve a pre-computed snapshot if present (the live server
-    relies on this since NBA blocks cloud IPs), else compute live."""
-    cached = data_cache.read_json(CLUTCH_CACHE)
-    if cached is not None:
-        return cached
-    return _fetch_leaderboard_live()
+    """Local: live/fresh. Cloud: cached snapshot (NBA blocks cloud IPs)."""
+    return data_cache.cached_or_live(CLUTCH_CACHE, _fetch_leaderboard_live, kind="json")
 
 
 def _fetch_leaderboard_live() -> dict:
