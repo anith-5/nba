@@ -5,7 +5,7 @@ import threading
 from fastapi import APIRouter, HTTPException
 from nba_api.stats.static import players as static_players
 
-from app import comp_database
+from app import comp_database, data_cache
 
 router = APIRouter(prefix="/trajectory", tags=["trajectory"])
 SEASON = settings.current_season
@@ -91,8 +91,7 @@ def player_trajectory(player_id: int):
         raise HTTPException(404, "Player not found.")
     pname = match["full_name"]
 
-    db_ready = comp_database.get_database() is not None
-    if not db_ready:
+    if comp_database.get_database() is None:
         status = comp_database.get_status()
         raise HTTPException(
             503,
@@ -100,14 +99,32 @@ def player_trajectory(player_id: int):
             f"Check /trajectory/status and retry shortly.",
         )
 
-    archetype, stats, current_age = comp_database.compute_query_archetype_and_stats(player_id, pname)
-    if not stats:
-        raise HTTPException(404, "Insufficient career data for this player.")
+    # Path A — player is already in the comp database: serve from the shipped
+    # data with zero NBA calls (this is the path that works on the cloud).
+    db_entries = comp_database.get_player_entries(player_id=player_id, name=pname)
+    if db_entries:
+        latest = max(db_entries, key=lambda e: e["age"])
+        archetype = latest["archetype"]
+        stats = latest["stats"]
+        current_age = latest["age"]
+        entries = db_entries
+    else:
+        # Path B — not a curated player. The cloud can't fetch their data live
+        # (NBA blocks cloud IPs), so only the local app supports arbitrary search.
+        if data_cache.IS_CLOUD:
+            raise HTTPException(
+                503,
+                f"{pname} isn't available on the hosted site. The live version supports the "
+                f"featured players (LeBron, Curry, Jokic, Wembanyama, Giannis, and ~70 others). "
+                f"Run the app locally for full player search.",
+            )
+        archetype, stats, current_age = comp_database.compute_query_archetype_and_stats(player_id, pname)
+        if not stats:
+            raise HTTPException(404, "Insufficient career data for this player.")
+        entries = comp_database._build_player_entries(pname)
+        if not entries:
+            raise HTTPException(404, "Insufficient career data for this player.")
 
-    # Rebuild age_pts/ast/reb from the player's own entries (for the historical chart)
-    entries = comp_database._build_player_entries(pname)
-    if not entries:
-        raise HTTPException(404, "Insufficient career data for this player.")
     if len(entries) < 2:
         raise HTTPException(422, "Need at least 2 seasons of data to find comps.")
 

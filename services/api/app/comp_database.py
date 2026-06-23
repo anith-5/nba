@@ -30,6 +30,7 @@ enough for a local background build —
 
 from __future__ import annotations
 
+import json
 import logging
 import math
 import pickle
@@ -57,6 +58,10 @@ from sklearn.preprocessing import StandardScaler
 logger = logging.getLogger(__name__)
 
 DB_PATH = Path(__file__).parent / "comp_db.pkl"
+# Portable JSON snapshot of the comp DB entries, committed and shipped to the
+# cloud (the pickle is gitignored + not portable across Python/sklearn versions).
+# Lives in data_cache/ alongside the other pre-computed snapshots.
+COMP_ENTRIES_JSON = Path(__file__).parent.parent / "data_cache" / "comp_entries.json"
 DB_MAX_AGE_DAYS = 7
 RATE_LIMIT = 0.7
 HUSTLE_ERA_CUTOFF = "2016-17"
@@ -1150,6 +1155,95 @@ def _load_from_disk() -> Optional[dict]:
         return None
 
 
+def _jsonable(v):
+    """Coerce a value (incl. numpy scalars) to a JSON-serializable form."""
+    if v is None:
+        return None
+    if isinstance(v, (bool, str)):
+        return v
+    if isinstance(v, (int, np.integer)):
+        return int(v)
+    if isinstance(v, (float, np.floating)):
+        f = float(v)
+        return f if math.isfinite(f) else None
+    return v
+
+
+def export_entries_json(path: Path = COMP_ENTRIES_JSON) -> int:
+    """Write the loaded comp DB's entries to a portable JSON snapshot.
+    Drops the sklearn scaler (not needed to serve curated players, and not
+    portable). Run locally after a build; the JSON is committed + shipped."""
+    db = _db or _load_from_disk()
+    if db is None:
+        raise RuntimeError("No comp DB loaded/on disk to export. Build it first.")
+
+    clean = []
+    for e in db["entries"]:
+        clean.append({
+            "player_id": int(e["player_id"]),
+            "player_name": e["player_name"],
+            "age": int(e["age"]),
+            "season": e["season"],
+            "position_numeric": float(e["position_numeric"]),
+            "archetype": e.get("archetype"),
+            "stats": {k: _jsonable(v) for k, v in e["stats"].items()},
+            "badges": e.get("badges", {}),
+            "pts_by_age": {str(k): _jsonable(v) for k, v in e["pts_by_age"].items()},
+            "ast_by_age": {str(k): _jsonable(v) for k, v in e["ast_by_age"].items()},
+            "reb_by_age": {str(k): _jsonable(v) for k, v in e["reb_by_age"].items()},
+            "cluster_features": [_jsonable(x) for x in e["cluster_features"]],
+        })
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "entries": clean,
+        "n_entries": len(clean),
+        "n_players": len(set(e["player_name"] for e in clean)),
+        "built_at": time.time(),
+    }
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return len(clean)
+
+
+def _load_entries_json() -> Optional[dict]:
+    """Load the committed JSON entries snapshot (used on the cloud, where the
+    pickle isn't available and NBA can't be reached to rebuild). Converts the
+    age-keyed dicts back to int keys (JSON stringifies them)."""
+    if not COMP_ENTRIES_JSON.exists():
+        return None
+    try:
+        payload = json.loads(COMP_ENTRIES_JSON.read_text(encoding="utf-8"))
+    except Exception as e:
+        logger.warning("Could not load comp entries JSON: %s", e)
+        return None
+
+    for e in payload["entries"]:
+        for key in ("pts_by_age", "ast_by_age", "reb_by_age"):
+            e[key] = {int(k): v for k, v in e.get(key, {}).items()}
+
+    logger.info("Loaded comp entries JSON: %d entries", payload.get("n_entries", 0))
+    return {
+        "entries": payload["entries"],
+        "scaler": None,  # not shipped; only needed for live (local) archetype assignment
+        "n_entries": payload.get("n_entries", len(payload["entries"])),
+        "n_players": payload.get("n_players", 0),
+    }
+
+
+def get_player_entries(player_id: Optional[int] = None, name: Optional[str] = None) -> list[dict]:
+    """Return all comp-DB entries (seasons) for a player already in the database,
+    matched by id or name. Empty if the player isn't curated."""
+    if _db is None:
+        return []
+    out = []
+    for e in _db["entries"]:
+        if player_id is not None and e["player_id"] == player_id:
+            out.append(e)
+        elif name is not None and e["player_name"].lower() == name.lower():
+            out.append(e)
+    return out
+
+
 def _background_build():
     global _db, _is_building, _build_error
     _is_building = True
@@ -1167,9 +1261,25 @@ def _background_build():
 
 def init_database_async():
     global _db, _build_thread, _is_building
+    from app import data_cache
+
+    # 1. Local fresh pickle (full DB incl. scaler)
     db = _load_from_disk()
     if db is not None:
         _db = db
+        return
+
+    # 2. Committed JSON snapshot — used on the cloud (NBA blocked, no pickle)
+    db = _load_entries_json()
+    if db is not None:
+        _db = db
+        return
+
+    # 3. Build live — only possible where NBA is reachable (local). The cloud
+    #    can't build (blocked IP + 30-60 min), so it relies on the JSON above.
+    if data_cache.IS_CLOUD:
+        logger.warning("On cloud with no comp snapshot — Trajectory limited to none. "
+                       "Run precompute.py locally and commit data_cache/comp_entries.json.")
         return
     if _is_building:
         return

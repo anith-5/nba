@@ -20,7 +20,7 @@ Re-run whenever you want to refresh the live site's data (e.g. weekly).
 import sys
 import time
 
-from app import data_cache
+from app import data_cache, comp_database
 from app.routers import defense_scanner, clutch_dna
 
 
@@ -38,13 +38,29 @@ def precompute_clutch():
     print(f"      saved {len(result.get('players', []))} players -> data_cache/{clutch_dna.CLUTCH_CACHE}")
 
 
+def precompute_trajectory():
+    print("[3/3] Player Trajectory — exporting comp database to JSON…")
+    comp_database.init_database_async()
+    # Wait for the DB to be loaded/built (the build can take 30-60 min the first
+    # time; if comp_db.pkl already exists locally it loads instantly).
+    waited = 0
+    while comp_database.get_database() is None and comp_database._is_building and waited < 3600:
+        time.sleep(10)
+        waited += 10
+    if comp_database.get_database() is None:
+        print("      no comp DB available to export (build it locally first)")
+        return
+    n = comp_database.export_entries_json()
+    print(f"      saved {n} entries -> data_cache/comp_entries.json")
+
+
 def main():
     t0 = time.time()
     print("=" * 60)
     print("Pre-computing NBA data snapshots for the live site")
     print("=" * 60)
 
-    steps = [precompute_defense, precompute_clutch]
+    steps = [precompute_defense, precompute_clutch, precompute_trajectory]
     for step in steps:
         try:
             step()
