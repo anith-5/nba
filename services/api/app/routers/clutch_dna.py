@@ -7,9 +7,12 @@ from fastapi import APIRouter, HTTPException
 from nba_api.stats.endpoints import leaguedashplayerclutch, leaguedashplayerstats
 from nba_api.stats.static import players as static_players
 
+from app import data_cache
+
 router = APIRouter(prefix="/clutch", tags=["clutch"])
 SEASON = settings.current_season
 MIN_CLUTCH_MINUTES = 1.0
+CLUTCH_CACHE = "clutch_leaderboard.json"
 
 _leaderboard_cache: Optional[dict] = None
 _cache_ts: float = 0.0
@@ -42,6 +45,15 @@ def _clutch_score(
 
 
 def _fetch_leaderboard() -> dict:
+    """Cache-first: serve a pre-computed snapshot if present (the live server
+    relies on this since NBA blocks cloud IPs), else compute live."""
+    cached = data_cache.read_json(CLUTCH_CACHE)
+    if cached is not None:
+        return cached
+    return _fetch_leaderboard_live()
+
+
+def _fetch_leaderboard_live() -> dict:
     _sleep()
     clutch_df = leaguedashplayerclutch.LeagueDashPlayerClutch(
         season=SEASON,

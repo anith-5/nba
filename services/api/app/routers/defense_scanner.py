@@ -7,10 +7,12 @@ from nba_api.stats.static import teams as static_teams
 
 from app.config import settings
 from app.claude_client import chat_completion, is_available
+from app import data_cache
 
 router = APIRouter(prefix="/defense", tags=["defense"])
 SEASON = settings.current_season
 HAIKU = "claude-haiku-4-5-20251001"
+DEFENSE_CACHE = "defense_league.json"
 
 # ---------------------------------------------------------------------------
 # Tactical exploitation advice per vulnerability
@@ -109,6 +111,15 @@ def _sleep():
 
 
 def _fetch_league_defense():
+    """Cache-first: serve a pre-computed snapshot if present (the live server
+    relies on this since NBA blocks cloud IPs), else pull live."""
+    cached = data_cache.read_df(DEFENSE_CACHE)
+    if cached is not None:
+        return cached
+    return _fetch_league_defense_live()
+
+
+def _fetch_league_defense_live():
     """Opponent per-game stats merged with Advanced stats (DEF_RATING, PACE).
 
     DEF_RATING (points allowed per 100 possessions) is the pace-adjusted
