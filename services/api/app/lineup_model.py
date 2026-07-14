@@ -12,15 +12,39 @@ Pipeline:
 
 from __future__ import annotations
 
+import json
+import logging
+import math
 import time
 import threading
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
 import pandas as pd
 
 from app.config import settings
+
+logger = logging.getLogger(__name__)
+
+# Portable snapshot of a trained model, so the deployed site works without
+# training live (NBA blocks the cloud IP + training is a heavy pull). The
+# XGBoost model saves to a version-portable JSON; the player pool to JSON.
+CACHE_DIR = Path(__file__).parent.parent / "data_cache"
+LINEUP_XGB_PATH = CACHE_DIR / "lineup_xgb.json"
+LINEUP_DATA_PATH = CACHE_DIR / "lineup_data.json"
+
+
+def _jsonable(v):
+    if v is None or isinstance(v, (bool, str)):
+        return v
+    if isinstance(v, (int, np.integer)):
+        return int(v)
+    if isinstance(v, (float, np.floating)):
+        f = float(v)
+        return f if math.isfinite(f) else None
+    return str(v)
 
 SEASON = settings.current_season
 MIN_LINEUP_MIN = 8.0      # minimum minutes for a lineup to be included in training
@@ -180,6 +204,57 @@ def get_status() -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Snapshot export / load (for the deployed site)
+# ---------------------------------------------------------------------------
+
+def export_snapshot() -> dict:
+    """Write the trained model + player pool to data_cache/ (run after train())."""
+    if not _model.is_trained or _model._xgb is None:
+        raise RuntimeError("Model not trained; nothing to export.")
+    CACHE_DIR.mkdir(exist_ok=True)
+    _model._xgb.save_model(str(LINEUP_XGB_PATH))
+    payload = {
+        "player_stats": {str(pid): {k: _jsonable(v) for k, v in s.items()}
+                         for pid, s in _model.player_stats.items()},
+        "player_archetypes": {str(pid): int(a) for pid, a in _model.player_archetypes.items()},
+        "player_names": {str(pid): n for pid, n in _model.player_names.items()},
+        "training_samples": _model.training_samples,
+        "cv_rmse": _model.cv_rmse,
+    }
+    LINEUP_DATA_PATH.write_text(json.dumps(payload), encoding="utf-8")
+    logger.info("Exported lineup snapshot: %d players", len(_model.player_names))
+    return {"players": len(_model.player_names), "samples": _model.training_samples}
+
+
+def load_snapshot() -> bool:
+    """Load a committed snapshot into the module model. Returns True on success.
+    Used at startup so the site is 'trained' without a live NBA pull."""
+    global _model
+    if not (LINEUP_XGB_PATH.exists() and LINEUP_DATA_PATH.exists()):
+        return False
+    try:
+        from xgboost import XGBRegressor
+        xgb = XGBRegressor()
+        xgb.load_model(str(LINEUP_XGB_PATH))
+        data = json.loads(LINEUP_DATA_PATH.read_text(encoding="utf-8"))
+        m = LineupPredictorModel()
+        m.player_stats = {int(pid): s for pid, s in data["player_stats"].items()}
+        m.player_archetypes = {int(pid): int(a) for pid, a in data["player_archetypes"].items()}
+        m.player_names = {int(pid): n for pid, n in data["player_names"].items()}
+        m._xgb = xgb
+        m.is_trained = True
+        m.training_samples = data.get("training_samples", 0)
+        m.cv_rmse = data.get("cv_rmse", 0.0)
+        _model = m
+        logger.info("Loaded lineup snapshot: %d players, %d samples",
+                    len(m.player_names), m.training_samples)
+        return True
+    except Exception as e:
+        logger.warning("Could not load lineup snapshot: %s", e)
+        return False
+
+
+# ---------------------------------------------------------------------------
 # Training
 # ---------------------------------------------------------------------------
 
@@ -266,10 +341,13 @@ def train() -> dict:
             group = str(row.get("GROUP_NAME", ""))
             group_id = str(row.get("GROUP_ID", ""))
 
-            # Parse player IDs from GROUP_ID (comma-separated IDs)
+            # Parse player IDs from GROUP_ID. Format is "-ID-ID-ID-ID-ID-"
+            # (plain hyphen separators, leading/trailing hyphen).
             player_ids = []
-            for part in group_id.split(" - "):
+            for part in group_id.split("-"):
                 part = part.strip()
+                if not part:
+                    continue
                 try:
                     pid = int(part)
                     if pid in player_stats:

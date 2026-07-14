@@ -7,11 +7,14 @@ from nba_api.stats.endpoints import leaguedashlineups, commonteamroster
 from nba_api.stats.static import teams as static_teams
 
 from app.config import settings
+from app import data_cache
 import app.lineup_model as lineup_model
 
 router = APIRouter(prefix="/lineups", tags=["lineups"])
 SEASON = settings.current_season
 MIN_MINUTES = 15.0
+ROSTERS_CACHE = "rosters.json"        # {str(team_id): roster_response}
+TEAM_LINEUPS_CACHE = "team_lineups.json"  # {str(team_id): lineups_response}
 
 
 def _sleep():
@@ -26,8 +29,33 @@ def all_teams():
     return [{"id": t["id"], "name": t["full_name"], "abbreviation": t["abbreviation"]} for t in teams]
 
 
+def _team_key(team_id: int) -> str:
+    return str(team_id)
+
+
+def _cached_team(cache_name: str, team_id: int):
+    cache = data_cache.read_json(cache_name) or {}
+    return cache.get(_team_key(team_id))
+
+
 @router.get("/team/{team_id}")
 def team_lineups(team_id: int, min_minutes: float = MIN_MINUTES):
+    # Cloud: serve the pre-computed snapshot (NBA blocks the IP).
+    if data_cache.IS_CLOUD:
+        cached = _cached_team(TEAM_LINEUPS_CACHE, team_id)
+        if cached:
+            return cached
+        raise HTTPException(503, "Lineup data isn't available on the hosted site. Run the app locally for full lineup analysis.")
+    try:
+        return _team_lineups_live(team_id, min_minutes)
+    except HTTPException:
+        cached = _cached_team(TEAM_LINEUPS_CACHE, team_id)
+        if cached:
+            return cached
+        raise
+
+
+def _team_lineups_live(team_id: int, min_minutes: float = MIN_MINUTES):
     _sleep()
     try:
         raw = leaguedashlineups.LeagueDashLineups(
@@ -83,6 +111,21 @@ def team_lineups(team_id: int, min_minutes: float = MIN_MINUTES):
 
 @router.get("/roster/{team_id}")
 def current_roster(team_id: int):
+    if data_cache.IS_CLOUD:
+        cached = _cached_team(ROSTERS_CACHE, team_id)
+        if cached:
+            return cached
+        raise HTTPException(503, "Rosters aren't available on the hosted site. Run the app locally.")
+    try:
+        return _roster_live(team_id)
+    except HTTPException:
+        cached = _cached_team(ROSTERS_CACHE, team_id)
+        if cached:
+            return cached
+        raise
+
+
+def _roster_live(team_id: int):
     """Returns the actual current-season roster via CommonTeamRoster (reflects trades)."""
     _sleep()
     try:
@@ -124,6 +167,8 @@ def train_model():
         raise HTTPException(409, "Model is already training.")
     if lineup_model.is_trained():
         return {"status": "already_trained", **lineup_model.get_status()}
+    if data_cache.IS_CLOUD:
+        raise HTTPException(503, "The hosted site uses a pre-trained model snapshot; live training runs locally only.")
     try:
         return lineup_model.train()
     except RuntimeError as e:

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import comp_database
+from app import lineup_model
 from app.config import settings
 from app.routers import live, players, predictions, teams, trades
 from app.routers import (
@@ -24,6 +25,9 @@ from app.routers import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     comp_database.init_database_async()
+    # Load the pre-trained lineup model so the site is "trained" without a live
+    # NBA pull (works on the cloud where NBA is blocked).
+    lineup_model.load_snapshot()
     yield
 
 app = FastAPI(
