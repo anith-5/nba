@@ -21,28 +21,38 @@ import sys
 import time
 
 from app import data_cache, comp_database
-from app.routers import defense_scanner, clutch_dna, draft_simulator
+from app.routers import defense_scanner, clutch_dna, standings, draft_simulator
 
 # Draft-history snapshots cover this range (Redraft / Historical grounding)
 DRAFT_YEARS = range(1990, 2025)
 
 
 def precompute_defense():
-    print("[1/2] Defense Scanner — pulling league team defense…")
+    print("[1/5] Defense Scanner — pulling league team defense…")
     df = defense_scanner._fetch_league_defense_live()
     data_cache.write_df(defense_scanner.DEFENSE_CACHE, df)
     print(f"      saved {len(df)} teams -> data_cache/{defense_scanner.DEFENSE_CACHE}")
 
 
 def precompute_clutch():
-    print("[2/2] Clutch DNA — pulling clutch leaderboard (takes ~30s)…")
+    print("[2/5] Clutch DNA — pulling clutch leaderboard (takes ~30s)…")
     result = clutch_dna._fetch_leaderboard_live()
     data_cache.write_json(clutch_dna.CLUTCH_CACHE, result)
     print(f"      saved {len(result.get('players', []))} players -> data_cache/{clutch_dna.CLUTCH_CACHE}")
 
 
+def precompute_standings():
+    print("[3/5] Standings + scoring leaders…")
+    st = standings._fetch_standings_live()
+    data_cache.write_json(standings.STANDINGS_CACHE, st)
+    print(f"      saved {len(st.get('East', []))} East / {len(st.get('West', []))} West teams")
+    sc = standings._fetch_scoring_live()
+    data_cache.write_json(standings.SCORING_CACHE, sc)
+    print(f"      saved {len(sc)} scoring leaders")
+
+
 def precompute_trajectory():
-    print("[3/3] Player Trajectory — exporting comp database to JSON…")
+    print("[4/5] Player Trajectory — exporting comp database to JSON…")
     comp_database.init_database_async()
     # Wait for the DB to be loaded/built (the build can take 30-60 min the first
     # time; if comp_db.pkl already exists locally it loads instantly).
@@ -58,7 +68,7 @@ def precompute_trajectory():
 
 
 def precompute_draft_history():
-    print(f"[4/4] Draft history — pulling real rosters {DRAFT_YEARS.start}-{DRAFT_YEARS.stop - 1} "
+    print(f"[5/5] Draft history — pulling real rosters {DRAFT_YEARS.start}-{DRAFT_YEARS.stop - 1} "
           f"(grounds Redraft/Historical so wrong-year players can't appear)…")
     ok = 0
     for year in DRAFT_YEARS:
@@ -78,7 +88,8 @@ def main():
     print("Pre-computing NBA data snapshots for the live site")
     print("=" * 60)
 
-    steps = [precompute_defense, precompute_clutch, precompute_trajectory, precompute_draft_history]
+    steps = [precompute_defense, precompute_clutch, precompute_standings,
+             precompute_trajectory, precompute_draft_history]
     for step in steps:
         try:
             step()

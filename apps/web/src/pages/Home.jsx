@@ -24,9 +24,9 @@ const SCORING_LEADERS = [
 ];
 
 const CLUTCH_LEADERS = [
-  ["Shai Gilgeous-Alexander", "OKC", "+8.4", "Elite"], ["Jalen Brunson", "NYK", "+7.1", "Elite"],
-  ["Nikola Jokić", "DEN", "+6.3", "High"], ["De'Aaron Fox", "SAS", "+5.9", "High"],
-  ["Anthony Edwards", "MIN", "+5.2", "High"],
+  ["Shai Gilgeous-Alexander", "31.1 PPG", 6.5, "clutch"], ["Anthony Edwards", "28.8 PPG", 5.6, "clutch"],
+  ["Luka Dončić", "33.5 PPG", 5.4, "clutch"], ["Jalen Brunson", "26.3 PPG", 5.1, "clutch"],
+  ["Nikola Jokić", "29.1 PPG", 4.8, "clutch"],
 ];
 
 const PLAYER_CARDS = [
@@ -64,13 +64,13 @@ function Icon({ name, className = "h-6 w-6" }) {
 // ---- AI tools as an interactive orbit (hover a node → it expands) ----
 function AIToolsOrbit() {
   const [active, setActive] = useState(null);
-  const R = 39; // ring radius as % of container
+  const R = 40; // ring radius as % of container
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[440px]">
+    <div className="relative mx-auto aspect-square w-full max-w-[560px]">
       {/* Center label reacts to the hovered node */}
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <div className="max-w-[190px] px-6 text-center">
+        <div className="max-w-[230px] px-6 text-center">
           {active === null ? (
             <>
               <p className="font-display text-lg font-bold text-white">AI tools</p>
@@ -102,16 +102,16 @@ function AIToolsOrbit() {
             aria-label={`${t.title} — ${t.desc}`}
             style={{ left: `${left}%`, top: `${top}%` }}
             className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-surface-raised ring-1 ring-white/10 transition-all duration-300 ease-out ${
-              isActive ? "z-10 h-28 w-28 shadow-lift" : "h-[70px] w-[70px]"
+              isActive ? "z-10 h-32 w-32 shadow-lift" : "h-[92px] w-[92px]"
             } ${dim ? "opacity-40" : "opacity-100"}`}
           >
             {/* inner orange disc */}
             <span
               className={`grid place-items-center rounded-full bg-live text-white transition-all duration-300 ease-out ${
-                isActive ? "h-[88px] w-[88px]" : "h-11 w-11"
+                isActive ? "h-[104px] w-[104px]" : "h-14 w-14"
               }`}
             >
-              <Icon name={t.icon} className={isActive ? "h-8 w-8" : "h-5 w-5"} />
+              <Icon name={t.icon} className={isActive ? "h-9 w-9" : "h-6 w-6"} />
             </span>
           </Link>
         );
@@ -139,8 +139,9 @@ function AIToolsList() {
   );
 }
 
-function StandingsCard() {
+function StandingsCard({ standings = STANDINGS }) {
   const [conf, setConf] = useState("East");
+  const rows = standings[conf] ?? [];
   return (
     <div className="card p-5" id="standings">
       <div className="mb-4 flex items-center justify-between">
@@ -165,7 +166,7 @@ function StandingsCard() {
           </tr>
         </thead>
         <tbody>
-          {STANDINGS[conf].map(([tri, name, w, l], i) => (
+          {rows.map(([tri, name, w, l], i) => (
             <tr key={tri} className="border-t border-white/5">
               <td className="py-2 font-mono text-slate-500">{i + 1}</td>
               <td className="py-2">
@@ -185,9 +186,9 @@ function StandingsCard() {
   );
 }
 
-function LeadersCard() {
+function LeadersCard({ scoring = SCORING_LEADERS, clutch = CLUTCH_LEADERS }) {
   const [tab, setTab] = useState("Scoring");
-  const rows = tab === "Scoring" ? SCORING_LEADERS : CLUTCH_LEADERS;
+  const rows = tab === "Scoring" ? scoring : clutch;
   return (
     <div className="card p-5">
       <div className="mb-4 flex items-center justify-between">
@@ -251,6 +252,7 @@ export default function Home() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [apiDown, setApiDown] = useState(false);
+  const [summary, setSummary] = useState(null);
 
   useEffect(() => {
     api
@@ -261,9 +263,28 @@ export default function Home() {
       })
       .catch(() => setApiDown(true))
       .finally(() => setLoading(false));
+
+    // Real standings + leaders (pre-computed snapshot on the live site)
+    api.standings().then(setSummary).catch(() => {});
   }, []);
 
   const slate = games.slice(0, 6);
+
+  // Transform API objects → the tuple shape the cards use; fall back to the
+  // realistic placeholder constants if the snapshot isn't available.
+  const standings =
+    summary?.standings?.East?.length
+      ? {
+          East: summary.standings.East.map((t) => [t.tri, t.name, t.w, t.l]),
+          West: summary.standings.West.map((t) => [t.tri, t.name, t.w, t.l]),
+        }
+      : STANDINGS;
+  const scoring = summary?.scoring_leaders?.length
+    ? summary.scoring_leaders.map((s) => [s.name, s.tri, s.ppg])
+    : SCORING_LEADERS;
+  const clutch = summary?.clutch_leaders?.length
+    ? summary.clutch_leaders.map((c) => [c.name, `${c.reg_ppg} PPG`, c.ppg, "clutch"])
+    : CLUTCH_LEADERS;
 
   return (
     <div className="animate-fade-in space-y-20 pb-16 sm:space-y-28">
@@ -310,8 +331,8 @@ export default function Home() {
 
       {/* Standings + Leaders */}
       <section className="grid gap-6 lg:grid-cols-2">
-        <StandingsCard />
-        <LeadersCard />
+        <StandingsCard standings={standings} />
+        <LeadersCard scoring={scoring} clutch={clutch} />
       </section>
 
       {/* Player cards */}

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
-import { gradeClasses } from "../lib/grades.js";
+import { gradeClasses, gradeHex } from "../lib/grades.js";
+import ShareButton from "../components/ShareCard.jsx";
 
 const ZONES = [
   "Restricted Area",
@@ -224,6 +225,22 @@ export default function ShotEvaluator() {
                 <p className="mt-0.5 text-xs text-slate-600">
                   League avg: 1.05 PPP · Est. FG%: {(result.final_fg_est * 100).toFixed(1)}% vs {(result.zone_league_avg_fg * 100).toFixed(0)}% zone avg
                 </p>
+              </div>
+
+              <div className="flex justify-center pt-2">
+                <ShareButton
+                  eyebrow="Shot Grade"
+                  title={result.shooter_name}
+                  subtitle={`vs ${result.defender_name} · ${result.zone}`}
+                  bigValue={result.grade}
+                  bigLabel={result.verdict}
+                  accent={gradeHex(result.grade)}
+                  rows={[
+                    { label: "PPP", value: result.ppp.toFixed(2) },
+                    { label: "Est FG%", value: `${(result.final_fg_est * 100).toFixed(0)}%` },
+                    { label: "Contest", value: { tight: "Tight", close: "Close", open: "Open", wide_open: "Wide" }[result.defender_distance] || "—" },
+                  ]}
+                />
               </div>
             </div>
 

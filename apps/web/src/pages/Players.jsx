@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { InitialsTile, TeamTile } from "../components/TeamTile.jsx";
+import ShareButton from "../components/ShareCard.jsx";
 
 function StatTile({ label, value, suffix = "", accent }) {
   return (
@@ -71,6 +72,20 @@ function PlayerProfile({ profile }) {
             )}
           </div>
         </div>
+        {c && (
+          <ShareButton
+            eyebrow="Career Averages"
+            title={name}
+            subtitle={`${info.TEAM_NAME || "NBA"} · ${info.POSITION || ""}`.trim()}
+            bigValue={c.ppg}
+            bigLabel="Career PPG"
+            rows={[
+              { label: "RPG", value: c.rpg },
+              { label: "APG", value: c.apg },
+              { label: "TS%", value: `${(c.ts_pct * 100).toFixed(1)}%` },
+            ]}
+          />
+        )}
       </div>
 
       {/* AI quick-actions */}

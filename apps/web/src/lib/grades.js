@@ -17,3 +17,11 @@ export function gradeTier(grade) {
 export function gradeClasses(grade) {
   return MAP[gradeTier(grade)];
 }
+
+// Hex equivalents — for contexts that need a raw color (e.g. the share card,
+// which uses inline styles for reliable image capture).
+const HEX = { a: "#22C55E", b: "#3B82F6", c: "#F59E0B", d: "#FB923C", f: "#EF4444", na: "#94A3B8" };
+
+export function gradeHex(grade) {
+  return HEX[gradeTier(grade)];
+}

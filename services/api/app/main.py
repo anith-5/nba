@@ -18,6 +18,7 @@ from app.routers import (
     rule_simulator,
     gm_assistant,
     draft_simulator,
+    standings,
 )
 
 @asynccontextmanager
@@ -59,6 +60,7 @@ app.include_router(prospects.router)
 app.include_router(rule_simulator.router)
 app.include_router(gm_assistant.router)
 app.include_router(draft_simulator.router)
+app.include_router(standings.router)
 
 
 @app.get("/health")
