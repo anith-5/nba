@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
@@ -156,6 +157,22 @@ export default function ScoutingReport() {
   const [loadingMsg, setLoadingMsg] = useState("");
   const [error, setError] = useState(null);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [params] = useSearchParams();
+  const preRef = useRef(false);
+
+  // Pre-select from ?player=id&name=… (player-profile quick action).
+  // Stats mode only; user clicks Generate (Claude call is not auto-fired).
+  useEffect(() => {
+    const pid = params.get("player");
+    const name = params.get("name") || "";
+    if (pid && !preRef.current) {
+      preRef.current = true;
+      setMode("stats");
+      setSelectedPlayer({ id: pid, full_name: name });
+      setSearch(name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   async function searchPlayers(q) {
     setSearch(q);

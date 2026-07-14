@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
 const BADGE_TIER_COLOR = {
@@ -57,6 +58,19 @@ export default function PlayerTrajectory() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [params] = useSearchParams();
+  const preRef = useRef(false);
+
+  // Pre-load from ?player=id&name=… (player-profile quick action)
+  useEffect(() => {
+    const pid = params.get("player");
+    const name = params.get("name") || "";
+    if (pid && !preRef.current) {
+      preRef.current = true;
+      analyze(pid, name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   async function doSearch(q) {
     setSearch(q);

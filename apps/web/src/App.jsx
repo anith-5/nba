@@ -18,10 +18,11 @@ import Prospects from "./pages/Prospects.jsx";
 import RuleSimulator from "./pages/RuleSimulator.jsx";
 import GMAssistant from "./pages/GMAssistant.jsx";
 import ShotEvaluator from "./pages/ShotEvaluator.jsx";
+import DraftSimulator from "./pages/DraftSimulator.jsx";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-950 to-slate-900">
+    <div className="min-h-dvh bg-surface">
       <Routes>
         <Route element={<Shell />}>
           <Route index element={<Home />} />
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="rules" element={<RuleSimulator />} />
           <Route path="gm" element={<GMAssistant />} />
           <Route path="shot-evaluator" element={<ShotEvaluator />} />
+          <Route path="draft" element={<DraftSimulator />} />
         </Route>
       </Routes>
     </div>

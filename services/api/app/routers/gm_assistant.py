@@ -38,56 +38,103 @@ def _sleep():
     time.sleep(0.7)
 
 
-def _build_context() -> str:
+def _safe_float(v, default=0.0):
+    try:
+        f = float(v)
+        return f if f == f else default  # NaN check
+    except (TypeError, ValueError):
+        return default
+
+
+def _section_standings_scorers() -> str:
+    """Standings + top scorers + league averages (live NBA; absent on cloud)."""
     try:
         _sleep()
         team_df = leaguedashteamstats.LeagueDashTeamStats(
-            season=SEASON,
-            measure_type_detailed_defense="Base",
-            per_mode_detailed="PerGame",
-            timeout=60,
+            season=SEASON, measure_type_detailed_defense="Base",
+            per_mode_detailed="PerGame", timeout=60,
         ).get_data_frames()[0]
-
         _sleep()
         player_df = leaguedashplayerstats.LeagueDashPlayerStats(
-            season=SEASON,
-            per_mode_detailed="PerGame",
-            timeout=60,
+            season=SEASON, per_mode_detailed="PerGame", timeout=60,
         ).get_data_frames()[0]
 
-        # Top 15 teams by win pct
         teams_sorted = team_df.sort_values("W_PCT", ascending=False).head(15)
-        team_lines = []
-        for _, r in teams_sorted.iterrows():
-            team_lines.append(
-                f"{r['TEAM_ABBREVIATION']}: {int(r['W'])}-{int(r['L'])} | "
-                f"{float(r['PTS']):.1f} PPG | {float(r['OPP_PTS']):.1f} OPP PPG"
-            )
-
-        # Top 20 scorers
+        team_lines = [
+            f"{r['TEAM_ABBREVIATION']}: {int(r['W'])}-{int(r['L'])} | "
+            f"{_safe_float(r['PTS']):.1f} PPG | {_safe_float(r['OPP_PTS']):.1f} OPP PPG"
+            for _, r in teams_sorted.iterrows()
+        ]
         scorers = player_df.sort_values("PTS", ascending=False).head(20)
-        scorer_lines = []
-        for _, r in scorers.iterrows():
-            scorer_lines.append(
-                f"{r['PLAYER_NAME']} ({r['TEAM_ABBREVIATION']}): "
-                f"{float(r['PTS']):.1f} PPG / {float(r['REB']):.1f} RPG / {float(r['AST']):.1f} APG"
-            )
-
-        # League averages
-        lg_pts = float(team_df["PTS"].mean())
-        lg_fg = float(team_df["FG_PCT"].mean())
-        lg_fg3 = float(team_df["FG3_PCT"].mean())
-
-        context = (
-            f"=== STANDINGS (Top 15 by Win%) ===\n" + "\n".join(team_lines) +
-            f"\n\n=== TOP SCORERS ===\n" + "\n".join(scorer_lines) +
-            f"\n\n=== LEAGUE AVERAGES ===\n"
-            f"Points per game: {lg_pts:.1f} | FG%: {lg_fg:.1%} | 3P%: {lg_fg3:.1%}"
+        scorer_lines = [
+            f"{r['PLAYER_NAME']} ({r['TEAM_ABBREVIATION']}): "
+            f"{_safe_float(r['PTS']):.1f} PPG / {_safe_float(r['REB']):.1f} RPG / {_safe_float(r['AST']):.1f} APG"
+            for _, r in scorers.iterrows()
+        ]
+        lg_pts = _safe_float(team_df["PTS"].mean())
+        lg_fg = _safe_float(team_df["FG_PCT"].mean())
+        lg_fg3 = _safe_float(team_df["FG3_PCT"].mean())
+        return (
+            "=== STANDINGS (Top 15 by Win%) ===\n" + "\n".join(team_lines) +
+            "\n\n=== TOP SCORERS ===\n" + "\n".join(scorer_lines) +
+            f"\n\n=== LEAGUE AVERAGES ===\nPoints per game: {lg_pts:.1f} | "
+            f"FG%: {lg_fg:.1%} | 3P%: {lg_fg3:.1%}"
         )
-        return context
+    except Exception:
+        return ""
 
-    except Exception as e:
-        return f"[Context unavailable: {e}]"
+
+def _section_clutch() -> str:
+    """Clutch leaders — cache-aware, so this works on the live site too."""
+    try:
+        from app.routers import clutch_dna
+        data = clutch_dna._fetch_leaderboard()
+        players = (data.get("players") or [])[:12]
+        if not players:
+            return ""
+        lines = [
+            f"{p['player_name']}: clutch score {p['clutch_score']} ({p['tier']}), "
+            f"{p['clutch_pts']} clutch PPG, {_safe_float(p['clutch_fg_pct']) * 100:.1f}% clutch FG"
+            for p in players
+        ]
+        return ("=== CLUTCH LEADERS (last 5 min, within 5 pts; ranked by clutch score) ===\n"
+                + "\n".join(lines))
+    except Exception:
+        return ""
+
+
+def _section_defense() -> str:
+    """Best/worst defenses by Defensive Rating — cache-aware (works on cloud)."""
+    try:
+        from app.routers import defense_scanner
+        df = defense_scanner._fetch_league_defense()
+        if df is None or df.empty:
+            return ""
+        rank_col = "DEF_RATING" if "DEF_RATING" in df.columns and df["DEF_RATING"].notna().any() else "OPP_PTS"
+        s = df.sort_values(rank_col)
+
+        def line(r):
+            drtg = _safe_float(r.get("DEF_RATING"))
+            drtg_s = f"DRtg {drtg:.1f}, " if drtg else ""
+            name = r.get("TEAM_ABBREVIATION") or r.get("TEAM_NAME", "?")
+            return f"{name}: {drtg_s}{_safe_float(r.get('OPP_PTS')):.1f} OPP PPG"
+
+        best = [line(r) for _, r in s.head(5).iterrows()]
+        worst = [line(r) for _, r in s.tail(5).iterrows()]
+        return ("=== BEST DEFENSES (by Def Rating) ===\n" + "\n".join(best) +
+                "\n=== WEAKEST DEFENSES ===\n" + "\n".join(worst))
+    except Exception:
+        return ""
+
+
+def _build_context() -> str:
+    sections = [
+        _section_standings_scorers(),
+        _section_clutch(),
+        _section_defense(),
+    ]
+    ctx = "\n\n".join(s for s in sections if s)
+    return ctx or "[No live data sections available this session.]"
 
 
 def _get_context() -> str:

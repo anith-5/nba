@@ -85,4 +85,15 @@ export const api = {
   tradePlayerSearch: (q) => request(`/trades/players/search?q=${encodeURIComponent(q)}`),
   analyzeTrade: (body) =>
     request("/trades/analyze", { method: "POST", body: JSON.stringify(body) }),
+
+  // Draft Simulator
+  draftStatus: () => request("/draft/status"),
+  draftSetup: (body) =>
+    request("/draft/setup", { method: "POST", body: JSON.stringify(body) }),
+  draftRedraft: (body) =>
+    request("/draft/redraft", { method: "POST", body: JSON.stringify(body) }),
+  draftPick: (body) =>
+    request("/draft/pick", { method: "POST", body: JSON.stringify(body) }),
+  draftSimulate: (body) =>
+    request("/draft/simulate", { method: "POST", body: JSON.stringify(body) }),
 };

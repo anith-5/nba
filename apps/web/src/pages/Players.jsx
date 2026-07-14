@@ -1,11 +1,148 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../api.js";
+import { InitialsTile, TeamTile } from "../components/TeamTile.jsx";
 
-function StatBox({ label, value, suffix = "" }) {
+function StatTile({ label, value, suffix = "", accent }) {
   return (
-    <div className="rounded-lg bg-slate-900/60 border border-slate-800 px-3 py-2 text-center">
-      <p className="text-lg font-bold font-mono text-white">{value}{suffix}</p>
-      <p className="text-[10px] uppercase tracking-wider text-slate-500 mt-0.5">{label}</p>
+    <div className="rounded-xl bg-surface/60 px-3 py-3 text-center ring-1 ring-white/5">
+      <p className={`font-display text-xl font-bold tabular-nums ${accent ? "text-brand-glow" : "text-white"}`}>
+        {value}
+        {suffix}
+      </p>
+      <p className="stat-label mt-0.5">{label}</p>
+    </div>
+  );
+}
+
+// ---- AI quick-actions: jump into a tool with this player pre-loaded ----
+function QuickAction({ to, title, sub, icon }) {
+  const paths = {
+    target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></>,
+    bolt: <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />,
+    trend: <path d="M3 17l6-6 4 4 8-8M15 3h6v6" />,
+    doc: <><path d="M6 2h9l5 5v15H6z" /><path d="M15 2v5h5M9 13h6M9 17h6" /></>,
+  };
+  return (
+    <Link to={to} className="card-hover group flex items-center gap-3 p-3.5">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-brand-glow ring-1 ring-brand/20">
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+          {paths[icon]}
+        </svg>
+      </span>
+      <div className="min-w-0">
+        <p className="flex items-center gap-1 font-display text-sm font-semibold text-white">
+          {title}
+          <span className="text-brand-glow transition-transform group-hover:translate-x-0.5">→</span>
+        </p>
+        <p className="truncate text-xs text-slate-500">{sub}</p>
+      </div>
+    </Link>
+  );
+}
+
+function PlayerProfile({ profile }) {
+  const info = profile.info;
+  const c = profile.career_totals;
+  const name = info.DISPLAY_FIRST_LAST;
+  const id = profile.player_id;
+  const tri = info.TEAM_ABBREVIATION;
+  const q = `?player=${id}&name=${encodeURIComponent(name)}`;
+
+  return (
+    <div className="space-y-5 animate-slide-up">
+      {/* Header */}
+      <div className="card flex flex-wrap items-center gap-4 p-5">
+        <InitialsTile name={name} size="lg" />
+        <div className="min-w-0 flex-1">
+          <h2 className="font-display text-2xl font-extrabold tracking-tight text-white">{name}</h2>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-400">
+            {tri && <TeamTile tricode={tri} size="sm" className="!h-6 !w-6 !text-[10px]" />}
+            <span>{info.TEAM_NAME || "Free Agent"}</span>
+            <span className="text-slate-600">·</span>
+            <span>{info.POSITION || "—"}</span>
+            <span className="text-slate-600">·</span>
+            <span>{info.HEIGHT || "—"}</span>
+            {info.WEIGHT && (
+              <>
+                <span className="text-slate-600">·</span>
+                <span>{info.WEIGHT} lbs</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* AI quick-actions */}
+      <div>
+        <p className="stat-label mb-2">AI tools · pre-loaded for {name.split(" ").slice(-1)[0]}</p>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <QuickAction to={`/shot-quality${q}`} icon="target" title="Shot Quality" sub="Hot-zone xFG% map" />
+          <QuickAction to={`/clutch${q}`} icon="bolt" title="Clutch DNA" sub="Elevation score + tier" />
+          <QuickAction to={`/trajectory${q}`} icon="trend" title="Development" sub="Comps & projections" />
+          <QuickAction to={`/scouting${q}`} icon="doc" title="AI Scouting" sub="Claude report · PDF" />
+        </div>
+      </div>
+
+      {/* Career averages */}
+      {c && (
+        <div className="card p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="stat-label">Career Averages</p>
+            <span className="text-xs text-slate-500">{c.gp} games played</span>
+          </div>
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+            <StatTile label="PPG" value={c.ppg} />
+            <StatTile label="RPG" value={c.rpg} />
+            <StatTile label="APG" value={c.apg} />
+            <StatTile label="SPG" value={c.spg} />
+            <StatTile label="BPG" value={c.bpg} />
+            <StatTile label="FG%" value={(c.fg_pct * 100).toFixed(1)} />
+            <StatTile label="3P%" value={(c.fg3_pct * 100).toFixed(1)} />
+            <StatTile label="TS%" value={(c.ts_pct * 100).toFixed(1)} accent />
+          </div>
+        </div>
+      )}
+
+      {/* Season-by-season */}
+      {profile.seasons?.length > 0 && (
+        <div className="card p-5">
+          <p className="stat-label mb-3">
+            Season-by-Season ({profile.seasons.length} season{profile.seasons.length !== 1 ? "s" : ""})
+          </p>
+          <div className="max-h-[520px] overflow-auto rounded-lg">
+            <table className="w-full text-left text-xs">
+              <thead className="sticky top-0 bg-surface-raised">
+                <tr className="text-slate-500">
+                  {["Season", "Team", "Age", "GP", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "FG%", "3P%", "FT%", "TS%"].map((h) => (
+                    <th key={h} className="py-1.5 pr-3 font-medium">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {profile.seasons.map((s, i) => (
+                  <tr key={`${s.season}-${i}`} className="border-t border-white/5 text-slate-300 hover:bg-white/5">
+                    <td className="py-1.5 pr-3 font-mono">{s.season}</td>
+                    <td className="py-1.5 pr-3">{s.team}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.age}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.gp}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.min_pg}</td>
+                    <td className="py-1.5 pr-3 font-mono font-semibold text-white">{s.ppg}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.rpg}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.apg}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.spg}</td>
+                    <td className="py-1.5 pr-3 font-mono">{s.bpg}</td>
+                    <td className="py-1.5 pr-3 font-mono">{(s.fg_pct * 100).toFixed(1)}%</td>
+                    <td className="py-1.5 pr-3 font-mono">{(s.fg3_pct * 100).toFixed(1)}%</td>
+                    <td className="py-1.5 pr-3 font-mono">{(s.ft_pct * 100).toFixed(1)}%</td>
+                    <td className="py-1.5 font-mono">{(s.ts_pct * 100).toFixed(1)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -13,31 +150,46 @@ function StatBox({ label, value, suffix = "" }) {
 export default function Players() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const boxRef = useRef(null);
 
-  async function search(e) {
-    e.preventDefault();
-    if (query.length < 2) return;
-    setLoading(true);
-    setError(null);
-    setProfile(null);
-    try {
-      const data = await api.searchPlayers(query);
-      setResults(data.players || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+  // Live autocomplete (debounced)
+  useEffect(() => {
+    if (query.trim().length < 2) {
+      setResults([]);
+      return;
     }
-  }
+    const t = setTimeout(async () => {
+      try {
+        const data = await api.searchPlayers(query);
+        setResults((data.players ?? []).slice(0, 8));
+        setOpen(true);
+      } catch (err) {
+        setError(err.message);
+      }
+    }, 220);
+    return () => clearTimeout(t);
+  }, [query]);
 
-  async function loadProfile(id) {
+  // Close dropdown on outside click
+  useEffect(() => {
+    function onDoc(e) {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  async function loadProfile(p) {
+    setOpen(false);
+    setQuery(p.full_name);
     setLoading(true);
     setError(null);
     try {
-      const data = await api.playerProfile(id);
+      const data = await api.playerProfile(p.id);
       setProfile(data);
     } catch (err) {
       setError(err.message);
@@ -46,148 +198,66 @@ export default function Players() {
     }
   }
 
-  const c = profile?.career_totals;
-
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Players</h1>
-        <p className="mt-1 text-slate-400">Search and view full career stat history</p>
+        <h1 className="text-3xl font-bold text-white">Player Search</h1>
+        <p className="mt-1 text-slate-400">Search any player, then jump straight into the AI tools.</p>
       </header>
 
-      <form onSubmit={search} className="flex gap-3">
+      {/* Prominent search with live autocomplete */}
+      <div ref={boxRef} className="relative max-w-2xl">
+        <svg
+          viewBox="0 0 24 24"
+          className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
+          fill="none" stroke="currentColor" strokeWidth="2"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4-4" />
+        </svg>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search player name…"
-          className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-white placeholder:text-slate-500 focus:border-court focus:outline-none"
+          onFocus={() => results.length && setOpen(true)}
+          placeholder="Search a player… (e.g. Nikola Jokić)"
+          aria-label="Search player"
+          className="w-full rounded-card border border-white/10 bg-surface-raised/70 py-3.5 pl-12 pr-4 text-white placeholder:text-slate-500 focus:border-brand focus:outline-none"
         />
-        <button type="submit" className="btn-primary" disabled={loading}>
-          Search
-        </button>
-      </form>
-
-      {error && <p className="text-amber-300">{error}</p>}
-
-      <div className="grid gap-6 lg:grid-cols-[300px_1fr]">
-        <div className="card p-4 h-fit">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">Results</h2>
-          <ul className="space-y-1">
+        {open && results.length > 0 && (
+          <ul className="absolute z-20 mt-2 w-full overflow-hidden rounded-card border border-white/10 bg-surface-raised/95 shadow-card backdrop-blur-xl">
             {results.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
-                  onClick={() => loadProfile(p.id)}
-                  className={`w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-slate-800 ${
-                    profile?.player_id === p.id ? "bg-court/10 text-court-glow" : "text-slate-300"
-                  }`}
+                  onClick={() => loadProfile(p)}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-white/5"
                 >
-                  {p.full_name}
-                  {!p.is_active && <span className="ml-2 text-xs text-slate-500">inactive</span>}
+                  <InitialsTile name={p.full_name} size="sm" />
+                  <span className="text-sm text-white">{p.full_name}</span>
+                  {!p.is_active && <span className="ml-auto text-xs text-slate-500">retired</span>}
                 </button>
               </li>
             ))}
-            {results.length === 0 && !loading && (
-              <p className="text-sm text-slate-500">Search for a player to begin.</p>
-            )}
           </ul>
-        </div>
-
-        <div className="space-y-4">
-          {!profile && (
-            <div className="card p-6 text-center text-slate-500">Select a player to view career stats.</div>
-          )}
-
-          {profile?.info && (
-            <>
-              {/* Header */}
-              <div className="card p-5">
-                <p className="text-2xl font-bold text-white">{profile.info.DISPLAY_FIRST_LAST}</p>
-                <p className="text-sm text-slate-400 mt-0.5">
-                  {profile.info.TEAM_NAME || "Free Agent"} · {profile.info.POSITION} ·{" "}
-                  {profile.info.HEIGHT} · {profile.info.WEIGHT} lbs
-                </p>
-              </div>
-
-              {/* Career averages */}
-              {c && (
-                <div className="card p-5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="stat-label">Career Averages</p>
-                    <span className="text-xs text-slate-500">{c.gp} games played</span>
-                  </div>
-                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                    <StatBox label="PPG" value={c.ppg} />
-                    <StatBox label="RPG" value={c.rpg} />
-                    <StatBox label="APG" value={c.apg} />
-                    <StatBox label="SPG" value={c.spg} />
-                    <StatBox label="BPG" value={c.bpg} />
-                    <StatBox label="MPG" value={c.min_pg} />
-                    <StatBox label="FG%" value={(c.fg_pct * 100).toFixed(1)} suffix="%" />
-                    <StatBox label="3P%" value={(c.fg3_pct * 100).toFixed(1)} suffix="%" />
-                    <StatBox label="FT%" value={(c.ft_pct * 100).toFixed(1)} suffix="%" />
-                    <StatBox label="eFG%" value={(c.efg_pct * 100).toFixed(1)} suffix="%" />
-                    <StatBox label="TS%" value={(c.ts_pct * 100).toFixed(1)} suffix="%" />
-                    <StatBox label="TOPG" value={c.topg} />
-                  </div>
-                </div>
-              )}
-
-              {/* Full season-by-season table */}
-              {profile.seasons?.length > 0 && (
-                <div className="card p-5">
-                  <p className="stat-label mb-3">
-                    Season-by-Season ({profile.seasons.length} season{profile.seasons.length !== 1 ? "s" : ""})
-                  </p>
-                  <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
-                    <table className="w-full text-left text-xs">
-                      <thead className="sticky top-0 bg-slate-900">
-                        <tr className="text-slate-500">
-                          <th className="py-1.5 pr-3">Season</th>
-                          <th className="py-1.5 pr-3">Team</th>
-                          <th className="py-1.5 pr-3">Age</th>
-                          <th className="py-1.5 pr-3">GP</th>
-                          <th className="py-1.5 pr-3">MIN</th>
-                          <th className="py-1.5 pr-3">PPG</th>
-                          <th className="py-1.5 pr-3">RPG</th>
-                          <th className="py-1.5 pr-3">APG</th>
-                          <th className="py-1.5 pr-3">SPG</th>
-                          <th className="py-1.5 pr-3">BPG</th>
-                          <th className="py-1.5 pr-3">FG%</th>
-                          <th className="py-1.5 pr-3">3P%</th>
-                          <th className="py-1.5 pr-3">FT%</th>
-                          <th className="py-1.5">TS%</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {profile.seasons.map((s, i) => (
-                          <tr key={`${s.season}-${i}`} className="border-t border-slate-800 text-slate-300 hover:bg-slate-800/40">
-                            <td className="py-1.5 pr-3 font-mono">{s.season}</td>
-                            <td className="py-1.5 pr-3">{s.team}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.age}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.gp}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.min_pg}</td>
-                            <td className="py-1.5 pr-3 font-mono text-white">{s.ppg}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.rpg}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.apg}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.spg}</td>
-                            <td className="py-1.5 pr-3 font-mono">{s.bpg}</td>
-                            <td className="py-1.5 pr-3 font-mono">{(s.fg_pct * 100).toFixed(1)}%</td>
-                            <td className="py-1.5 pr-3 font-mono">{(s.fg3_pct * 100).toFixed(1)}%</td>
-                            <td className="py-1.5 pr-3 font-mono">{(s.ft_pct * 100).toFixed(1)}%</td>
-                            <td className="py-1.5 font-mono">{(s.ts_pct * 100).toFixed(1)}%</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        )}
       </div>
+
+      {error && (
+        <p className="rounded-xl border border-amber-900/50 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">{error}</p>
+      )}
+
+      {loading && (
+        <div className="card h-40 animate-pulse bg-surface-raised/40" />
+      )}
+
+      {!loading && !profile && !error && (
+        <div className="card p-10 text-center text-slate-500">
+          Search for a player to view their profile and AI breakdowns.
+        </div>
+      )}
+
+      {!loading && profile?.info && <PlayerProfile profile={profile} />}
     </div>
   );
 }

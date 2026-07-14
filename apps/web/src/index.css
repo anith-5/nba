@@ -4,27 +4,62 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+    @apply bg-surface text-slate-100 font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+  }
+  /* Clear keyboard focus everywhere (accessibility) */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-glow ring-offset-2 ring-offset-surface;
   }
 }
 
 @layer components {
+  /* Glassmorphism card — soft blur, 16px radius, gentle shadow */
   .card {
-    @apply rounded-xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-sm;
+    @apply rounded-card border border-white/5 bg-surface-raised/70 shadow-card backdrop-blur-md;
   }
+  /* Hover: slight lift (motion-safe only) + brand-tinted border */
   .card-hover {
-    @apply card transition-all duration-200 hover:border-court/40 hover:shadow-lg hover:shadow-court/5;
+    @apply card transition duration-200 hover:border-brand/40 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-lift;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-lg bg-court px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-court-glow;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-glow disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-live {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-live px-4 py-2 text-sm font-semibold text-white transition hover:bg-live-glow;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center rounded-lg border border-slate-700 px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-surface-border px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:text-white;
   }
+  /* Big, confident numerals (scores, grades, stat lines) */
   .stat-value {
-    @apply font-mono text-2xl font-semibold tracking-tight text-white;
+    @apply font-display text-2xl font-bold tracking-tight text-white;
   }
   .stat-label {
     @apply text-xs font-medium uppercase tracking-wider text-slate-500;
+  }
+  /* Live marker — pulsing orange dot. Used ONLY for live/urgent. */
+  .live-dot {
+    @apply inline-block h-2 w-2 rounded-full bg-live motion-safe:animate-pulse-live;
+  }
+  .live-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-live/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-live-glow;
+  }
+}
+
+/* Respect reduced-motion: kill decorative motion entirely */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

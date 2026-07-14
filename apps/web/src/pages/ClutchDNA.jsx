@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
 const TIER_STYLE = {
@@ -57,6 +58,8 @@ export default function ClutchDNA() {
   const [search, setSearch] = useState("");
   const [playerResult, setPlayerResult] = useState(null);
   const [playerSearch, setPlayerSearch] = useState([]);
+  const [params] = useSearchParams();
+  const preRef = useRef(false);
 
   async function loadLeaderboard() {
     setLoading(true);
@@ -92,6 +95,17 @@ export default function ClutchDNA() {
   }
 
   useEffect(() => { loadLeaderboard(); }, []);
+
+  // Pre-load from ?player=id&name=… (player-profile quick action)
+  useEffect(() => {
+    const pid = params.get("player");
+    const name = params.get("name") || "";
+    if (pid && !preRef.current) {
+      preRef.current = true;
+      lookupPlayer(pid, name);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   const filtered = search && leaderboard.length
     ? leaderboard.filter(p => p.player_name.toLowerCase().includes(search.toLowerCase()))

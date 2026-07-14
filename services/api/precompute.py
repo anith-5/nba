@@ -21,7 +21,10 @@ import sys
 import time
 
 from app import data_cache, comp_database
-from app.routers import defense_scanner, clutch_dna
+from app.routers import defense_scanner, clutch_dna, draft_simulator
+
+# Draft-history snapshots cover this range (Redraft / Historical grounding)
+DRAFT_YEARS = range(1990, 2025)
 
 
 def precompute_defense():
@@ -54,13 +57,28 @@ def precompute_trajectory():
     print(f"      saved {n} entries -> data_cache/comp_entries.json")
 
 
+def precompute_draft_history():
+    print(f"[4/4] Draft history — pulling real rosters {DRAFT_YEARS.start}-{DRAFT_YEARS.stop - 1} "
+          f"(grounds Redraft/Historical so wrong-year players can't appear)…")
+    ok = 0
+    for year in DRAFT_YEARS:
+        try:
+            cls = draft_simulator._fetch_draft_class_live(year)
+            if cls:
+                data_cache.write_json(f"draft_{year}.json", cls)
+                ok += 1
+        except Exception as e:
+            print(f"      {year}: {e}")
+    print(f"      saved {ok} draft years -> data_cache/draft_<year>.json")
+
+
 def main():
     t0 = time.time()
     print("=" * 60)
     print("Pre-computing NBA data snapshots for the live site")
     print("=" * 60)
 
-    steps = [precompute_defense, precompute_clutch, precompute_trajectory]
+    steps = [precompute_defense, precompute_clutch, precompute_trajectory, precompute_draft_history]
     for step in steps:
         try:
             step()

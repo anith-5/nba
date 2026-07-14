@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { api } from "../api.js";
+import { InitialsTile } from "../components/TeamTile.jsx";
+import { gradeClasses } from "../lib/grades.js";
 
 const ZONES = [
   "Restricted Area",
@@ -11,26 +13,18 @@ const ZONES = [
 ];
 
 const DISTANCES = [
-  { value: "tight",     label: "Tight (0-2 ft)",    sub: "Heavily contested" },
-  { value: "close",     label: "Close (2-4 ft)",     sub: "Contested" },
-  { value: "open",      label: "Open (4-6 ft)",      sub: "Clean look" },
-  { value: "wide_open", label: "Wide Open (6+ ft)",  sub: "Uncontested" },
+  { value: "tight", label: "Tight (0-2 ft)", sub: "Heavily contested" },
+  { value: "close", label: "Close (2-4 ft)", sub: "Contested" },
+  { value: "open", label: "Open (4-6 ft)", sub: "Clean look" },
+  { value: "wide_open", label: "Wide Open (6+ ft)", sub: "Uncontested" },
 ];
 
-const GRADE_COLOR = {
-  "A+": "#22c55e", "A": "#4ade80", "A-": "#86efac",
-  "B+": "#60a5fa", "B": "#93c5fd", "B-": "#bfdbfe",
-  "C+": "#facc15", "C": "#fde047", "C-": "#fef08a",
-  "D+": "#fb923c", "D": "#fdba74",
-  "F":  "#f87171",
-};
-
 const ICON_COLOR = {
-  "+": "text-green-400",
+  "+": "text-emerald-400",
   "-": "text-red-400",
-  "~": "text-slate-400",
-  "i": "text-blue-400",
   "−": "text-red-400",
+  "~": "text-slate-400",
+  i: "text-brand-glow",
 };
 
 function PlayerSearch({ label, onSelect, selected }) {
@@ -56,26 +50,36 @@ function PlayerSearch({ label, onSelect, selected }) {
     <div className="space-y-1.5">
       <p className="stat-label">{label}</p>
       {selected && (
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm text-white font-medium">{selected.full_name}</span>
-          <button onClick={() => { onSelect(null); setQ(""); }}
-            className="text-xs text-slate-500 hover:text-red-400">✕</button>
+        <div className="mb-1 flex items-center gap-2">
+          <InitialsTile name={selected.full_name} size="sm" />
+          <span className="text-sm font-medium text-white">{selected.full_name}</span>
+          <button
+            onClick={() => { onSelect(null); setQ(""); }}
+            aria-label="Clear"
+            className="ml-auto grid h-6 w-6 place-items-center rounded text-slate-500 hover:text-red-400"
+          >
+            <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 6l8 8M14 6l-8 8" /></svg>
+          </button>
         </div>
       )}
       <div className="relative">
         <input
           value={q}
-          onChange={e => search(e.target.value)}
+          onChange={(e) => search(e.target.value)}
           placeholder={selected ? "Change player…" : "Search player…"}
-          className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500"
+          className="w-full rounded-xl border border-white/10 bg-surface px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-brand focus:outline-none"
         />
         {results.length > 0 && (
-          <div className="absolute z-20 mt-1 w-full rounded border border-slate-700 bg-slate-900 shadow-xl divide-y divide-slate-800">
-            {results.map(p => (
-              <button key={p.id} onClick={() => pick(p)}
-                className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-800 text-left">
+          <div className="absolute z-20 mt-1 w-full divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10 bg-surface-raised/95 shadow-card backdrop-blur-xl">
+            {results.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => pick(p)}
+                className="flex w-full items-center gap-3 px-3 py-2 text-left transition hover:bg-white/5"
+              >
+                <InitialsTile name={p.full_name} size="sm" />
                 <span className="text-sm text-white">{p.full_name}</span>
-                {p.team && <span className="text-xs text-slate-500">{p.team}</span>}
+                {p.team && <span className="ml-auto text-xs text-slate-500">{p.team}</span>}
               </button>
             ))}
           </div>
@@ -114,7 +118,9 @@ export default function ShotEvaluator() {
     }
   }
 
-  const gradeColor = result ? (GRADE_COLOR[result.grade] ?? "#94a3b8") : null;
+  const grade = result && gradeClasses(result.grade);
+  const good = result?.verdict === "Good Shot";
+  const finalBar = good ? "#34d399" : "#f87171";
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -127,22 +133,22 @@ export default function ShotEvaluator() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Inputs ── */}
-        <div className="card p-6 space-y-5">
+        <div className="card space-y-5 p-6">
           <PlayerSearch label="Shooter (attacker)" onSelect={setShooter} selected={shooter} />
           <PlayerSearch label="Defender" onSelect={setDefender} selected={defender} />
 
-          {/* Zone */}
           <div className="space-y-2">
             <p className="stat-label">Shot Zone</p>
             <div className="grid grid-cols-2 gap-2">
-              {ZONES.map(z => (
+              {ZONES.map((z) => (
                 <button
                   key={z}
                   onClick={() => setZone(z)}
-                  className={`rounded-lg border px-3 py-2 text-xs text-left transition ${
+                  aria-pressed={zone === z}
+                  className={`rounded-xl border px-3 py-2 text-left text-xs transition ${
                     zone === z
-                      ? "border-court/60 bg-court/10 text-court-glow"
-                      : "border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-500"
+                      ? "border-brand/60 bg-brand/10 text-brand-glow"
+                      : "border-white/10 bg-surface text-slate-300 hover:border-white/25"
                   }`}
                 >
                   {z}
@@ -151,23 +157,19 @@ export default function ShotEvaluator() {
             </div>
           </div>
 
-          {/* Distance */}
           <div className="space-y-2">
             <p className="stat-label">Defender Distance</p>
             <div className="grid grid-cols-2 gap-2">
-              {DISTANCES.map(d => (
+              {DISTANCES.map((d) => (
                 <button
                   key={d.value}
                   onClick={() => setDistance(d.value)}
-                  className={`rounded-lg border px-3 py-2 text-left transition ${
-                    distance === d.value
-                      ? "border-court/60 bg-court/10"
-                      : "border-slate-700 bg-slate-900 hover:border-slate-500"
+                  aria-pressed={distance === d.value}
+                  className={`rounded-xl border px-3 py-2 text-left transition ${
+                    distance === d.value ? "border-brand/60 bg-brand/10" : "border-white/10 bg-surface hover:border-white/25"
                   }`}
                 >
-                  <p className={`text-xs font-medium ${distance === d.value ? "text-court-glow" : "text-white"}`}>
-                    {d.label}
-                  </p>
+                  <p className={`text-xs font-medium ${distance === d.value ? "text-brand-glow" : "text-white"}`}>{d.label}</p>
                   <p className="text-[11px] text-slate-500">{d.sub}</p>
                 </button>
               ))}
@@ -177,117 +179,108 @@ export default function ShotEvaluator() {
           <button
             onClick={evaluate}
             disabled={loading || !shooter || !defender}
-            className="btn-primary w-full py-3 text-base disabled:opacity-40"
+            className="btn-primary w-full py-3 text-base"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                 </svg>
                 Evaluating…
               </span>
             ) : "Grade This Shot"}
           </button>
 
-          {error && <p className="text-amber-300 text-sm">{error}</p>}
+          {error && <p className="text-sm text-amber-300">{error}</p>}
         </div>
 
         {/* ── Result ── */}
         {result ? (
-          <div className="space-y-4 animate-slide-up">
-            {/* Grade card */}
-            <div className="card p-6 text-center space-y-2"
-              style={{ borderColor: `${gradeColor}40` }}>
-              <p className="text-sm text-slate-400">
-                {result.shooter_name} vs {result.defender_name}
+          <div className="animate-slide-up space-y-4">
+            <div className={`card space-y-2 p-6 text-center ring-1 ${grade.ring}`}>
+              <p className="text-sm text-slate-400">{result.shooter_name} vs {result.defender_name}</p>
+              <p className="text-xs text-slate-500">
+                {result.zone} · {DISTANCES.find((d) => d.value === result.defender_distance)?.label}
               </p>
-              <p className="text-xs text-slate-500">{result.zone} · {DISTANCES.find(d => d.value === result.defender_distance)?.label}</p>
 
-              {/* Big grade */}
               <div className="py-4">
-                <span className="font-mono font-black leading-none"
-                  style={{ fontSize: "6rem", color: gradeColor }}>
+                <span className={`font-display font-extrabold leading-none ${grade.text}`} style={{ fontSize: "6rem" }}>
                   {result.grade}
                 </span>
               </div>
 
-              {/* Verdict banner */}
-              <div className={`inline-block rounded-full px-5 py-1.5 text-sm font-semibold ${
-                result.verdict === "Good Shot"
-                  ? "bg-green-500/15 text-green-400 border border-green-500/30"
-                  : "bg-red-500/15 text-red-400 border border-red-500/30"
+              <div className={`inline-block rounded-full border px-5 py-1.5 text-sm font-semibold ${
+                good ? "border-emerald-500/30 bg-emerald-500/15 text-emerald-400" : "border-red-500/30 bg-red-500/15 text-red-400"
               }`}>
                 {result.verdict}
               </div>
 
-              {/* PPP metric */}
               <div className="pt-2">
-                <p className="text-2xl font-bold font-mono text-white">
+                <p className="font-display text-2xl font-bold text-white">
                   {result.ppp.toFixed(2)}
-                  <span className="text-sm text-slate-500 font-normal ml-1">pts / possession</span>
+                  <span className="ml-1 text-sm font-normal text-slate-500">pts / possession</span>
                 </p>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="mt-0.5 text-xs text-slate-600">
                   League avg: 1.05 PPP · Est. FG%: {(result.final_fg_est * 100).toFixed(1)}% vs {(result.zone_league_avg_fg * 100).toFixed(0)}% zone avg
                 </p>
               </div>
             </div>
 
-            {/* FG% breakdown bar */}
-            <div className="card p-4 space-y-3">
+            {/* FG% breakdown */}
+            <div className="card space-y-3 p-4">
               <p className="stat-label">Estimated FG% Breakdown</p>
-
               {[
-                { label: `${result.shooter_name} (zone est.)`, pct: result.shooter_zone_fg_est, color: "#60a5fa" },
-                { label: "After defender quality", pct: Math.max(0, result.shooter_zone_fg_est + (result.final_fg_est - result.shooter_zone_fg_est) * 0.5), color: "#f97316" },
-                { label: "Final (all factors)", pct: result.final_fg_est, color: gradeColor },
-              ].map(row => (
+                { label: `${result.shooter_name} (zone est.)`, pct: result.shooter_zone_fg_est, color: "#3B82F6" },
+                { label: "After defender quality", pct: Math.max(0, result.shooter_zone_fg_est + (result.final_fg_est - result.shooter_zone_fg_est) * 0.5), color: "#64748b" },
+                { label: "Final (all factors)", pct: result.final_fg_est, color: finalBar },
+              ].map((row) => (
                 <div key={row.label} className="space-y-1">
                   <div className="flex justify-between text-xs text-slate-400">
                     <span>{row.label}</span>
                     <span className="font-mono text-white">{(row.pct * 100).toFixed(1)}%</span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-slate-800">
-                    <div className="h-1.5 rounded-full transition-all duration-700"
-                      style={{ width: `${Math.min(100, row.pct * 100 / 0.75 * 100)}%`, backgroundColor: row.color }} />
+                  <div className="h-1.5 rounded-full bg-white/5">
+                    <div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${Math.min(100, (row.pct * 100) / 0.75 * 100)}%`, backgroundColor: row.color }} />
                   </div>
                 </div>
               ))}
-
-              {/* Zone avg line */}
               <div className="flex items-center gap-2 text-xs text-slate-500">
-                <div className="h-px flex-1 border-t border-dashed border-slate-700" />
+                <div className="h-px flex-1 border-t border-dashed border-white/10" />
                 Zone avg: {(result.zone_league_avg_fg * 100).toFixed(0)}%
-                <div className="h-px flex-1 border-t border-dashed border-slate-700" />
+                <div className="h-px flex-1 border-t border-dashed border-white/10" />
               </div>
             </div>
 
-            {/* Factor list */}
-            <div className="card p-4 space-y-2">
+            {/* Factors */}
+            <div className="card space-y-2 p-4">
               <p className="stat-label mb-2">Shot Factors</p>
               {result.factors.map((f, i) => (
-                <div key={i} className="flex gap-2.5 items-start text-sm">
-                  <span className={`font-bold text-base leading-snug w-4 shrink-0 ${ICON_COLOR[f.icon] ?? "text-slate-400"}`}>
+                <div key={i} className="flex items-start gap-2.5 text-sm">
+                  <span className={`w-4 shrink-0 text-base font-bold leading-snug ${ICON_COLOR[f.icon] ?? "text-slate-400"}`}>
                     {f.icon === "i" ? "·" : f.icon}
                   </span>
-                  <span className="text-slate-300 leading-snug">{f.text}</span>
+                  <span className="leading-snug text-slate-300">{f.text}</span>
                 </div>
               ))}
             </div>
 
-            {/* Defender DRTG badge */}
-            <div className="card p-3 flex items-center justify-between">
+            {/* Defender DRTG */}
+            <div className="card flex items-center justify-between p-3">
               <span className="text-sm text-slate-400">{result.defender_name} Defensive Rating</span>
-              <span className={`font-mono font-bold text-lg ${
-                result.defender_drtg <= 110 ? "text-red-400" :
-                result.defender_drtg <= 114 ? "text-yellow-400" : "text-green-400"
-              }`}>{result.defender_drtg.toFixed(0)}</span>
+              <span className={`font-display text-lg font-bold ${
+                result.defender_drtg <= 110 ? "text-red-400" : result.defender_drtg <= 114 ? "text-amber-400" : "text-emerald-400"
+              }`}>
+                {result.defender_drtg.toFixed(0)}
+              </span>
             </div>
           </div>
         ) : (
-          <div className="card p-6 flex flex-col items-center justify-center text-center space-y-3 min-h-[300px]">
-            <div className="text-6xl font-black font-mono text-slate-800">A+</div>
-            <p className="text-slate-600 text-sm">Fill in the fields and click<br />"Grade This Shot" to see the result</p>
+          <div className="card flex min-h-[300px] flex-col items-center justify-center space-y-3 p-6 text-center">
+            <div className="font-display text-6xl font-extrabold text-white/10">A+</div>
+            <p className="text-sm text-slate-600">
+              Fill in the fields and click<br />&quot;Grade This Shot&quot; to see the result
+            </p>
           </div>
         )}
       </div>
