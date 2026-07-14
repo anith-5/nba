@@ -4,6 +4,7 @@ import { InitialsTile } from "../components/TeamTile.jsx";
 import { gradeClasses } from "../lib/grades.js";
 
 const RISK_COLOR = { Low: "text-emerald-400", Medium: "text-amber-400", High: "text-red-400" };
+const MAX_REAL_YEAR = 2025; // latest real NBA draft (Historical / Redraft cap)
 
 function ModeIcon({ name }) {
   const paths = {
@@ -139,6 +140,18 @@ export default function DraftSimulator() {
     setCurrent(1); setRedraft(null); setError(null);
   }
 
+  // Historical / Redraft are real past drafts — cap at the latest one (2025).
+  const isPast = mode !== "future";
+  function changeMode(v) {
+    setMode(v);
+    if (v !== "future" && Number(year) > MAX_REAL_YEAR) setYear(MAX_REAL_YEAR);
+  }
+  function onYearChange(e) {
+    let y = e.target.value;
+    if (isPast && Number(y) > MAX_REAL_YEAR) y = String(MAX_REAL_YEAR);
+    setYear(y);
+  }
+
   async function startDraft() {
     setLoading(true); setError(null);
     setStatus("Generating the draft class, big board & order… ~30–45s (scouting every prospect)");
@@ -243,7 +256,7 @@ export default function DraftSimulator() {
               {MODES.map(([v, label, sub]) => (
                 <button
                   key={v}
-                  onClick={() => setMode(v)}
+                  onClick={() => changeMode(v)}
                   aria-pressed={mode === v}
                   className={`rounded-xl border px-3 py-2.5 text-left transition ${
                     mode === v ? "border-brand/60 bg-brand/10" : "border-white/10 bg-surface hover:border-white/25"
@@ -262,8 +275,14 @@ export default function DraftSimulator() {
           <div className="grid grid-cols-2 gap-4">
             <label className="block text-sm">
               <span className="stat-label">Draft year</span>
-              <input type="number" value={year} onChange={(e) => setYear(e.target.value)}
+              <input type="number" value={year} onChange={onYearChange}
+                max={isPast ? MAX_REAL_YEAR : undefined}
                 className="mt-1 w-full rounded-xl border border-white/10 bg-surface px-3 py-2 text-white focus:border-brand focus:outline-none" />
+              {isPast && (
+                <span className="mt-1 block text-[11px] text-slate-500">
+                  Real drafts available through {MAX_REAL_YEAR}.
+                </span>
+              )}
             </label>
             <label className="block text-sm">
               <span className="stat-label">Rounds</span>

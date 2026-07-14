@@ -14,9 +14,11 @@ import pandas as pd
 
 from app.config import settings
 from app.claude_client import chat_completion, is_available
+from app import data_cache
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 SEASON = settings.current_season
+TRADES_POOL_CACHE = "trades_pool.json"
 
 _player_cache: Optional[list] = None
 _player_cache_ts: float = 0.0
@@ -46,12 +48,17 @@ def _fetch_bbref_salaries() -> dict:
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = [" ".join(str(c) for c in col if str(c) != "nan").strip() for col in df.columns]
 
-    # Find player name column and current season salary column
+    # Find player name column and the nearest-season salary column. BBRef's
+    # contracts table drops past seasons, so which year is "current" shifts —
+    # try the configured season, then the next couple, then any Salary column.
     name_col = next((c for c in df.columns if "player" in c.lower()), None)
-    # Look for 2025-26 or 2024-25 salary column
-    sal_col = next((c for c in df.columns if "2025-26" in c), None)
+    sal_col = None
+    for candidate in (SEASON, "2025-26", "2026-27", "2027-28", "2024-25"):
+        sal_col = next((c for c in df.columns if candidate in str(c)), None)
+        if sal_col:
+            break
     if sal_col is None:
-        sal_col = next((c for c in df.columns if "2024-25" in c), None)
+        sal_col = next((c for c in df.columns if "Salary 20" in str(c)), None)
 
     if name_col is None or sal_col is None:
         return {}
@@ -314,6 +321,23 @@ async def _get_player_pool() -> list:
     return pool
 
 
+def _fetch_pool_with_salaries_live() -> list:
+    """Player pool with each player's salary merged in (NBA stats + BBRef)."""
+    pool = _fetch_player_pool()
+    try:
+        salaries = _fetch_bbref_salaries()
+    except Exception:
+        salaries = {}
+    for p in pool:
+        p["salary_millions"] = salaries.get(p["name"].lower())
+    return pool
+
+
+def _get_trades_pool() -> list:
+    """Cache-first (works on the cloud where NBA blocks the IP); live locally."""
+    return data_cache.cached_or_live(TRADES_POOL_CACHE, _fetch_pool_with_salaries_live, kind="json")
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -338,14 +362,25 @@ async def search_players(q: str = ""):
     if len(q) < 2:
         return []
     try:
-        pool, salaries = await asyncio.gather(_get_player_pool(), _get_salaries())
+        pool = await asyncio.to_thread(_get_trades_pool)
         q_lower = q.lower()
-        matches = [p for p in pool if q_lower in p["name"].lower()][:12]
-        for p in matches:
-            p["salary_millions"] = salaries.get(p["name"].lower())
-        return matches
+        return [p for p in pool if q_lower in p["name"].lower()][:12]
     except Exception as e:
         raise HTTPException(502, f"NBA API error: {e}")
+
+
+@router.get("/roster/{team_abbr}")
+async def team_roster(team_abbr: str):
+    """All of a team's players with salaries — for the roster-based trade picker."""
+    try:
+        pool = await asyncio.to_thread(_get_trades_pool)
+    except Exception as e:
+        raise HTTPException(502, f"NBA API error: {e}")
+    abbr = team_abbr.upper()
+    players = [p for p in pool if str(p.get("team", "")).upper() == abbr]
+    # Highest-paid first (falls back to scoring when salary is unknown)
+    players.sort(key=lambda x: (-(x.get("salary_millions") or 0), -x.get("pts", 0)))
+    return {"team_abbr": abbr, "count": len(players), "players": players}
 
 
 # ---------------------------------------------------------------------------

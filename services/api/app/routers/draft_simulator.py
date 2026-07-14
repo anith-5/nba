@@ -25,6 +25,7 @@ router = APIRouter(prefix="/draft", tags=["draft"])
 
 SONNET = "claude-sonnet-4-6"
 HAIKU = "claude-haiku-4-5-20251001"
+MAX_REAL_DRAFT_YEAR = 2025  # Historical / Redraft can't go past the latest real draft
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -174,6 +175,13 @@ def draft_setup(body: SetupRequest):
     picks = 30 if body.rounds == 1 else 60
     board_size = max(body.board_size, picks)
 
+    if body.mode != "future" and body.year > MAX_REAL_DRAFT_YEAR:
+        raise HTTPException(
+            400,
+            f"Historical drafts are only available through {MAX_REAL_DRAFT_YEAR}. "
+            f"Use Future mode for {body.year}.",
+        )
+
     if body.mode == "future":
         ctx = (
             f"Generate a REALISTIC projected {body.year} NBA Draft class. Invent believable "
@@ -246,6 +254,11 @@ Respond with ONLY valid JSON — no prose, no fences. Schema:
 
 @router.post("/redraft")
 def draft_redraft(body: RedraftRequest):
+    if body.year > MAX_REAL_DRAFT_YEAR:
+        raise HTTPException(
+            400,
+            f"Redrafts are only available through {MAX_REAL_DRAFT_YEAR} (a draft must have happened first).",
+        )
     draft_class = get_draft_class(body.year)
     if draft_class:
         grounding = (

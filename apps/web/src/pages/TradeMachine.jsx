@@ -17,54 +17,68 @@ const LIKELIHOOD_COLOR = {
   "Very Unlikely": "text-red-400",
 };
 
-function PlayerSearch({ onAdd }) {
+// Team roster picker: shows this team's players (with salaries), filtered by a
+// search box that only searches within the selected team.
+function RosterPicker({ teamAbbr, selectedNames, onAdd }) {
+  const [roster, setRoster] = useState([]);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const timer = useRef(null);
+  const [error, setError] = useState(null);
 
-  function handleInput(e) {
-    const val = e.target.value;
-    setQuery(val);
-    clearTimeout(timer.current);
-    if (val.length < 2) { setResults([]); return; }
-    timer.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const data = await api.tradePlayerSearch(val);
-        setResults(data);
-      } catch { setResults([]); }
-      setLoading(false);
-    }, 300);
-  }
-
-  function pick(player) {
-    onAdd(player);
+  useEffect(() => {
+    if (!teamAbbr) { setRoster([]); return; }
+    setLoading(true);
+    setError(null);
     setQuery("");
-    setResults([]);
-  }
+    api
+      .tradeRoster(teamAbbr)
+      .then((d) => setRoster(d.players || []))
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [teamAbbr]);
+
+  const q = query.trim().toLowerCase();
+  const filtered = q ? roster.filter((p) => p.name.toLowerCase().includes(q)) : roster;
 
   return (
-    <div className="relative">
+    <div className="space-y-2">
       <input
         value={query}
-        onChange={handleInput}
-        placeholder="Search NBA players…"
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={`Search ${teamAbbr} roster…`}
         className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500"
       />
-      {(results.length > 0 || loading) && (
-        <div className="absolute z-20 mt-1 w-full rounded border border-slate-700 bg-slate-900 shadow-xl">
-          {loading && <p className="px-3 py-2 text-xs text-slate-500">Searching…</p>}
-          {results.map((p) => (
-            <button
-              key={p.player_id}
-              onClick={() => pick(p)}
-              className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-800 text-left"
-            >
-              <span className="text-sm text-white">{p.name}</span>
-              <span className="text-xs text-slate-400">{p.team} · {p.pts} PPG</span>
-            </button>
-          ))}
+      {loading && <p className="text-xs text-slate-500">Loading roster…</p>}
+      {error && <p className="text-xs text-amber-300">{error}</p>}
+      {!loading && !error && (
+        <div className="max-h-64 overflow-y-auto rounded border border-slate-800 divide-y divide-slate-800/70">
+          {filtered.map((p) => {
+            const picked = selectedNames.includes(p.name);
+            return (
+              <button
+                key={p.player_id}
+                onClick={() => onAdd(p)}
+                disabled={picked}
+                className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left transition ${
+                  picked ? "opacity-40 cursor-default" : "hover:bg-slate-800"
+                }`}
+              >
+                <span className="min-w-0">
+                  <span className="block truncate text-sm text-white">{p.name}</span>
+                  <span className="text-[11px] text-slate-500">{p.pts} PPG · {p.reb} RPG · {p.ast} APG</span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block font-mono text-sm text-court-glow">
+                    {p.salary_millions != null ? `$${p.salary_millions.toFixed(1)}M` : "—"}
+                  </span>
+                  {picked && <span className="text-[10px] text-slate-500">added</span>}
+                </span>
+              </button>
+            );
+          })}
+          {filtered.length === 0 && (
+            <p className="px-3 py-3 text-xs text-slate-600">No players match.</p>
+          )}
         </div>
       )}
     </div>
@@ -112,8 +126,12 @@ function TeamPanel({ label, teams, side, onChange }) {
       {side.team_abbr && (
         <>
           <div>
-            <p className="text-xs text-slate-500 mb-2">Players sent out by {side.team_abbr}</p>
-            <PlayerSearch onAdd={addPlayer} />
+            <p className="text-xs text-slate-500 mb-2">Tap players to send out from {side.team_abbr}</p>
+            <RosterPicker
+              teamAbbr={side.team_abbr}
+              selectedNames={side.sends.map((p) => p.name)}
+              onAdd={addPlayer}
+            />
           </div>
 
           {side.sends.length > 0 && (

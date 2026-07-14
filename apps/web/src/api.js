@@ -84,6 +84,7 @@ export const api = {
   // Trade Machine
   tradeTeams: () => request("/trades/teams"),
   tradePlayerSearch: (q) => request(`/trades/players/search?q=${encodeURIComponent(q)}`),
+  tradeRoster: (abbr) => request(`/trades/roster/${encodeURIComponent(abbr)}`),
   analyzeTrade: (body) =>
     request("/trades/analyze", { method: "POST", body: JSON.stringify(body) }),
 
