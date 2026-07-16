@@ -5,8 +5,9 @@ import {
   initGameState as initClosestToGameState,
   ensurePlayerLineup,
 } from "../game-logic/closestTo.js";
+import { initGameState as initFiveHintsGameState, startRound as startFiveHintsRound } from "../game-logic/fiveHints.js";
 import { sanitizeGameStateForBroadcast } from "../game-logic/sanitize.js";
-import { revealRound } from "./gameHandlers.js";
+import { revealRound, armHintPhase as armFiveHintsHintPhase } from "./gameHandlers.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const DEFAULT_CLOSEST_TO_CONFIG = {
@@ -16,6 +17,15 @@ const DEFAULT_CLOSEST_TO_CONFIG = {
   eraStart: null,
   eraEnd: null,
   skipRule: "one-skip",
+};
+
+const DEFAULT_FIVE_HINTS_CONFIG = {
+  rounds: 10,
+  buzzStyle: "competitive",
+  hintTiming: "auto",
+  poolFilter: "all",
+  position: null,
+  maxHints: 5,
 };
 
 const DEFAULT_OVER_UNDER_CONFIG = {
@@ -42,6 +52,9 @@ function initialGameState(gameMode, configOverrides) {
   }
   if (gameMode === "closest-to") {
     return initClosestToGameState({ ...DEFAULT_CLOSEST_TO_CONFIG, ...(configOverrides || {}) });
+  }
+  if (gameMode === "five-hints") {
+    return initFiveHintsGameState({ ...DEFAULT_FIVE_HINTS_CONFIG, ...(configOverrides || {}) });
   }
   return { config: configOverrides || {} };
 }
@@ -129,12 +142,30 @@ export function registerLobbyHandlers(io, socket) {
       }
     }
 
+    if (room.gameMode === "five-hints") {
+      // Round 1 begins atomically as part of start_game itself (same as
+      // Over Under and Closest To above) rather than waiting on a
+      // follow-up client event -- a client that reloads or a host tab that
+      // never fires it should never be able to strand the room on an empty
+      // "awaiting_configure" state forever.
+      startFiveHintsRound(room.gameState);
+    }
+
     touchRoom(room);
     io.to(room.code).emit("game_update", {
       gameState: sanitizeGameStateForBroadcast(room.gameState),
       status: room.status,
       type: "game_started",
     });
+
+    // Five Hints' round 1 hint-reveal timer can only be armed after the
+    // client has the initial state in hand (see armHintPhase's own
+    // broadcasts, which are for hint 2+ -- round 1 rides the game_started
+    // broadcast above instead of emitting its own).
+    if (room.gameMode === "five-hints") {
+      armFiveHintsHintPhase(io, room);
+    }
+
     callback?.({ ok: true });
   });
 

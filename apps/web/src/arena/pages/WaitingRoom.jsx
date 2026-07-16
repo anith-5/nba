@@ -101,6 +101,119 @@ function OverUnderConfigForm({ config, setConfig }) {
   );
 }
 
+function FiveHintsConfigForm({ config, setConfig }) {
+  return (
+    <div className="card space-y-5 p-5 text-left">
+      <p className="stat-label">Five Hints Settings</p>
+
+      <div>
+        <label className="stat-label mb-1 block">Number of Rounds</label>
+        <select
+          value={config.rounds}
+          onChange={(e) => setConfig({ ...config, rounds: Number(e.target.value) })}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        >
+          {Array.from({ length: 16 }, (_, i) => i + 5).map((n) => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Buzz In Style</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, buzzStyle: "competitive" })}
+            className={`card-hover rounded-xl border p-4 text-left ${
+              config.buzzStyle === "competitive" ? "border-court bg-court/10" : "border-slate-800"
+            }`}
+          >
+            <p className="font-semibold text-white">Competitive</p>
+            <p className="mt-1 text-xs text-slate-400">First to buzz gets 10 seconds to answer. Wrong guesses lock you out.</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, buzzStyle: "casual" })}
+            className={`card-hover rounded-xl border p-4 text-left ${
+              config.buzzStyle === "casual" ? "border-court bg-court/10" : "border-slate-800"
+            }`}
+          >
+            <p className="font-semibold text-white">Casual</p>
+            <p className="mt-1 text-xs text-slate-400">Everyone submits a guess or passes after each hint, revealed together.</p>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Hint Reveal Timing</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, hintTiming: "auto" })}
+            className={config.hintTiming === "auto" ? "btn-primary" : "btn-ghost"}
+          >
+            Auto (20s)
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, hintTiming: "host" })}
+            className={config.hintTiming === "host" ? "btn-primary" : "btn-ghost"}
+          >
+            Host Controlled
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label className="stat-label mb-1 block">Player Pool</label>
+        <select
+          value={config.poolFilter}
+          onChange={(e) => setConfig({ ...config, poolFilter: e.target.value, position: null })}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        >
+          <option value="all">All Players Ever</option>
+          <option value="legends">Legends Only (Hall of Famers)</option>
+          <option value="modern">Modern Only (2010 to present)</option>
+          <option value="current">Current Players Only</option>
+          <option value="position">By Position</option>
+        </select>
+        {config.poolFilter === "position" && (
+          <select
+            value={config.position || "PG"}
+            onChange={(e) => setConfig({ ...config, position: e.target.value })}
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          >
+            <option value="PG">Point Guard</option>
+            <option value="SG">Shooting Guard</option>
+            <option value="SF">Small Forward</option>
+            <option value="PF">Power Forward</option>
+            <option value="C">Center</option>
+          </select>
+        )}
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Hints Before Answer Reveals</label>
+        <div className="grid grid-cols-3 gap-3">
+          {[3, 4, 5].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setConfig({ ...config, maxHints: n })}
+              className={config.maxHints === n ? "btn-primary" : "btn-ghost"}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const CURRENT_YEAR = new Date().getFullYear();
 
 function ClosestToConfigForm({ config, setConfig }) {
@@ -228,6 +341,14 @@ export default function WaitingRoom() {
     eraEnd: null,
     skipRule: "one-skip",
   });
+  const [fiveHintsConfig, setFiveHintsConfig] = useState({
+    rounds: 10,
+    buzzStyle: "competitive",
+    hintTiming: "auto",
+    poolFilter: "all",
+    position: null,
+    maxHints: 5,
+  });
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
   const isHost = room && myId === room.hostSocketId;
@@ -273,6 +394,9 @@ export default function WaitingRoom() {
         {isHost && room.gameMode === "closest-to" && (
           <ClosestToConfigForm config={closestToConfig} setConfig={setClosestToConfig} />
         )}
+        {isHost && room.gameMode === "five-hints" && (
+          <FiveHintsConfigForm config={fiveHintsConfig} setConfig={setFiveHintsConfig} />
+        )}
 
         {isHost ? (
           <button
@@ -282,7 +406,9 @@ export default function WaitingRoom() {
                   ? overUnderConfig
                   : room.gameMode === "closest-to"
                     ? closestToConfig
-                    : {}
+                    : room.gameMode === "five-hints"
+                      ? fiveHintsConfig
+                      : {}
               )
             }
             disabled={!canStart}
@@ -290,7 +416,7 @@ export default function WaitingRoom() {
           >
             {canStart ? "Start Game" : "Waiting for at least 2 players…"}
           </button>
-        ) : room.gameMode === "closest-to" ? (
+        ) : room.gameMode === "closest-to" || room.gameMode === "five-hints" ? (
           <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
         ) : (
           <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>

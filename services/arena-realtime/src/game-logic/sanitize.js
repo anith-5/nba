@@ -3,6 +3,7 @@
 // it is broadcast to clients. Everything is revealed only once the round's
 // reveal timer/vote-completion fires.
 export function sanitizeGameStateForBroadcast(gameState) {
+  if (gameState?.currentRound?.hints) return sanitizeFiveHints(gameState);
   if (gameState?.currentRound) return sanitizeOverUnder(gameState);
   if (gameState?.playerLineups) return sanitizeClosestTo(gameState);
   return gameState;
@@ -26,6 +27,45 @@ function sanitizeOverUnder(gameState) {
 // completion status the waiting-screen counter needs; the real picks/PPG
 // only ever reach their own owner via the private spin_result/pick_confirmed
 // socket events emitted directly in gameHandlers.js.
+// Five Hints' hidden information is the mystery player's identity and the
+// full hint array (both fully known server-side the instant a round starts
+// so the buzzer can be scored instantly) -- clients only ever get hint text
+// for hints already revealed, and casual-mode guesses are reduced to a
+// yes/no "did they submit" flag until that hint's results are revealed (see
+// resolveCasualHint's lastHintReveal snapshot in fiveHints.js, which is
+// already-public data by the time it's set and passes through untouched).
+// Once the round is resolved, everything -- player identity, every hint,
+// every casual guess -- is safe to send in full for the reveal + recap.
+function sanitizeFiveHints(gameState) {
+  const round = gameState.currentRound;
+  if (!round) return gameState;
+
+  if (round.resolved) {
+    const { acceptedAnswers, ...publicRound } = round;
+    return { ...gameState, currentRound: publicRound };
+  }
+
+  const publicSubmissions = {};
+  for (const [socketId, sub] of Object.entries(round.casualSubmissions || {})) {
+    publicSubmissions[socketId] = { hintNumber: sub.hintNumber, submitted: true };
+  }
+
+  const publicRound = {
+    hints: round.hints.slice(0, round.hintNumber),
+    hintNumber: round.hintNumber,
+    hintRevealedAt: round.hintRevealedAt,
+    subPhase: round.subPhase,
+    activeBuzzerSocketId: round.activeBuzzerSocketId,
+    buzzDeadlineAt: round.buzzDeadlineAt,
+    lockedOutSocketIds: round.lockedOutSocketIds,
+    casualSubmissions: publicSubmissions,
+    lastHintReveal: round.lastHintReveal || null,
+    resolved: false,
+    winners: [],
+  };
+  return { ...gameState, currentRound: publicRound };
+}
+
 function sanitizeClosestTo(gameState) {
   if (gameState.phase !== "building") return gameState;
   const publicLineups = {};

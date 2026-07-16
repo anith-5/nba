@@ -12,9 +12,24 @@ import {
   calculateRoundResults,
   resetForNextRound,
 } from "../game-logic/closestTo.js";
+import {
+  startRound as startFiveHintsRoundState,
+  advanceHint,
+  handleBuzzIn as applyBuzzIn,
+  handleCompetitiveGuess,
+  recordCasualSubmission,
+  resolveCasualHint,
+  allCasualSubmitted,
+  allLockedOut,
+  resolveRoundUnsolved,
+  finalizeRoundHistory,
+  goToNextRound,
+  TIMERS,
+} from "../game-logic/fiveHints.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const NEXT_ROUND_DELAY_MS = 5000;
+const CASUAL_REVEAL_PAUSE_MS = 3000;
 
 export function registerGameHandlers(io, socket) {
   socket.on("game_action", ({ roomCode, action, data } = {}) => {
@@ -28,6 +43,8 @@ export function registerGameHandlers(io, socket) {
         console.error("[closest-to] action handler error:", err);
         socket.emit("game_error", { message: "Something went wrong processing that action." });
       });
+    } else if (room.gameMode === "five-hints") {
+      handleFiveHintsAction(io, room, socket, action, data || {});
     }
   });
 }
@@ -249,5 +266,251 @@ async function handleClosestToAction(io, room, socket, action, data) {
     resetForNextRound(gameState);
     touchRoom(room);
     broadcast(io, room, "round_started");
+  }
+}
+
+// --- Five Hints ---
+
+function connectedSocketIds(room) {
+  return room.players.filter((p) => p.connected).map((p) => p.socketId);
+}
+
+function clearRoundTimers(round) {
+  if (!round) return;
+  clearTimeout(round._hintTimeout);
+  clearTimeout(round._buzzTimeout);
+  clearTimeout(round._casualTimeout);
+  clearTimeout(round._revealPauseTimeout);
+}
+
+// Arms whatever timer the current sub-phase needs:
+//   - Casual mode always runs its own 20s guess-collection window,
+//     regardless of the Auto/Host hint-timing setting (that setting only
+//     controls whether the NEXT hint appears automatically once this one's
+//     guesses are resolved).
+//   - Competitive mode only auto-advances the open buzz window on a timer
+//     when hint-timing is Auto; Host-Controlled leaves it open indefinitely
+//     until the host clicks reveal_hint.
+export function armHintPhase(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved) return;
+
+  if (gameState.config.buzzStyle === "casual") {
+    round._casualTimeout = setTimeout(() => {
+      finishCasualHint(io, room);
+    }, TIMERS.CASUAL_GUESS_SECONDS * 1000);
+    return;
+  }
+
+  if (gameState.config.hintTiming === "auto") {
+    round._hintTimeout = setTimeout(() => {
+      onCompetitiveHintTimeout(io, room);
+    }, TIMERS.HINT_TIMER_SECONDS * 1000);
+  }
+}
+
+function beginFiveHintsRound(io, room) {
+  clearRoundTimers(room.gameState.currentRound);
+  touchRoom(room);
+  broadcast(io, room, "round_started");
+  armHintPhase(io, room);
+}
+
+function endRoundUnsolved(io, room) {
+  const gameState = room.gameState;
+  clearRoundTimers(gameState.currentRound);
+  resolveRoundUnsolved(gameState);
+  finalizeRoundHistory(gameState);
+  touchRoom(room);
+  io.to(room.code).emit("round_over", {
+    player: gameState.currentRound.player,
+    hints: gameState.currentRound.hints,
+    winners: [],
+  });
+  broadcast(io, room, "round_over");
+}
+
+function endRoundSolved(io, room) {
+  const gameState = room.gameState;
+  clearRoundTimers(gameState.currentRound);
+  finalizeRoundHistory(gameState);
+  touchRoom(room);
+  io.to(room.code).emit("round_over", {
+    player: gameState.currentRound.player,
+    hints: gameState.currentRound.hints,
+    winners: gameState.currentRound.winners,
+  });
+  broadcast(io, room, "round_over");
+}
+
+// Competitive, Auto hint-timing: nobody buzzed within the 20s window --
+// advance to the next hint, or reveal the answer if that was the last one.
+function onCompetitiveHintTimeout(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved || round.subPhase !== "open") return; // stale timer
+  advanceToNextHintOrReveal(io, room);
+}
+
+function advanceToNextHintOrReveal(io, room) {
+  const gameState = room.gameState;
+  const advanced = advanceHint(gameState);
+  if (!advanced) {
+    endRoundUnsolved(io, room);
+    return;
+  }
+  touchRoom(room);
+  broadcast(io, room, "hint_revealed");
+  armHintPhase(io, room);
+}
+
+// A hint's 20s casual-collection window closed (whether by everyone
+// submitting early or the timer itself) -- score it and either end the
+// round (someone was right) or move on.
+function finishCasualHint(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved) return;
+  clearTimeout(round._casualTimeout);
+
+  const { winners } = resolveCasualHint(gameState);
+  touchRoom(room);
+  broadcast(io, room, "hint_results");
+
+  if (winners.length > 0) {
+    endRoundSolved(io, room);
+    return;
+  }
+
+  if (gameState.config.hintTiming === "auto") {
+    round._revealPauseTimeout = setTimeout(() => {
+      advanceToNextHintOrReveal(io, room);
+    }, CASUAL_REVEAL_PAUSE_MS);
+  }
+  // Host-Controlled: wait for the host's reveal_hint action.
+}
+
+function handleFiveHintsAction(io, room, socket, action, data) {
+  const gameState = room.gameState;
+  if (!gameState) return;
+
+  if (action === "configure_five_hints" && room.hostSocketId === socket.id && gameState.phase === "awaiting_configure") {
+    startFiveHintsRoundState(gameState);
+    beginFiveHintsRound(io, room);
+    return;
+  }
+
+  const round = gameState.currentRound;
+  if (!round || gameState.phase !== "round_active") return;
+
+  if (action === "buzz_in") {
+    const result = applyBuzzIn(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    clearTimeout(round._hintTimeout);
+    round._buzzTimeout = setTimeout(() => onBuzzTimeout(io, room, socket.id), TIMERS.COMPETITIVE_BUZZ_SECONDS * 1000);
+    touchRoom(room);
+    const buzzer = room.players.find((p) => p.socketId === socket.id);
+    io.to(room.code).emit("buzz_winner", {
+      socketId: socket.id,
+      name: buzzer?.name,
+      hintNumber: result.hintNumber,
+      deadlineAt: result.deadlineAt,
+    });
+    broadcast(io, room, "buzz_winner");
+    return;
+  }
+
+  if (action === "submit_guess") {
+    if (gameState.config.buzzStyle === "competitive") {
+      const result = handleCompetitiveGuess(gameState, socket.id, data.guess);
+      if (result.error) {
+        socket.emit("game_error", { message: result.error });
+        return;
+      }
+      clearTimeout(round._buzzTimeout);
+      touchRoom(room);
+      socket.emit("guess_result", { correct: result.correct, points: result.points, hintNumber: result.hintNumber });
+
+      if (result.correct) {
+        endRoundSolved(io, room);
+      } else {
+        broadcast(io, room, "guess_wrong");
+        if (allLockedOut(round, connectedSocketIds(room))) {
+          endRoundUnsolved(io, room);
+        } else {
+          armHintPhase(io, room);
+        }
+      }
+      return;
+    }
+
+    // Casual: guesses stay hidden until the whole hint resolves, so this
+    // only ever acknowledges receipt to the submitter -- never correctness.
+    const result = recordCasualSubmission(gameState, socket.id, { guess: data.guess, passed: false });
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    socket.emit("guess_submitted", { hintNumber: round.hintNumber });
+    broadcast(io, room, "guess_submitted");
+    if (allCasualSubmitted(round, connectedSocketIds(room))) {
+      io.to(room.code).emit("all_passed");
+      finishCasualHint(io, room);
+    }
+    return;
+  }
+
+  if (action === "pass_turn") {
+    const result = recordCasualSubmission(gameState, socket.id, { passed: true });
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "guess_submitted");
+    if (allCasualSubmitted(round, connectedSocketIds(room))) {
+      io.to(room.code).emit("all_passed");
+      finishCasualHint(io, room);
+    }
+    return;
+  }
+
+  if (action === "reveal_hint" && room.hostSocketId === socket.id && gameState.config.hintTiming === "host") {
+    if (gameState.config.buzzStyle === "competitive" && round.subPhase !== "open") return;
+    if (gameState.config.buzzStyle === "casual" && round.lastHintReveal?.hintNumber !== round.hintNumber) return;
+    clearRoundTimers(round);
+    advanceToNextHintOrReveal(io, room);
+    return;
+  }
+
+  if (action === "next_round" && room.hostSocketId === socket.id && round.resolved) {
+    const advanced = goToNextRound(gameState);
+    if (!advanced) {
+      room.status = "finished";
+      touchRoom(room);
+      broadcast(io, room, "game_finished");
+      return;
+    }
+    beginFiveHintsRound(io, room);
+  }
+}
+
+function onBuzzTimeout(io, room, socketId) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved || round.subPhase !== "buzzed" || round.activeBuzzerSocketId !== socketId) return; // stale
+  const result = handleCompetitiveGuess(gameState, socketId, "");
+  touchRoom(room);
+  io.to(socketId).emit("guess_result", { correct: false, points: result.points, hintNumber: result.hintNumber, timedOut: true });
+  broadcast(io, room, "guess_wrong");
+  if (allLockedOut(round, connectedSocketIds(room))) {
+    endRoundUnsolved(io, room);
+  } else {
+    armHintPhase(io, room);
   }
 }

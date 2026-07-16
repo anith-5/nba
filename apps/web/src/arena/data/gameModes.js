@@ -46,7 +46,7 @@ export const GAME_MODES = [
     minPlayers: 2,
     maxPlayers: 8,
     estimate: "15-25 min",
-    status: "coming-soon",
+    status: "playable",
     route: "/arena/games/five-hints",
   },
   {

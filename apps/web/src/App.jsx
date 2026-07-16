@@ -26,6 +26,7 @@ import WaitingRoom from "./arena/pages/WaitingRoom.jsx";
 import OverUnder from "./arena/pages/games/OverUnder.jsx";
 import ClosestTo from "./arena/pages/games/ClosestTo.jsx";
 import Wordle from "./arena/pages/games/Wordle.jsx";
+import FiveHints from "./arena/pages/games/FiveHints.jsx";
 import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 
 export default function App() {
@@ -65,10 +66,6 @@ export default function App() {
             element={<ComingSoon title="Hint Auction" description="Bid tokens on mystery players revealed through progressive hints." />}
           />
           <Route
-            path="arena/games/five-hints"
-            element={<ComingSoon title="Five Hints" description="Buzz in when you know the mystery player. Earlier guesses score more." />}
-          />
-          <Route
             path="arena/games/trade-evaluator"
             element={<ComingSoon title="Trade Evaluator" description="Vote on who wins NBA trades then see the model's verdict." />}
           />
@@ -79,6 +76,7 @@ export default function App() {
             <Route path="room/:code" element={<WaitingRoom />} />
             <Route path="games/over-under/:code" element={<OverUnder />} />
             <Route path="games/closest-to/:code" element={<ClosestTo />} />
+            <Route path="games/five-hints/:code" element={<FiveHints />} />
           </Route>
         </Route>
       </Routes>
