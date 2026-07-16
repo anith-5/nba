@@ -18,6 +18,15 @@ import Prospects from "./pages/Prospects.jsx";
 import RuleSimulator from "./pages/RuleSimulator.jsx";
 import GMAssistant from "./pages/GMAssistant.jsx";
 import ShotEvaluator from "./pages/ShotEvaluator.jsx";
+import ArenaLayout from "./arena/ArenaLayout.jsx";
+import ArenaHome from "./arena/pages/ArenaHome.jsx";
+import JoinRoom from "./arena/pages/JoinRoom.jsx";
+import CreateRoom from "./arena/pages/CreateRoom.jsx";
+import WaitingRoom from "./arena/pages/WaitingRoom.jsx";
+import OverUnder from "./arena/pages/games/OverUnder.jsx";
+import ClosestTo from "./arena/pages/games/ClosestTo.jsx";
+import Wordle from "./arena/pages/games/Wordle.jsx";
+import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 
 export default function App() {
   return (
@@ -42,6 +51,35 @@ export default function App() {
           <Route path="rules" element={<RuleSimulator />} />
           <Route path="gm" element={<GMAssistant />} />
           <Route path="shot-evaluator" element={<ShotEvaluator />} />
+          {/* Arena hub, Wordle solo, and the not-yet-playable modes never need a
+              realtime connection, so they stay outside ArenaLayout/SocketProvider
+              — only lobby-based flows (join/create/room/over-under) connect the socket. */}
+          <Route path="arena" element={<ArenaHome />} />
+          <Route path="arena/games/wordle" element={<Wordle />} />
+          <Route
+            path="arena/games/themed-draft"
+            element={<ComingSoon title="Themed Player Draft" description="Draft NBA players based on a category set by the host." />}
+          />
+          <Route
+            path="arena/games/hint-auction"
+            element={<ComingSoon title="Hint Auction" description="Bid tokens on mystery players revealed through progressive hints." />}
+          />
+          <Route
+            path="arena/games/five-hints"
+            element={<ComingSoon title="Five Hints" description="Buzz in when you know the mystery player. Earlier guesses score more." />}
+          />
+          <Route
+            path="arena/games/trade-evaluator"
+            element={<ComingSoon title="Trade Evaluator" description="Vote on who wins NBA trades then see the model's verdict." />}
+          />
+          <Route path="arena" element={<ArenaLayout />}>
+            <Route path="join" element={<JoinRoom />} />
+            <Route path="join/:code" element={<JoinRoom />} />
+            <Route path="create/:mode" element={<CreateRoom />} />
+            <Route path="room/:code" element={<WaitingRoom />} />
+            <Route path="games/over-under/:code" element={<OverUnder />} />
+            <Route path="games/closest-to/:code" element={<ClosestTo />} />
+          </Route>
         </Route>
       </Routes>
     </div>

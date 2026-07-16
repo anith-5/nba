@@ -1,0 +1,4787 @@
+{
+  "ATL": {
+    "team_name": "Atlanta Hawks",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Trae Young",
+        "player_id": "trae_young",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 19.1,
+            "position": "PG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 29.6,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 25.3,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 28.4,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 26.2,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 25.7,
+            "position": "PG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 24.2,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Dominique Wilkins",
+        "player_id": "dominique_wilkins",
+        "seasons": [
+          {
+            "season": "1982-83",
+            "ppg": 17,
+            "position": "SF"
+          },
+          {
+            "season": "1985-86",
+            "ppg": 26.6,
+            "position": "SF"
+          },
+          {
+            "season": "1986-87",
+            "ppg": 29,
+            "position": "SF"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 30.7,
+            "position": "SF"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 25.9,
+            "position": "SF"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 29,
+            "position": "SF"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 24.4,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Bob Pettit",
+        "player_id": "bob_pettit",
+        "seasons": [
+          {
+            "season": "1955-56",
+            "ppg": 20.4,
+            "position": "PF"
+          },
+          {
+            "season": "1958-59",
+            "ppg": 29.2,
+            "position": "PF"
+          },
+          {
+            "season": "1959-60",
+            "ppg": 26.1,
+            "position": "PF"
+          },
+          {
+            "season": "1961-62",
+            "ppg": 31.1,
+            "position": "PF"
+          },
+          {
+            "season": "1962-63",
+            "ppg": 28.4,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Dikembe Mutombo",
+        "player_id": "dikembe_mutombo_atl",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 13.3,
+            "position": "C"
+          },
+          {
+            "season": "1997-98",
+            "ppg": 13.4,
+            "position": "C"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 11.6,
+            "position": "C"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 9.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Joe Johnson",
+        "player_id": "joe_johnson",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 20.7,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 25,
+            "position": "SG"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 21.7,
+            "position": "SG"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 21.3,
+            "position": "SG"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 18.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Al Horford",
+        "player_id": "al_horford_atl",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 10.1,
+            "position": "PF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 14.2,
+            "position": "PF"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 17.4,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 18.6,
+            "position": "PF"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 15.2,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Lou Hudson",
+        "player_id": "lou_hudson",
+        "seasons": [
+          {
+            "season": "1969-70",
+            "ppg": 25.4,
+            "position": "SG"
+          },
+          {
+            "season": "1970-71",
+            "ppg": 26.8,
+            "position": "SG"
+          },
+          {
+            "season": "1972-73",
+            "ppg": 27.1,
+            "position": "SG"
+          },
+          {
+            "season": "1973-74",
+            "ppg": 23.9,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Spud Webb",
+        "player_id": "spud_webb",
+        "seasons": [
+          {
+            "season": "1986-87",
+            "ppg": 8.8,
+            "position": "PG"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 11.8,
+            "position": "PG"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 12.7,
+            "position": "PG"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 13.1,
+            "position": "PG"
+          }
+        ]
+      }
+    ]
+  },
+  "BOS": {
+    "team_name": "Boston Celtics",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Jayson Tatum",
+        "player_id": "jayson_tatum",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 15.7,
+            "position": "SF"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 23.4,
+            "position": "SF"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 26.4,
+            "position": "SF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 26.9,
+            "position": "SF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 30.1,
+            "position": "SF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 26.9,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Larry Bird",
+        "player_id": "larry_bird",
+        "seasons": [
+          {
+            "season": "1979-80",
+            "ppg": 21.3,
+            "position": "SF"
+          },
+          {
+            "season": "1983-84",
+            "ppg": 24.2,
+            "position": "SF"
+          },
+          {
+            "season": "1984-85",
+            "ppg": 28.7,
+            "position": "SF"
+          },
+          {
+            "season": "1985-86",
+            "ppg": 25.8,
+            "position": "SF"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 29.9,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Paul Pierce",
+        "player_id": "paul_pierce",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 19.5,
+            "position": "SF"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 26.1,
+            "position": "SF"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 26.8,
+            "position": "SF"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 19.6,
+            "position": "SF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 20.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Garnett",
+        "player_id": "kevin_garnett_bos",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 18.8,
+            "position": "PF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 15.8,
+            "position": "PF"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 14.9,
+            "position": "PF"
+          },
+          {
+            "season": "2011-12",
+            "ppg": 15.8,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Bill Russell",
+        "player_id": "bill_russell_bos",
+        "seasons": [
+          {
+            "season": "1958-59",
+            "ppg": 16.7,
+            "position": "C"
+          },
+          {
+            "season": "1961-62",
+            "ppg": 18.9,
+            "position": "C"
+          },
+          {
+            "season": "1963-64",
+            "ppg": 15,
+            "position": "C"
+          },
+          {
+            "season": "1964-65",
+            "ppg": 14.1,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "John Havlicek",
+        "player_id": "john_havlicek",
+        "seasons": [
+          {
+            "season": "1970-71",
+            "ppg": 28.9,
+            "position": "SF"
+          },
+          {
+            "season": "1971-72",
+            "ppg": 27.5,
+            "position": "SF"
+          },
+          {
+            "season": "1972-73",
+            "ppg": 23.8,
+            "position": "SF"
+          },
+          {
+            "season": "1973-74",
+            "ppg": 22.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Kevin McHale",
+        "player_id": "kevin_mchale",
+        "seasons": [
+          {
+            "season": "1986-87",
+            "ppg": 26.1,
+            "position": "PF"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 22.6,
+            "position": "PF"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 22.5,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Jaylen Brown",
+        "player_id": "jaylen_brown",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 13,
+            "position": "SG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 24.7,
+            "position": "SG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 23.6,
+            "position": "SG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 26.6,
+            "position": "SG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 23,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Bob Cousy",
+        "player_id": "bob_cousy_bos",
+        "seasons": [
+          {
+            "season": "1957-58",
+            "ppg": 20,
+            "position": "PG"
+          },
+          {
+            "season": "1959-60",
+            "ppg": 19.4,
+            "position": "PG"
+          }
+        ]
+      }
+    ]
+  },
+  "BKN": {
+    "team_name": "Brooklyn Nets",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Jason Kidd",
+        "player_id": "jason_kidd_nets",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 14.7,
+            "position": "PG"
+          },
+          {
+            "season": "2002-03",
+            "ppg": 18.7,
+            "position": "PG"
+          },
+          {
+            "season": "2003-04",
+            "ppg": 18.7,
+            "position": "PG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 13.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Vince Carter",
+        "player_id": "vince_carter_nets",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 27.5,
+            "position": "SG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 24.2,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 25.2,
+            "position": "SG"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 21.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Kyrie Irving",
+        "player_id": "kyrie_irving_bkn",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 27.4,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 26.9,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 27.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Durant",
+        "player_id": "kevin_durant_bkn",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 29.9,
+            "position": "SF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 29.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Julius Erving",
+        "player_id": "julius_erving_nets",
+        "seasons": [
+          {
+            "season": "1973-74",
+            "ppg": 27.4,
+            "position": "SF"
+          },
+          {
+            "season": "1974-75",
+            "ppg": 27.9,
+            "position": "SF"
+          },
+          {
+            "season": "1975-76",
+            "ppg": 29.3,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Drazen Petrovic",
+        "player_id": "drazen_petrovic",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 20.6,
+            "position": "SG"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 22.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Mikal Bridges",
+        "player_id": "mikal_bridges_bkn",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 19.6,
+            "position": "SF"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 17.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Buck Williams",
+        "player_id": "buck_williams_nets",
+        "seasons": [
+          {
+            "season": "1985-86",
+            "ppg": 12.8,
+            "position": "PF"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 13.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Brook Lopez",
+        "player_id": "brook_lopez_nets",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 20.4,
+            "position": "C"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 19.4,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "CHA": {
+    "team_name": "Charlotte Hornets",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "LaMelo Ball",
+        "player_id": "lamelo_ball",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 15.7,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 20.1,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 23.3,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 23.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Kemba Walker",
+        "player_id": "kemba_walker_cha",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 17.3,
+            "position": "PG"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 23.2,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 22.1,
+            "position": "PG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 25.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Dell Curry",
+        "player_id": "dell_curry",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 16.3,
+            "position": "SG"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 16.3,
+            "position": "SG"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 14.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Larry Johnson",
+        "player_id": "larry_johnson",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 19.2,
+            "position": "PF"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 22.1,
+            "position": "PF"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 16.4,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Glen Rice",
+        "player_id": "glen_rice_cha",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": 21.6,
+            "position": "SF"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 26.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Alonzo Mourning",
+        "player_id": "alonzo_mourning_cha",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 21.5,
+            "position": "C"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 21.3,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Gerald Wallace",
+        "player_id": "gerald_wallace",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 15.2,
+            "position": "SF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 18.2,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Baron Davis",
+        "player_id": "baron_davis_cha",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 13.7,
+            "position": "PG"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 18.4,
+            "position": "PG"
+          }
+        ]
+      }
+    ]
+  },
+  "CHI": {
+    "team_name": "Chicago Bulls",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Michael Jordan",
+        "player_id": "michael_jordan",
+        "seasons": [
+          {
+            "season": "1986-87",
+            "ppg": 37.1,
+            "position": "SG"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 35,
+            "position": "SG"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 33.6,
+            "position": "SG"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 31.5,
+            "position": "SG"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 30.1,
+            "position": "SG"
+          },
+          {
+            "season": "1995-96",
+            "ppg": 30.4,
+            "position": "SG"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 29.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Scottie Pippen",
+        "player_id": "scottie_pippen_chi",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 21,
+            "position": "SF"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 22,
+            "position": "SF"
+          },
+          {
+            "season": "1995-96",
+            "ppg": 19.4,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Derrick Rose",
+        "player_id": "derrick_rose",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 16.8,
+            "position": "PG"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 20.8,
+            "position": "PG"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 25,
+            "position": "PG"
+          },
+          {
+            "season": "2011-12",
+            "ppg": 21.8,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Zach LaVine",
+        "player_id": "zach_lavine",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 23.7,
+            "position": "SG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 25.5,
+            "position": "SG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 27.4,
+            "position": "SG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 24.4,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "DeMar DeRozan",
+        "player_id": "demar_derozan_chi",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 24.5,
+            "position": "SF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 24,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Dennis Rodman",
+        "player_id": "dennis_rodman_chi",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": 5.5,
+            "position": "PF"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 5.7,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Joakim Noah",
+        "player_id": "joakim_noah",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 12.6,
+            "position": "C"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 9.4,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Luol Deng",
+        "player_id": "luol_deng_chi",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 18.8,
+            "position": "SF"
+          },
+          {
+            "season": "2011-12",
+            "ppg": 15.3,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "CLE": {
+    "team_name": "Cleveland Cavaliers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "LeBron James",
+        "player_id": "lebron_james_cle",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 20.9,
+            "position": "SF"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 31.4,
+            "position": "SF"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 27.3,
+            "position": "SF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 28.4,
+            "position": "SF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 29.7,
+            "position": "SF"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 25.3,
+            "position": "SF"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 25.3,
+            "position": "SF"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 27.5,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Kyrie Irving",
+        "player_id": "kyrie_irving_cle",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 18.5,
+            "position": "PG"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 20.8,
+            "position": "PG"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 21.7,
+            "position": "PG"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 19.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Mark Price",
+        "player_id": "mark_price",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 18.9,
+            "position": "PG"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 18.1,
+            "position": "PG"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 15.7,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Brad Daugherty",
+        "player_id": "brad_daugherty",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 18.7,
+            "position": "C"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 21.6,
+            "position": "C"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 19.7,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Love",
+        "player_id": "kevin_love_cle",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 16.4,
+            "position": "PF"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 19,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Donovan Mitchell",
+        "player_id": "donovan_mitchell_cle",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 26.6,
+            "position": "SG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 24,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Zydrunas Ilgauskas",
+        "player_id": "zydrunas_ilgauskas",
+        "seasons": [
+          {
+            "season": "2002-03",
+            "ppg": 16.9,
+            "position": "C"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 15.7,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "World B. Free",
+        "player_id": "world_b_free",
+        "seasons": [
+          {
+            "season": "1982-83",
+            "ppg": 23.4,
+            "position": "SG"
+          },
+          {
+            "season": "1983-84",
+            "ppg": 22.5,
+            "position": "SG"
+          }
+        ]
+      }
+    ]
+  },
+  "DAL": {
+    "team_name": "Dallas Mavericks",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Luka Doncic",
+        "player_id": "luka_doncic_dal",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 21.2,
+            "position": "PG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 28.8,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 27.7,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 28.4,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 32.4,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 33.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Dirk Nowitzki",
+        "player_id": "dirk_nowitzki",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 23.4,
+            "position": "PF"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 26.6,
+            "position": "PF"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 24.6,
+            "position": "PF"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 23,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 21.7,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Jason Kidd",
+        "player_id": "jason_kidd_dal",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 11.7,
+            "position": "PG"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 14.3,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Rolando Blackman",
+        "player_id": "rolando_blackman",
+        "seasons": [
+          {
+            "season": "1985-86",
+            "ppg": 19.2,
+            "position": "SG"
+          },
+          {
+            "season": "1987-88",
+            "ppg": 19.4,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Mark Aguirre",
+        "player_id": "mark_aguirre",
+        "seasons": [
+          {
+            "season": "1983-84",
+            "ppg": 29.5,
+            "position": "SF"
+          },
+          {
+            "season": "1984-85",
+            "ppg": 25.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Steve Nash",
+        "player_id": "steve_nash_dal",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 7.9,
+            "position": "PG"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 17.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Michael Finley",
+        "player_id": "michael_finley",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 22.6,
+            "position": "SG"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 21.7,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Tyson Chandler",
+        "player_id": "tyson_chandler_dal",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 10.1,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "DEN": {
+    "team_name": "Denver Nuggets",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Nikola Jokic",
+        "player_id": "nikola_jokic",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 20.1,
+            "position": "C"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 19.9,
+            "position": "C"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 26.4,
+            "position": "C"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 27.1,
+            "position": "C"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 24.5,
+            "position": "C"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 26.4,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Carmelo Anthony",
+        "player_id": "carmelo_anthony_den",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 20.8,
+            "position": "SF"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 28.9,
+            "position": "SF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 22.8,
+            "position": "SF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 28.2,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Alex English",
+        "player_id": "alex_english_den",
+        "seasons": [
+          {
+            "season": "1981-82",
+            "ppg": 25.4,
+            "position": "SF"
+          },
+          {
+            "season": "1982-83",
+            "ppg": 25.9,
+            "position": "SF"
+          },
+          {
+            "season": "1985-86",
+            "ppg": 29.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "David Thompson",
+        "player_id": "david_thompson",
+        "seasons": [
+          {
+            "season": "1977-78",
+            "ppg": 27.2,
+            "position": "SG"
+          },
+          {
+            "season": "1978-79",
+            "ppg": 24,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Jamal Murray",
+        "player_id": "jamal_murray",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 18.2,
+            "position": "PG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 18.5,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Fat Lever",
+        "player_id": "fat_lever",
+        "seasons": [
+          {
+            "season": "1986-87",
+            "ppg": 18,
+            "position": "PG"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 19.8,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Dan Issel",
+        "player_id": "dan_issel_den",
+        "seasons": [
+          {
+            "season": "1975-76",
+            "ppg": 25.1,
+            "position": "C"
+          },
+          {
+            "season": "1977-78",
+            "ppg": 20.3,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Antonio McDyess",
+        "player_id": "antonio_mcdyess_den",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 15.5,
+            "position": "PF"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 20.8,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "DET": {
+    "team_name": "Detroit Pistons",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Isiah Thomas",
+        "player_id": "isiah_thomas",
+        "seasons": [
+          {
+            "season": "1983-84",
+            "ppg": 21.3,
+            "position": "PG"
+          },
+          {
+            "season": "1984-85",
+            "ppg": 21.2,
+            "position": "PG"
+          },
+          {
+            "season": "1985-86",
+            "ppg": 20.9,
+            "position": "PG"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 18.2,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Grant Hill",
+        "player_id": "grant_hill_det",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 19.9,
+            "position": "SF"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 21.4,
+            "position": "SF"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 25.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Ben Wallace",
+        "player_id": "ben_wallace_det",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 7.8,
+            "position": "C"
+          },
+          {
+            "season": "2002-03",
+            "ppg": 6.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Chauncey Billups",
+        "player_id": "chauncey_billups_det",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 16.9,
+            "position": "PG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 18.5,
+            "position": "PG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 17,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Joe Dumars",
+        "player_id": "joe_dumars",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 17.8,
+            "position": "SG"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 23.5,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Bob Lanier",
+        "player_id": "bob_lanier",
+        "seasons": [
+          {
+            "season": "1971-72",
+            "ppg": 25.7,
+            "position": "C"
+          },
+          {
+            "season": "1973-74",
+            "ppg": 22.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Dave Bing",
+        "player_id": "dave_bing",
+        "seasons": [
+          {
+            "season": "1967-68",
+            "ppg": 27.1,
+            "position": "PG"
+          },
+          {
+            "season": "1970-71",
+            "ppg": 27,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Cade Cunningham",
+        "player_id": "cade_cunningham",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 17.7,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 22.7,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Rasheed Wallace",
+        "player_id": "rasheed_wallace_det",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 14.4,
+            "position": "PF"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 15.1,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "GSW": {
+    "team_name": "Golden State Warriors",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Stephen Curry",
+        "player_id": "stephen_curry",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 22.9,
+            "position": "PG"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 23.8,
+            "position": "PG"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 30.1,
+            "position": "PG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 27.3,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 32,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 25.5,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Klay Thompson",
+        "player_id": "klay_thompson_gsw",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 21.7,
+            "position": "SG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 21.5,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Draymond Green",
+        "player_id": "draymond_green_gsw",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 14,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Wilt Chamberlain",
+        "player_id": "wilt_chamberlain_sfw",
+        "seasons": [
+          {
+            "season": "1959-60",
+            "ppg": 37.6,
+            "position": "C"
+          },
+          {
+            "season": "1961-62",
+            "ppg": 50.4,
+            "position": "C"
+          },
+          {
+            "season": "1962-63",
+            "ppg": 44.8,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Rick Barry",
+        "player_id": "rick_barry_gsw",
+        "seasons": [
+          {
+            "season": "1966-67",
+            "ppg": 35.6,
+            "position": "SF"
+          },
+          {
+            "season": "1974-75",
+            "ppg": 30.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Chris Mullin",
+        "player_id": "chris_mullin",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 26.5,
+            "position": "SF"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 25.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Baron Davis",
+        "player_id": "baron_davis_gsw",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 21.8,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Durant",
+        "player_id": "kevin_durant_gsw",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 25.1,
+            "position": "SF"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 26.4,
+            "position": "SF"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 26,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "HOU": {
+    "team_name": "Houston Rockets",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Hakeem Olajuwon",
+        "player_id": "hakeem_olajuwon",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 24.8,
+            "position": "C"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 26.1,
+            "position": "C"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 27.3,
+            "position": "C"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 27.8,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "James Harden",
+        "player_id": "james_harden_hou",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 29,
+            "position": "SG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 30.4,
+            "position": "SG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 36.1,
+            "position": "SG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 34.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Yao Ming",
+        "player_id": "yao_ming",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 22.3,
+            "position": "C"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 25,
+            "position": "C"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 19.7,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Moses Malone",
+        "player_id": "moses_malone_hou",
+        "seasons": [
+          {
+            "season": "1978-79",
+            "ppg": 24.8,
+            "position": "C"
+          },
+          {
+            "season": "1980-81",
+            "ppg": 27.8,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Calvin Murphy",
+        "player_id": "calvin_murphy",
+        "seasons": [
+          {
+            "season": "1977-78",
+            "ppg": 25.6,
+            "position": "PG"
+          },
+          {
+            "season": "1978-79",
+            "ppg": 21.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Tracy McGrady",
+        "player_id": "tracy_mcgrady_hou",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 25.7,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 24.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Clyde Drexler",
+        "player_id": "clyde_drexler_hou",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": 21.4,
+            "position": "SG"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 18.4,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Alperen Sengun",
+        "player_id": "alperen_sengun",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 21.1,
+            "position": "C"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 19.1,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Shane Battier",
+        "player_id": "shane_battier_hou",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 10.1,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Otis Thorpe",
+        "player_id": "otis_thorpe_hou",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 15.7,
+            "position": "PF"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 14.8,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "IND": {
+    "team_name": "Indiana Pacers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Reggie Miller",
+        "player_id": "reggie_miller",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 19.9,
+            "position": "SG"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 20.6,
+            "position": "SG"
+          },
+          {
+            "season": "1997-98",
+            "ppg": 18.5,
+            "position": "SG"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 18.1,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Tyrese Haliburton",
+        "player_id": "tyrese_haliburton_ind",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 20.7,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 20.1,
+            "position": "PG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 18.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Rik Smits",
+        "player_id": "rik_smits",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 15.1,
+            "position": "C"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 17.4,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Jermaine O'Neal",
+        "player_id": "jermaine_oneal_ind",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 20.1,
+            "position": "PF"
+          },
+          {
+            "season": "2004-05",
+            "ppg": 20.1,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "George McGinnis",
+        "player_id": "george_mcginnis",
+        "seasons": [
+          {
+            "season": "1974-75",
+            "ppg": 29.8,
+            "position": "PF"
+          },
+          {
+            "season": "1975-76",
+            "ppg": 22.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Paul George",
+        "player_id": "paul_george_ind",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 21.7,
+            "position": "SF"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 23.1,
+            "position": "SF"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 23.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Danny Granger",
+        "player_id": "danny_granger",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 25.8,
+            "position": "SF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 20.5,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Victor Oladipo",
+        "player_id": "victor_oladipo",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 23.1,
+            "position": "SG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 19,
+            "position": "SG"
+          }
+        ]
+      }
+    ]
+  },
+  "LAC": {
+    "team_name": "LA Clippers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Kawhi Leonard",
+        "player_id": "kawhi_leonard_lac",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 27.1,
+            "position": "SF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 23.8,
+            "position": "SF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 23.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Chris Paul",
+        "player_id": "chris_paul_lac",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 19.8,
+            "position": "PG"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 16.9,
+            "position": "PG"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 19.1,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Blake Griffin",
+        "player_id": "blake_griffin",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 22.5,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 24.1,
+            "position": "PF"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 21.9,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Elton Brand",
+        "player_id": "elton_brand",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 20.9,
+            "position": "PF"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 24.7,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Bob McAdoo",
+        "player_id": "bob_mcadoo_buf",
+        "seasons": [
+          {
+            "season": "1976-77",
+            "ppg": 26.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Danny Manning",
+        "player_id": "danny_manning_lac",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 19.3,
+            "position": "PF"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 23.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "DeAndre Jordan",
+        "player_id": "deandre_jordan",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 12.7,
+            "position": "C"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 12,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "James Harden",
+        "player_id": "james_harden_lac",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 16.6,
+            "position": "SG"
+          }
+        ]
+      }
+    ]
+  },
+  "LAL": {
+    "team_name": "Los Angeles Lakers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "LeBron James",
+        "player_id": "lebron_james_lal",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 27.4,
+            "position": "SF"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 25.3,
+            "position": "SF"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 25,
+            "position": "SF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 30.3,
+            "position": "SF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 28.9,
+            "position": "SF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 25.7,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Kobe Bryant",
+        "player_id": "kobe_bryant",
+        "seasons": [
+          {
+            "season": "2002-03",
+            "ppg": 30,
+            "position": "SG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 35.4,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 31.6,
+            "position": "SG"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 26.8,
+            "position": "SG"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 27.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Magic Johnson",
+        "player_id": "magic_johnson",
+        "seasons": [
+          {
+            "season": "1986-87",
+            "ppg": 23.9,
+            "position": "PG"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 22.5,
+            "position": "PG"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 19.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Kareem Abdul-Jabbar",
+        "player_id": "kareem_abduljabbar_lal",
+        "seasons": [
+          {
+            "season": "1976-77",
+            "ppg": 26.2,
+            "position": "C"
+          },
+          {
+            "season": "1979-80",
+            "ppg": 24.8,
+            "position": "C"
+          },
+          {
+            "season": "1983-84",
+            "ppg": 21.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Shaquille O'Neal",
+        "player_id": "shaquille_oneal_lal",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 29.7,
+            "position": "C"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 28.7,
+            "position": "C"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 27.2,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Jerry West",
+        "player_id": "jerry_west",
+        "seasons": [
+          {
+            "season": "1965-66",
+            "ppg": 31.3,
+            "position": "SG"
+          },
+          {
+            "season": "1969-70",
+            "ppg": 31.2,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Elgin Baylor",
+        "player_id": "elgin_baylor",
+        "seasons": [
+          {
+            "season": "1961-62",
+            "ppg": 38.3,
+            "position": "SF"
+          },
+          {
+            "season": "1962-63",
+            "ppg": 34,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Anthony Davis",
+        "player_id": "anthony_davis_lal",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 26.1,
+            "position": "PF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 23.2,
+            "position": "PF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 24.7,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "MEM": {
+    "team_name": "Memphis Grizzlies",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Ja Morant",
+        "player_id": "ja_morant",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 17.8,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 19.1,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 27.4,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 26.2,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Marc Gasol",
+        "player_id": "marc_gasol_mem",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 14.1,
+            "position": "C"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 17.4,
+            "position": "C"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 19.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Mike Conley",
+        "player_id": "mike_conley_mem",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 17.2,
+            "position": "PG"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 20.5,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 12.5,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Zach Randolph",
+        "player_id": "zach_randolph_mem",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 20.1,
+            "position": "PF"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 15.4,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Shareef Abdur-Rahim",
+        "player_id": "shareef_abdurrahim",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 23,
+            "position": "PF"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 20.3,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Pau Gasol",
+        "player_id": "pau_gasol_mem",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 21.8,
+            "position": "PF"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 20.8,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Rudy Gay",
+        "player_id": "rudy_gay_mem",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 19.6,
+            "position": "SF"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 19.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "O.J. Mayo",
+        "player_id": "oj_mayo_mem",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 18.5,
+            "position": "SG"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 17.5,
+            "position": "SG"
+          }
+        ]
+      }
+    ]
+  },
+  "MIA": {
+    "team_name": "Miami Heat",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Dwyane Wade",
+        "player_id": "dwyane_wade",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 27.2,
+            "position": "SG"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 30.2,
+            "position": "SG"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 26.6,
+            "position": "SG"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 21.2,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "LeBron James",
+        "player_id": "lebron_james_mia",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 26.7,
+            "position": "SF"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 26.8,
+            "position": "SF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 27.1,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Shaquille O'Neal",
+        "player_id": "shaquille_oneal_mia",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 22.9,
+            "position": "C"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 20,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Alonzo Mourning",
+        "player_id": "alonzo_mourning_mia",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 17.3,
+            "position": "C"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 21.7,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Jimmy Butler",
+        "player_id": "jimmy_butler_mia",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 19.9,
+            "position": "SF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 21.4,
+            "position": "SF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 22.9,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Tim Hardaway",
+        "player_id": "tim_hardaway_mia",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 20.3,
+            "position": "PG"
+          },
+          {
+            "season": "1997-98",
+            "ppg": 18.7,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Bam Adebayo",
+        "player_id": "bam_adebayo_mia",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 18.7,
+            "position": "C"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 20.4,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Glen Rice",
+        "player_id": "glen_rice_mia",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 17.6,
+            "position": "SF"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 22.3,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Chris Bosh",
+        "player_id": "chris_bosh_mia",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 18.7,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 16.2,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "MIL": {
+    "team_name": "Milwaukee Bucks",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Giannis Antetokounmpo",
+        "player_id": "giannis_antetokounmpo",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 22.9,
+            "position": "PF"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 27.7,
+            "position": "PF"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 29.5,
+            "position": "PF"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 28.1,
+            "position": "PF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 29.9,
+            "position": "PF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 30.4,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Kareem Abdul-Jabbar",
+        "player_id": "kareem_abduljabbar_mil",
+        "seasons": [
+          {
+            "season": "1969-70",
+            "ppg": 28.8,
+            "position": "C"
+          },
+          {
+            "season": "1971-72",
+            "ppg": 34.8,
+            "position": "C"
+          },
+          {
+            "season": "1973-74",
+            "ppg": 27,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Oscar Robertson",
+        "player_id": "oscar_robertson_mil",
+        "seasons": [
+          {
+            "season": "1970-71",
+            "ppg": 19.4,
+            "position": "PG"
+          },
+          {
+            "season": "1971-72",
+            "ppg": 19,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Sidney Moncrief",
+        "player_id": "sidney_moncrief",
+        "seasons": [
+          {
+            "season": "1981-82",
+            "ppg": 21.8,
+            "position": "SG"
+          },
+          {
+            "season": "1982-83",
+            "ppg": 22.5,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Ray Allen",
+        "player_id": "ray_allen_mil",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 22.1,
+            "position": "SG"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 22,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Glenn Robinson",
+        "player_id": "glenn_robinson",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 21.1,
+            "position": "SF"
+          },
+          {
+            "season": "1998-99",
+            "ppg": 23.4,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Michael Redd",
+        "player_id": "michael_redd",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 21.7,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 26.7,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Khris Middleton",
+        "player_id": "khris_middleton",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 18.3,
+            "position": "SF"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 20.9,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "MIN": {
+    "team_name": "Minnesota Timberwolves",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Kevin Garnett",
+        "player_id": "kevin_garnett_min",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 22.9,
+            "position": "PF"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 22,
+            "position": "PF"
+          },
+          {
+            "season": "2003-04",
+            "ppg": 24.2,
+            "position": "PF"
+          },
+          {
+            "season": "2004-05",
+            "ppg": 22.2,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Karl-Anthony Towns",
+        "player_id": "karlanthony_towns",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 24.4,
+            "position": "C"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 24.8,
+            "position": "C"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 24.6,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Love",
+        "player_id": "kevin_love_min",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 20.2,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 26.1,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Anthony Edwards",
+        "player_id": "anthony_edwards",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 24.6,
+            "position": "SG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 25.9,
+            "position": "SG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 27.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Stephon Marbury",
+        "player_id": "stephon_marbury",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 17.7,
+            "position": "PG"
+          },
+          {
+            "season": "1999-2000",
+            "ppg": 21.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Latrell Sprewell",
+        "player_id": "latrell_sprewell_min",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 16.8,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Sam Cassell",
+        "player_id": "sam_cassell_min",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 15.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Andrew Wiggins",
+        "player_id": "andrew_wiggins_min",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 16.9,
+            "position": "SF"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 23.6,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "NOP": {
+    "team_name": "New Orleans Pelicans",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Zion Williamson",
+        "player_id": "zion_williamson",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 22.5,
+            "position": "PF"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 27,
+            "position": "PF"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 26,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Anthony Davis",
+        "player_id": "anthony_davis_nop",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 13.5,
+            "position": "PF"
+          },
+          {
+            "season": "2014-15",
+            "ppg": 24.4,
+            "position": "PF"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 28,
+            "position": "PF"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 28.1,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Chris Paul",
+        "player_id": "chris_paul_nop",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 16.1,
+            "position": "PG"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 21.1,
+            "position": "PG"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 15.8,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Baron Davis",
+        "player_id": "baron_davis_noh",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 18.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "David West",
+        "player_id": "david_west",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 20.6,
+            "position": "PF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 18.9,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Jrue Holiday",
+        "player_id": "jrue_holiday_nop",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 14.3,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 15.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Brandon Ingram",
+        "player_id": "brandon_ingram",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 24.3,
+            "position": "SF"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 23.8,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Eric Gordon",
+        "player_id": "eric_gordon_nop",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 16.9,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "DeMarcus Cousins",
+        "player_id": "demarcus_cousins_nop",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 25.2,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "NYK": {
+    "team_name": "New York Knicks",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Patrick Ewing",
+        "player_id": "patrick_ewing",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 28.6,
+            "position": "C"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 24,
+            "position": "C"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 24.5,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Willis Reed",
+        "player_id": "willis_reed",
+        "seasons": [
+          {
+            "season": "1969-70",
+            "ppg": 21.7,
+            "position": "C"
+          },
+          {
+            "season": "1970-71",
+            "ppg": 20.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Walt Frazier",
+        "player_id": "walt_frazier",
+        "seasons": [
+          {
+            "season": "1971-72",
+            "ppg": 23.2,
+            "position": "PG"
+          },
+          {
+            "season": "1972-73",
+            "ppg": 21.1,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Carmelo Anthony",
+        "player_id": "carmelo_anthony_nyk",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 22.6,
+            "position": "SF"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 28.7,
+            "position": "SF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 27.4,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Jalen Brunson",
+        "player_id": "jalen_brunson",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 24,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 28.7,
+            "position": "PG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 26.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Bernard King",
+        "player_id": "bernard_king_nyk",
+        "seasons": [
+          {
+            "season": "1983-84",
+            "ppg": 26.3,
+            "position": "SF"
+          },
+          {
+            "season": "1984-85",
+            "ppg": 32.9,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Allan Houston",
+        "player_id": "allan_houston",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 17.7,
+            "position": "SG"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 20.9,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Julius Randle",
+        "player_id": "julius_randle_nyk",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 24.1,
+            "position": "PF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 20.1,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "OKC": {
+    "team_name": "Oklahoma City Thunder",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Shai Gilgeous-Alexander",
+        "player_id": "shai_gilgeousalexander",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 23.7,
+            "position": "PG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 24.5,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 31.4,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 30.1,
+            "position": "PG"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 32.7,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Durant",
+        "player_id": "kevin_durant_okc",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 30.1,
+            "position": "SF"
+          },
+          {
+            "season": "2010-11",
+            "ppg": 27.7,
+            "position": "SF"
+          },
+          {
+            "season": "2012-13",
+            "ppg": 28.1,
+            "position": "SF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 32,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Russell Westbrook",
+        "player_id": "russell_westbrook_okc",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 21.8,
+            "position": "PG"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 23.5,
+            "position": "PG"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 31.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "James Harden",
+        "player_id": "james_harden_okc",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 16.8,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Gary Payton",
+        "player_id": "gary_payton_sea",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 16.5,
+            "position": "PG"
+          },
+          {
+            "season": "1997-98",
+            "ppg": 19.2,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Shawn Kemp",
+        "player_id": "shawn_kemp_sea",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 18.1,
+            "position": "PF"
+          },
+          {
+            "season": "1995-96",
+            "ppg": 19.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Jack Sikma",
+        "player_id": "jack_sikma_sea",
+        "seasons": [
+          {
+            "season": "1979-80",
+            "ppg": 15.6,
+            "position": "C"
+          },
+          {
+            "season": "1981-82",
+            "ppg": 16.3,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "ORL": {
+    "team_name": "Orlando Magic",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Shaquille O'Neal",
+        "player_id": "shaquille_oneal_orl",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 23.4,
+            "position": "C"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 29.3,
+            "position": "C"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 29.3,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Dwight Howard",
+        "player_id": "dwight_howard_orl",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 20.7,
+            "position": "C"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 20.6,
+            "position": "C"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 18.3,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Tracy McGrady",
+        "player_id": "tracy_mcgrady_orl",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 26.8,
+            "position": "SG"
+          },
+          {
+            "season": "2002-03",
+            "ppg": 32.1,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Penny Hardaway",
+        "player_id": "penny_hardaway",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": 21.7,
+            "position": "PG"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 20.5,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Paolo Banchero",
+        "player_id": "paolo_banchero",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 20,
+            "position": "PF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 22.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Nick Anderson",
+        "player_id": "nick_anderson",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 16.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Hedo Turkoglu",
+        "player_id": "hedo_turkoglu_orl",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 19.5,
+            "position": "SF"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 20.6,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "PHI": {
+    "team_name": "Philadelphia 76ers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Wilt Chamberlain",
+        "player_id": "wilt_chamberlain_phi",
+        "seasons": [
+          {
+            "season": "1965-66",
+            "ppg": 33.5,
+            "position": "C"
+          },
+          {
+            "season": "1966-67",
+            "ppg": 24.1,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Julius Erving",
+        "player_id": "julius_erving_phi",
+        "seasons": [
+          {
+            "season": "1976-77",
+            "ppg": 21.6,
+            "position": "SF"
+          },
+          {
+            "season": "1980-81",
+            "ppg": 24.6,
+            "position": "SF"
+          },
+          {
+            "season": "1982-83",
+            "ppg": 21.4,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Allen Iverson",
+        "player_id": "allen_iverson_phi",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 28.4,
+            "position": "SG"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 31.1,
+            "position": "SG"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 31.4,
+            "position": "SG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 33,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Charles Barkley",
+        "player_id": "charles_barkley_phi",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 25.8,
+            "position": "PF"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 25.2,
+            "position": "PF"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 27.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Joel Embiid",
+        "player_id": "joel_embiid",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 27.5,
+            "position": "C"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 23,
+            "position": "C"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 30.6,
+            "position": "C"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 33.1,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Moses Malone",
+        "player_id": "moses_malone_phi",
+        "seasons": [
+          {
+            "season": "1982-83",
+            "ppg": 24.5,
+            "position": "C"
+          },
+          {
+            "season": "1984-85",
+            "ppg": 24.6,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Hal Greer",
+        "player_id": "hal_greer",
+        "seasons": [
+          {
+            "season": "1966-67",
+            "ppg": 22.1,
+            "position": "SG"
+          },
+          {
+            "season": "1968-69",
+            "ppg": 24.1,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Ben Simmons",
+        "player_id": "ben_simmons_phi",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 15.8,
+            "position": "PG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 16.4,
+            "position": "PG"
+          }
+        ]
+      }
+    ]
+  },
+  "PHX": {
+    "team_name": "Phoenix Suns",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Steve Nash",
+        "player_id": "steve_nash_phx",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 15.5,
+            "position": "PG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 18.6,
+            "position": "PG"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 16.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Charles Barkley",
+        "player_id": "charles_barkley_phx",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 25.6,
+            "position": "PF"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 21.6,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Devin Booker",
+        "player_id": "devin_booker",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 26.6,
+            "position": "SG"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 26.8,
+            "position": "SG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 27.8,
+            "position": "SG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 27.1,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Amar'e Stoudemire",
+        "player_id": "amare_stoudemire",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 26,
+            "position": "PF"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 25.2,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Johnson",
+        "player_id": "kevin_johnson",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 22.5,
+            "position": "PG"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 20.9,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Walter Davis",
+        "player_id": "walter_davis",
+        "seasons": [
+          {
+            "season": "1978-79",
+            "ppg": 24.2,
+            "position": "SG"
+          },
+          {
+            "season": "1979-80",
+            "ppg": 23.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Durant",
+        "player_id": "kevin_durant_phx",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 27.1,
+            "position": "SF"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 26.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Alvan Adams",
+        "player_id": "alvan_adams",
+        "seasons": [
+          {
+            "season": "1975-76",
+            "ppg": 19,
+            "position": "C"
+          },
+          {
+            "season": "1977-78",
+            "ppg": 18,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "POR": {
+    "team_name": "Portland Trail Blazers",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Damian Lillard",
+        "player_id": "damian_lillard_por",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 25.1,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 26.9,
+            "position": "PG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 30,
+            "position": "PG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 28.8,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Clyde Drexler",
+        "player_id": "clyde_drexler_por",
+        "seasons": [
+          {
+            "season": "1987-88",
+            "ppg": 27,
+            "position": "SG"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 25,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Bill Walton",
+        "player_id": "bill_walton_por",
+        "seasons": [
+          {
+            "season": "1976-77",
+            "ppg": 18.6,
+            "position": "C"
+          },
+          {
+            "season": "1977-78",
+            "ppg": 18.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Terry Porter",
+        "player_id": "terry_porter",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 17,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Rasheed Wallace",
+        "player_id": "rasheed_wallace_por",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 16.4,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "LaMarcus Aldridge",
+        "player_id": "lamarcus_aldridge",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 21.8,
+            "position": "PF"
+          },
+          {
+            "season": "2013-14",
+            "ppg": 23.2,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "CJ McCollum",
+        "player_id": "cj_mccollum",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 20.8,
+            "position": "SG"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 21,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Jerome Kersey",
+        "player_id": "jerome_kersey",
+        "seasons": [
+          {
+            "season": "1987-88",
+            "ppg": 19.2,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  },
+  "SAC": {
+    "team_name": "Sacramento Kings",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "De'Aaron Fox",
+        "player_id": "deaaron_fox",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 25.2,
+            "position": "PG"
+          },
+          {
+            "season": "2022-23",
+            "ppg": 25,
+            "position": "PG"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 26.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "DeMarcus Cousins",
+        "player_id": "demarcus_cousins",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 22.7,
+            "position": "C"
+          },
+          {
+            "season": "2015-16",
+            "ppg": 26.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Chris Webber",
+        "player_id": "chris_webber_sac",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 24.5,
+            "position": "PF"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 27.1,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Mitch Richmond",
+        "player_id": "mitch_richmond",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 23.4,
+            "position": "SG"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 25.7,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Oscar Robertson",
+        "player_id": "oscar_robertson_cin",
+        "seasons": [
+          {
+            "season": "1961-62",
+            "ppg": 30.8,
+            "position": "PG"
+          },
+          {
+            "season": "1963-64",
+            "ppg": 31.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Peja Stojakovic",
+        "player_id": "peja_stojakovic_sac",
+        "seasons": [
+          {
+            "season": "2003-04",
+            "ppg": 24.2,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Domantas Sabonis",
+        "player_id": "domantas_sabonis_sac",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 19.1,
+            "position": "PF"
+          },
+          {
+            "season": "2023-24",
+            "ppg": 19.4,
+            "position": "PF"
+          }
+        ]
+      }
+    ]
+  },
+  "SAS": {
+    "team_name": "San Antonio Spurs",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Tim Duncan",
+        "player_id": "tim_duncan",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 21.1,
+            "position": "PF"
+          },
+          {
+            "season": "2001-02",
+            "ppg": 25.5,
+            "position": "PF"
+          },
+          {
+            "season": "2002-03",
+            "ppg": 23.3,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "David Robinson",
+        "player_id": "david_robinson",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 29.8,
+            "position": "C"
+          },
+          {
+            "season": "1994-95",
+            "ppg": 27.6,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Tony Parker",
+        "player_id": "tony_parker",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 18.6,
+            "position": "PG"
+          },
+          {
+            "season": "2008-09",
+            "ppg": 22,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Manu Ginobili",
+        "player_id": "manu_ginobili",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 16,
+            "position": "SG"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 19.5,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "George Gervin",
+        "player_id": "george_gervin",
+        "seasons": [
+          {
+            "season": "1979-80",
+            "ppg": 33.1,
+            "position": "SG"
+          },
+          {
+            "season": "1981-82",
+            "ppg": 32.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Kawhi Leonard",
+        "player_id": "kawhi_leonard_sas",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 21.2,
+            "position": "SF"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 25.5,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Victor Wembanyama",
+        "player_id": "victor_wembanyama",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 21.4,
+            "position": "C"
+          },
+          {
+            "season": "2024-25",
+            "ppg": 24.3,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "TOR": {
+    "team_name": "Toronto Raptors",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Kyle Lowry",
+        "player_id": "kyle_lowry_tor",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 22.4,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 16.2,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "DeMar DeRozan",
+        "player_id": "demar_derozan_tor",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 27.3,
+            "position": "SG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 23,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Vince Carter",
+        "player_id": "vince_carter_tor",
+        "seasons": [
+          {
+            "season": "1999-2000",
+            "ppg": 25.7,
+            "position": "SG"
+          },
+          {
+            "season": "2000-01",
+            "ppg": 27.6,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Chris Bosh",
+        "player_id": "chris_bosh_tor",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 22.6,
+            "position": "PF"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 24,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Pascal Siakam",
+        "player_id": "pascal_siakam_tor",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 22.9,
+            "position": "PF"
+          },
+          {
+            "season": "2021-22",
+            "ppg": 22.8,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Kawhi Leonard",
+        "player_id": "kawhi_leonard_tor",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 26.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Jonas Valanciunas",
+        "player_id": "jonas_valanciunas_tor",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 12,
+            "position": "C"
+          },
+          {
+            "season": "2016-17",
+            "ppg": 12.8,
+            "position": "C"
+          }
+        ]
+      }
+    ]
+  },
+  "UTA": {
+    "team_name": "Utah Jazz",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "John Stockton",
+        "player_id": "john_stockton",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 14.7,
+            "position": "PG"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 12.6,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Karl Malone",
+        "player_id": "karl_malone_uta",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 31,
+            "position": "PF"
+          },
+          {
+            "season": "1996-97",
+            "ppg": 27.4,
+            "position": "PF"
+          },
+          {
+            "season": "1998-99",
+            "ppg": 23.8,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Donovan Mitchell",
+        "player_id": "donovan_mitchell_uta",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 23.8,
+            "position": "SG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 24,
+            "position": "SG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 26.4,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Adrian Dantley",
+        "player_id": "adrian_dantley_uta",
+        "seasons": [
+          {
+            "season": "1981-82",
+            "ppg": 30.7,
+            "position": "SF"
+          },
+          {
+            "season": "1983-84",
+            "ppg": 30.6,
+            "position": "SF"
+          }
+        ]
+      },
+      {
+        "name": "Pete Maravich",
+        "player_id": "pete_maravich_noj",
+        "seasons": [
+          {
+            "season": "1977-78",
+            "ppg": 27,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Rudy Gobert",
+        "player_id": "rudy_gobert_uta",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 12.8,
+            "position": "C"
+          },
+          {
+            "season": "2018-19",
+            "ppg": 15.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Deron Williams",
+        "player_id": "deron_williams",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 18.8,
+            "position": "PG"
+          },
+          {
+            "season": "2009-10",
+            "ppg": 18.7,
+            "position": "PG"
+          }
+        ]
+      }
+    ]
+  },
+  "WAS": {
+    "team_name": "Washington Wizards",
+    "data_complete": false,
+    "players": [
+      {
+        "name": "Wes Unseld",
+        "player_id": "wes_unseld",
+        "seasons": [
+          {
+            "season": "1969-70",
+            "ppg": 13.8,
+            "position": "C"
+          },
+          {
+            "season": "1972-73",
+            "ppg": 13.9,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Elvin Hayes",
+        "player_id": "elvin_hayes_was",
+        "seasons": [
+          {
+            "season": "1972-73",
+            "ppg": 21.2,
+            "position": "PF"
+          },
+          {
+            "season": "1974-75",
+            "ppg": 23,
+            "position": "PF"
+          }
+        ]
+      },
+      {
+        "name": "Walt Bellamy",
+        "player_id": "walt_bellamy",
+        "seasons": [
+          {
+            "season": "1961-62",
+            "ppg": 31.6,
+            "position": "C"
+          }
+        ]
+      },
+      {
+        "name": "Gilbert Arenas",
+        "player_id": "gilbert_arenas",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 25.5,
+            "position": "SG"
+          },
+          {
+            "season": "2005-06",
+            "ppg": 29.3,
+            "position": "SG"
+          },
+          {
+            "season": "2006-07",
+            "ppg": 28.4,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "John Wall",
+        "player_id": "john_wall",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 23.1,
+            "position": "PG"
+          },
+          {
+            "season": "2017-18",
+            "ppg": 19.4,
+            "position": "PG"
+          }
+        ]
+      },
+      {
+        "name": "Bradley Beal",
+        "player_id": "bradley_beal",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 25.6,
+            "position": "SG"
+          },
+          {
+            "season": "2019-20",
+            "ppg": 30.5,
+            "position": "SG"
+          },
+          {
+            "season": "2020-21",
+            "ppg": 31.3,
+            "position": "SG"
+          }
+        ]
+      },
+      {
+        "name": "Caron Butler",
+        "player_id": "caron_butler_was",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 20.7,
+            "position": "SF"
+          },
+          {
+            "season": "2007-08",
+            "ppg": 19.1,
+            "position": "SF"
+          }
+        ]
+      }
+    ]
+  }
+}

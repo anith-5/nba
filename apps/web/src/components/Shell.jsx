@@ -43,6 +43,10 @@ const navGroups = [
       { to: "/research", label: "Research" },
     ],
   },
+  {
+    label: "Arena",
+    items: [{ to: "/arena", label: "Arena" }],
+  },
 ];
 
 function NavItem({ to, label, end }) {
