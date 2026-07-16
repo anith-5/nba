@@ -19,6 +19,7 @@ export default function ClosestTo() {
   const [pendingTeam, setPendingTeam] = useState(null);
   const [teamPlayers, setTeamPlayers] = useState(null);
   const [teamPlayersLoading, setTeamPlayersLoading] = useState(false);
+  const [teamPlayersError, setTeamPlayersError] = useState(null);
   const [teamPlayersMeta, setTeamPlayersMeta] = useState({ source: null, dataComplete: true, note: null });
   const [revealEntries, setRevealEntries] = useState(null);
   const seenRoundRef = useRef(null);
@@ -27,17 +28,25 @@ export default function ClosestTo() {
     const onSpinResult = ({ team, skipUsed }) => {
       setPendingTeam(team);
       setSpinToken((t) => t + 1);
+      setTeamPlayersError(null);
       if (skipUsed) setMyState((prev) => ({ ...prev, skipUsed: true }));
     };
     const onTeamPlayersList = ({ players, source, dataComplete, note }) => {
       setTeamPlayers(players);
       setTeamPlayersLoading(false);
+      setTeamPlayersError(null);
       setTeamPlayersMeta({ source, dataComplete, note });
+    };
+    const onTeamPlayersError = ({ message }) => {
+      setTeamPlayersLoading(false);
+      setTeamPlayersError(message);
+      setTeamPlayers(null);
     };
     const onPickConfirmed = ({ state }) => {
       setMyState(state);
       setPendingTeam(null);
       setTeamPlayers(null);
+      setTeamPlayersError(null);
       if (!state.done) sendGameAction("spin_team");
     };
     const onRevealLineups = ({ entries }) => {
@@ -56,6 +65,7 @@ export default function ClosestTo() {
 
     socket.on("spin_result", onSpinResult);
     socket.on("team_players_list", onTeamPlayersList);
+    socket.on("team_players_error", onTeamPlayersError);
     socket.on("pick_confirmed", onPickConfirmed);
     socket.on("reveal_lineups", onRevealLineups);
     socket.on("cache_updated", onCacheUpdated);
@@ -63,6 +73,7 @@ export default function ClosestTo() {
     return () => {
       socket.off("spin_result", onSpinResult);
       socket.off("team_players_list", onTeamPlayersList);
+      socket.off("team_players_error", onTeamPlayersError);
       socket.off("pick_confirmed", onPickConfirmed);
       socket.off("reveal_lineups", onRevealLineups);
       socket.off("cache_updated", onCacheUpdated);
@@ -78,6 +89,7 @@ export default function ClosestTo() {
       setSpinToken(0);
       setPendingTeam(null);
       setTeamPlayers(null);
+      setTeamPlayersError(null);
       setRevealEntries(null);
     }
     seenRoundRef.current = roundNumber;
@@ -155,6 +167,7 @@ export default function ClosestTo() {
           pendingTeam={pendingTeam}
           teamPlayers={teamPlayers}
           teamPlayersLoading={teamPlayersLoading}
+          teamPlayersError={teamPlayersError}
           teamPlayersSource={teamPlayersMeta.source}
           teamPlayersDataComplete={teamPlayersMeta.dataComplete}
           teamPlayersNote={teamPlayersMeta.note}
@@ -162,6 +175,7 @@ export default function ClosestTo() {
           onUseSkip={() => sendGameAction("use_skip")}
           onRequestPlayers={() => {
             setTeamPlayersLoading(true);
+            setTeamPlayersError(null);
             sendGameAction("list_team_players");
           }}
           onConfirmPick={(payload) => sendGameAction("confirm_pick", payload)}

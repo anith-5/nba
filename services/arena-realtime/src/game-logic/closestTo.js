@@ -99,11 +99,14 @@ function primaryPosition(seasons) {
   return best;
 }
 
-// Resolves the full (live-if-ready, else static-fallback) roster for a team
-// — this is what powers the searchable/scrollable player list. Combines
-// multi-stint players (already deduped by player_id upstream), sorts by
-// last name, and attaches each player's primary position. No PPG here —
-// Blind Mode only reveals PPG at the end of the round.
+// Resolves the full live roster for a team — this is what powers the
+// searchable/scrollable player list. Waits for real data rather than
+// substituting a smaller/older dataset (see teamPlayersCache.getTeamPlayers);
+// rejects if the live fetch fails, which the caller turns into an error
+// state rather than a partial list. Combines multi-stint players (already
+// deduped by player_id upstream), sorts by last name, and attaches each
+// player's primary position. No PPG here — Blind Mode only reveals PPG at
+// the end of the round.
 export async function resolveTeamRoster(teamAbbr) {
   const data = await getTeamPlayers(teamAbbr);
   return data;

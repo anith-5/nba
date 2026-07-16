@@ -10,7 +10,19 @@ function PositionBadge({ position }) {
 // player who ever played for the team is browsable (search + a fully
 // scrollable alphabetical-by-last-name list), and every season that player
 // played is listed, most recent first, with no cap.
-export default function ClosestToPlayerCard({ team, players, lineup, loading, source, dataComplete, note, onConfirm }) {
+export default function ClosestToPlayerCard({
+  team,
+  players,
+  lineup,
+  loading,
+  error,
+  source,
+  dataComplete,
+  note,
+  onConfirm,
+  canSkip,
+  onUseSkip,
+}) {
   const [search, setSearch] = useState("");
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedSeason, setSelectedSeason] = useState(null);
@@ -27,12 +39,33 @@ export default function ClosestToPlayerCard({ team, players, lineup, loading, so
     setSelectedSeason(null);
   }
 
+  if (error) {
+    return (
+      <div className="card flex flex-col items-center gap-4 p-8 text-center">
+        <p className="stat-label">{team?.teamName}</p>
+        <p className="text-sm text-red-400">
+          Could not load player data for this team. Please use your skip to try another team.
+        </p>
+        {canSkip && (
+          <button className="btn-primary" onClick={onUseSkip}>
+            Use Skip
+          </button>
+        )}
+      </div>
+    );
+  }
+
   if (loading || !players) {
     return (
       <div className="card flex flex-col items-center gap-3 p-8 text-center">
-        <p className="stat-label">{team?.teamName}</p>
+        <div className="flex items-center gap-2">
+          <p className="stat-label">{team?.teamName}</p>
+          <span className="text-xs text-slate-500">Loading</span>
+        </div>
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-court/30 border-t-court" />
-        <p className="text-sm text-slate-400">Loading roster…</p>
+        <p className="text-sm text-slate-400">
+          Loading franchise history for this team. This may take a moment on first request.
+        </p>
       </div>
     );
   }
@@ -43,7 +76,11 @@ export default function ClosestToPlayerCard({ team, players, lineup, loading, so
     <div className="card animate-fade-in space-y-4 p-6">
       <div className="flex items-center justify-between">
         <p className="stat-label">{team?.teamName} Players</p>
-        {!dataComplete && <span className="text-xs text-amber-300">{note || "Showing limited player data"}</span>}
+        {dataComplete ? (
+          <span className="text-xs text-court">Live data</span>
+        ) : (
+          <span className="text-xs text-amber-300">{note || "Showing limited player data"}</span>
+        )}
       </div>
 
       <input

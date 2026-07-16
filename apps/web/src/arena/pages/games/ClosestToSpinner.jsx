@@ -20,6 +20,7 @@ export default function ClosestToSpinner({
   pendingTeam,
   teamPlayers,
   teamPlayersLoading,
+  teamPlayersError,
   teamPlayersSource,
   teamPlayersDataComplete,
   teamPlayersNote,
@@ -77,11 +78,14 @@ export default function ClosestToSpinner({
           team={pendingTeam}
           players={teamPlayers}
           loading={teamPlayersLoading}
+          error={teamPlayersError}
           source={teamPlayersSource}
           dataComplete={teamPlayersDataComplete}
           note={teamPlayersNote}
           lineup={lineup}
           onConfirm={onConfirmPick}
+          canSkip={skipRule !== "no-skips" && !myState.skipUsed}
+          onUseSkip={onUseSkip}
         />
       )}
 

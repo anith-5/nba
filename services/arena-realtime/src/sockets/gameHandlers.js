@@ -186,7 +186,24 @@ async function handleClosestToAction(io, room, socket, action, data) {
     const state = gameState.playerLineups[socket.id];
     if (!state?.pendingTeam) return;
     const teamAbbr = state.pendingTeam.abbr;
-    const rosterData = await resolveTeamRoster(teamAbbr);
+
+    let rosterData;
+    try {
+      rosterData = await resolveTeamRoster(teamAbbr);
+    } catch (err) {
+      console.warn(`[closest-to] roster fetch failed for ${teamAbbr}: ${err.message}`);
+      // Same staleness guard as the success path below -- don't tell them
+      // about a failure for a team they've since skipped away from.
+      const stillOnSameTeamAfterError = gameState.playerLineups[socket.id]?.pendingTeam?.abbr === teamAbbr;
+      if (stillOnSameTeamAfterError) {
+        socket.emit("team_players_error", {
+          team: state.pendingTeam,
+          message: "Could not load player data for this team. Please use your skip to try another team.",
+        });
+      }
+      return;
+    }
+
     // The player may have skipped/re-spun to a different team while the
     // (possibly slow, live) roster fetch was in flight -- don't hand them a
     // stale team's roster if they've since moved on.
