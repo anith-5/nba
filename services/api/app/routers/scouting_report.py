@@ -1,25 +1,20 @@
 from app.config import settings
-"""AI Scouting Report  " stats-based and video biomechanical analysis + PDF export."""
+"""AI Scouting Report  " stats-based analysis + PDF export."""
 
 import asyncio
 import io
-import os
-import tempfile
 import time
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from nba_api.stats.endpoints import commonplayerinfo, leaguedashplayerstats
 
 from app.claude_client import chat_completion, is_available
-from app.video_analyzer import analyze_video, metrics_to_dict, CV_AVAILABLE
 
 router = APIRouter(prefix="/scouting", tags=["scouting"])
 SEASON = settings.current_season
 SONNET = "claude-sonnet-4-6"
 HAIKU  = "claude-haiku-4-5-20251001"
-
-MAX_VIDEO_BYTES = 150 * 1024 * 1024   # 150 MB
 
 # ---------------------------------------------------------------------------
 # Claude prompts
@@ -37,36 +32,6 @@ Structure exactly:
 **Trade Value** (1 sentence)
 
 Be specific. Reference the stats provided. No filler."""
-
-
-VIDEO_SYSTEM = """You are an elite NBA defensive coordinator writing a scouting report based on video biomechanical analysis.
-Structure your response EXACTLY as:
-
-**Threat Level**: X/10
-
-**Scouting Summary** (2-3 sentences describing the player's style based on video evidence)
-
-**Key Tendencies from Video**
- ¢ [tendency 1  " with specific biomechanical evidence]
- ¢ [tendency 2]
- ¢ [tendency 3]
- ¢ [tendency 4]
-
-**How to Stop Them  " 3 Defensive Keys**
-
-1. **[Strategy Name]**: [2-3 sentence explanation with tactical specifics: positioning, scheme, matchup type]
-
-2. **[Strategy Name]**: [2-3 sentence explanation]
-
-3. **[Strategy Name]**: [2-3 sentence explanation]
-
-**Exploitable Weaknesses**
- ¢ [weakness 1 with evidence]
- ¢ [weakness 2]
-
-**Matchup Recommendation**: [Which type of defender, specific physical attributes needed]
-
-Be tactical, specific, and actionable. Reference the biomechanical data directly."""
 
 
 # ---------------------------------------------------------------------------
@@ -142,42 +107,6 @@ def _build_stats_prompt(data: dict, team_context: str) -> str:
     return msg
 
 
-def _build_video_prompt(player_name: str, team_context: str, metrics: dict) -> str:
-    dom = metrics["dominant_hand"]
-    drive = metrics["drive_direction"]
-    elbow = metrics["avg_r_elbow_angle"]
-    knee  = metrics["avg_knee_bend"]
-    jumps = metrics["jump_count"]
-    rel   = metrics["release_height"]
-    pace  = metrics["movement_pace"]
-    lat   = metrics["lateral_quickness"]
-    conf  = metrics["confidence"]
-    dur   = metrics["duration_seconds"]
-    frames = metrics["frames_analyzed"]
-
-    msg = (
-        f"Player: {player_name or 'Unknown'}\n"
-        f"Video duration: {dur:.0f}s . Frames analyzed: {frames} . Analysis confidence: {conf:.0%}\n\n"
-        f"BIOMECHANICAL FINDINGS:\n"
-        f" ¢ Dominant/primary dribbling hand: {dom}\n"
-        f" ¢ Primary drive direction: {drive}\n"
-        f" ¢ Average shooting elbow angle (right arm): {elbow:.0f}° "
-        f"(ideal form â‰ˆ 90°; above 110° = mechanical flaw)\n"
-        f" ¢ Average knee bend: {knee:.0f}° "
-        f"(180° = fully straight; under 150° = deep crouch = athletic)\n"
-        f" ¢ Detected jump events (shot attempts): {jumps}\n"
-        f" ¢ Release height: {rel}\n"
-        f" ¢ Movement pace: {pace}\n"
-        f" ¢ Lateral quickness: {lat}\n"
-    )
-    if team_context:
-        msg += f"\nDefending team context: {team_context}\n"
-    if metrics.get("analysis_notes"):
-        msg += f"\nAnalyst notes: {'; '.join(metrics['analysis_notes'])}\n"
-
-    return msg
-
-
 # ---------------------------------------------------------------------------
 # PDF generation (reportlab)
 # ---------------------------------------------------------------------------
@@ -215,42 +144,11 @@ def _generate_pdf(report_data: dict) -> bytes:
     elements = []
 
     player = report_data.get("player_name", "Unknown Player")
-    mode   = report_data.get("mode", "stats")
     season = report_data.get("season", SEASON)
 
     elements.append(Paragraph("HoopIQ Scouting Report", title_style))
     elements.append(Paragraph(f"{player} . {season}", sub_style))
     elements.append(HRFlowable(width="100%", thickness=2, color=GREEN, spaceAfter=12))
-
-    # Metrics table if video mode
-    if mode == "video" and report_data.get("metrics"):
-        m = report_data["metrics"]
-        elements.append(Paragraph("Biomechanical Analysis", h2_style))
-        table_data = [
-            ["Metric", "Finding"],
-            ["Dominant Hand",     m.get("dominant_hand", "-").title()],
-            ["Drive Direction",   m.get("drive_direction", "-").replace("-", " ").title()],
-            ["Shooting Elbow",    f"{m.get('avg_r_elbow_angle', 0):.0f}° (ideal â‰ˆ 90°)"],
-            ["Knee Bend",         f"{m.get('avg_knee_bend', 0):.0f}° (180°=straight)"],
-            ["Jump Events",       str(m.get("jump_count", 0))],
-            ["Release Height",    m.get("release_height", "-").title()],
-            ["Movement Pace",     m.get("movement_pace", "-").title()],
-            ["Lateral Quickness", m.get("lateral_quickness", "-").title()],
-            ["Confidence",        f"{m.get('confidence', 0):.0%}"],
-        ]
-        tbl = Table(table_data, colWidths=[2.5 * inch, 4 * inch])
-        tbl.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), GREEN),
-            ("TEXTCOLOR",  (0, 0), (-1, 0), white),
-            ("FONTNAME",   (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("FONTSIZE",   (0, 0), (-1, -1), 9),
-            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [HexColor("#f8fafc"), HexColor("#f1f5f9")]),
-            ("GRID",       (0, 0), (-1, -1), 0.5, GRAY),
-            ("TOPPADDING", (0, 0), (-1, -1), 5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-        ]))
-        elements.append(tbl)
-        elements.append(Spacer(1, 12))
 
     # Stats table if available
     if report_data.get("stats_used"):
@@ -335,69 +233,6 @@ async def scouting_report_stats(player_id: int, team_context: str = ""):
         "season":      SEASON,
         "report":      report,
         "stats_used":  data["stats"],
-        "model":       SONNET,
-        "tokens_used": tokens,
-    }
-
-
-@router.post("/video")
-async def scouting_report_video(
-    video: UploadFile = File(...),
-    player_name: str = Form(default=""),
-    team_context: str = Form(default=""),
-):
-    if not is_available():
-        raise HTTPException(503, "ANTHROPIC_API_KEY not set in services/api/.env")
-    if not CV_AVAILABLE:
-        raise HTTPException(
-            503,
-            "Video analysis requires mediapipe + opencv. "
-            "Run: pip install mediapipe opencv-python-headless in the venv.",
-        )
-
-    content_type = video.content_type or ""
-    if not (content_type.startswith("video/") or video.filename.lower().endswith((".mp4", ".mov", ".avi", ".mkv"))):
-        raise HTTPException(400, "File must be a video (mp4, mov, avi, mkv).")
-
-    content = await video.read()
-    if len(content) > MAX_VIDEO_BYTES:
-        raise HTTPException(413, f"Video too large. Max {MAX_VIDEO_BYTES // (1024*1024)} MB.")
-
-    suffix = os.path.splitext(video.filename or ".mp4")[1] or ".mp4"
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as f:
-        f.write(content)
-        tmp_path = f.name
-
-    try:
-        metrics = await asyncio.to_thread(analyze_video, tmp_path)
-    except Exception as e:
-        os.unlink(tmp_path)
-        raise HTTPException(500, f"Video analysis failed: {e}")
-    finally:
-        try:
-            os.unlink(tmp_path)
-        except Exception:
-            pass
-
-    metrics_dict = metrics_to_dict(metrics)
-
-    prompt = _build_video_prompt(player_name, team_context, metrics_dict)
-    try:
-        report, tokens = await asyncio.to_thread(
-            chat_completion, SONNET, VIDEO_SYSTEM,
-            [{"role": "user", "content": prompt}], 900,
-        )
-    except ValueError as e:
-        raise HTTPException(503, str(e))
-    except Exception as e:
-        raise HTTPException(500, str(e))
-
-    return {
-        "mode":        "video",
-        "player_name": player_name or "Unknown",
-        "season":      SEASON,
-        "metrics":     metrics_dict,
-        "report":      report,
         "model":       SONNET,
         "tokens_used": tokens,
     }

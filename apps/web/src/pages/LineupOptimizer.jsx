@@ -2,23 +2,23 @@ import { useState, useEffect } from "react";
 import { api } from "../api.js";
 
 const RATING_COLOR = (v) =>
-  v > 8 ? "text-court-glow" : v > 3 ? "text-court" : v > -3 ? "text-white" : v > -8 ? "text-orange-400" : "text-red-400";
+  v > 8 ? "text-brand-glow" : v > 3 ? "text-zinc-100" : v > -3 ? "text-zinc-400" : v > -8 ? "text-zinc-500" : "text-brand";
 
 const TIER_STYLE = {
-  Elite:         "bg-court/15 text-court-glow border-court/40",
-  Strong:        "bg-blue-500/10 text-blue-400 border-blue-500/30",
-  Average:       "bg-slate-700/30 text-slate-300 border-slate-600/30",
-  "Below Average": "bg-orange-500/10 text-orange-400 border-orange-500/30",
-  Poor:          "bg-red-500/10 text-red-400 border-red-500/20",
+  Elite:         "bg-brand/15 text-brand-glow border-brand/40",
+  Strong:        "bg-white/10 text-zinc-100 border-white/20",
+  Average:       "bg-white/5 text-zinc-400 border-white/10",
+  "Below Average": "bg-white/[0.03] text-zinc-500 border-white/10",
+  Poor:          "bg-brand/10 text-brand border-brand/30",
 };
 
 const ARCH_COLOR = {
-  "Primary Scorer":  "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-  "Playmaker":       "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "3-and-D Wing":    "bg-court/15 text-court border-court/30",
-  "Interior Big":    "bg-purple-500/15 text-purple-400 border-purple-500/30",
-  "Two-Way Wing":    "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-  "Role Player":     "bg-slate-700/30 text-slate-400 border-slate-600/30",
+  "Primary Scorer":  "bg-white/10 text-zinc-200 border-white/15",
+  "Playmaker":       "bg-white/10 text-zinc-200 border-white/15",
+  "3-and-D Wing":    "bg-white/10 text-zinc-200 border-white/15",
+  "Interior Big":    "bg-white/10 text-zinc-200 border-white/15",
+  "Two-Way Wing":    "bg-white/10 text-zinc-200 border-white/15",
+  "Role Player":     "bg-white/5 text-zinc-400 border-white/10",
 };
 
 function ArchBadge({ arch }) {
@@ -96,7 +96,7 @@ function RealLineups({ teams }) {
         </button>
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {roster && (
         <div className="card p-4 max-w-2xl">
@@ -208,10 +208,10 @@ function PredictionResult({ result }) {
           <span className={result.archetype_balance.has_primary_playmaker ? "text-court" : "text-red-400"}>
             {result.archetype_balance.has_primary_playmaker ? "✓" : "✗"} Playmaker
           </span>
-          <span className={result.archetype_balance.has_interior_presence ? "text-court" : "text-orange-400"}>
+          <span className={result.archetype_balance.has_interior_presence ? "text-court" : "text-brand-glow"}>
             {result.archetype_balance.has_interior_presence ? "✓" : "✗"} Interior Big
           </span>
-          <span className={result.archetype_balance.has_floor_spacing ? "text-court" : "text-orange-400"}>
+          <span className={result.archetype_balance.has_floor_spacing ? "text-court" : "text-brand-glow"}>
             {result.archetype_balance.has_floor_spacing ? "✓" : "✗"} Floor Spacing
           </span>
         </div>
@@ -340,7 +340,7 @@ function HypotheticalBuilder() {
               </span>
             ) : "Train Lineup Model"}
           </button>
-          {error && <p className="text-amber-300 text-sm">{error}</p>}
+          {error && <p className="text-brand-glow text-sm">{error}</p>}
         </div>
       )}
 
@@ -405,7 +405,7 @@ function HypotheticalBuilder() {
             ) : filledCount === 5 ? "Predict Lineup Net Rating" : `Add ${5 - filledCount} more player${5 - filledCount !== 1 ? "s" : ""}`}
           </button>
 
-          {error && <p className="text-amber-300 text-sm">{error}</p>}
+          {error && <p className="text-brand-glow text-sm">{error}</p>}
 
           <div className="card p-3 text-xs text-slate-600 space-y-1">
             <p><span className="text-slate-400">How it works:</span></p>

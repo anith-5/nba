@@ -15,10 +15,10 @@ import { toPng } from "html-to-image";
  *  - Logo is an inline SVG (same-origin, no CORS) so it never comes back blank.
  */
 
-const NAVY = "#0F172A";
-const CARD = "#1E293B";
-const BRAND = "#2563EB";
-const BRAND_GLOW = "#3B82F6";
+const NAVY = "#000000";
+const CARD = "#121214";
+const BRAND = "#EF4444";
+const BRAND_GLOW = "#F87171";
 const TEXT = "#F8FAFC";
 const MUTED = "#94A3B8";
 

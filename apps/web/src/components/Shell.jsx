@@ -35,6 +35,7 @@ const navGroups = [
     label: "Scouting",
     items: [
       { to: "/prospects", label: "Int'l Prospects" },
+      { to: "/draft-comps", label: "Draft Prospect Comps" },
       { to: "/research", label: "Research" },
     ],
   },
@@ -81,7 +82,7 @@ function TopLink({ to, label, end }) {
         <>
           {label}
           {isActive && (
-            <span className="absolute inset-x-0 -bottom-[1px] h-0.5 rounded-full bg-brand" />
+            <span className="absolute inset-x-0 -bottom-[1px] h-0.5 rounded-full bg-[#ef4444]" />
           )}
         </>
       )}
@@ -167,7 +168,7 @@ function SidebarNav({ onNavigate }) {
                 className={({ isActive }) =>
                   `block rounded-lg px-3 py-1.5 text-sm font-medium transition ${
                     isActive
-                      ? "bg-brand/15 text-brand-glow"
+                      ? "bg-[#ef4444]/15 text-[#f87171]"
                       : "text-slate-400 hover:bg-white/5 hover:text-white"
                   }`
                 }
@@ -208,7 +209,7 @@ export default function Shell() {
   return (
     <div className="min-h-dvh">
       {/* Sticky top nav */}
-      <header className="sticky top-0 z-40 border-b border-white/5 bg-surface/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-4 px-4 sm:px-6">
           {/* Mobile hamburger */}
           <button

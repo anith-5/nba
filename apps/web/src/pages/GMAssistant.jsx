@@ -125,8 +125,8 @@ export default function GMAssistant() {
       </div>
 
       {error && (
-        <div className="flex-shrink-0 mt-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-          <p className="text-amber-300 text-sm">{error}</p>
+        <div className="flex-shrink-0 mt-2 p-3 rounded-lg bg-brand/10 border border-brand/20">
+          <p className="text-brand-glow text-sm">{error}</p>
           {error.includes("ANTHROPIC_API_KEY") && (
             <p className="text-slate-500 text-xs mt-1">
               Add <code className="bg-slate-800 px-1 rounded">ANTHROPIC_API_KEY=sk-ant-...</code> to{" "}

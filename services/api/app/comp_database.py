@@ -1362,11 +1362,15 @@ def compute_query_archetype_and_stats(player_id: int, name: str) -> tuple[Option
 
     latest = max(entries, key=lambda e: e["age"])
     db = _db
-    if db is None:
+    # The portable JSON snapshot can't carry the sklearn scaler object, so it may
+    # be absent when the DB was loaded from JSON rather than freshly built. Without
+    # it we can't assign an archetype by nearest centroid — fall back to a
+    # badge-only match (archetype=None) instead of crashing.
+    scaler = db.get("scaler") if db else None
+    if scaler is None or not latest.get("cluster_features"):
         return None, latest["stats"], latest["age"]
 
     # Assign archetype via nearest centroid in the existing scaled feature space
-    scaler: StandardScaler = db["scaler"]
     q_scaled = scaler.transform(np.array(latest["cluster_features"], dtype=float).reshape(1, -1))
     db_entries = db["entries"]
     X_scaled = scaler.transform(np.array([e["cluster_features"] for e in db_entries], dtype=float))

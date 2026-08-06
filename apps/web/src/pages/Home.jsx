@@ -1,350 +1,277 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../api.js";
-import GameCard from "../components/GameCard.jsx";
-import { InitialsTile, TeamTile } from "../components/TeamTile.jsx";
 
-// ---- Snapshot-style fallback data (realistic; keeps the page alive) ----
+// Black / red / white, minimal (Apple/Resend restraint). Red is used sparingly —
+// the hero figure, the #1 rank, active states — never as filler.
+const RED = "#ef4444";
+
+// ── Realistic fallback data so the page is never empty (real snapshot preferred) ─
 const STANDINGS = {
-  East: [
-    ["BOS", "Celtics", 41, 12], ["CLE", "Cavaliers", 39, 14], ["NYK", "Knicks", 36, 17],
-    ["MIL", "Bucks", 33, 20], ["ORL", "Magic", 32, 22], ["IND", "Pacers", 30, 23],
-    ["MIA", "Heat", 28, 24], ["PHI", "76ers", 27, 25],
-  ],
-  West: [
-    ["OKC", "Thunder", 43, 10], ["DEN", "Nuggets", 38, 15], ["MEM", "Grizzlies", 36, 18],
-    ["HOU", "Rockets", 34, 19], ["LAL", "Lakers", 32, 21], ["DAL", "Mavericks", 31, 22],
-    ["LAC", "Clippers", 30, 23], ["MIN", "Timberwolves", 29, 24],
-  ],
+  East: [["BOS", "Celtics", 41, 12], ["CLE", "Cavaliers", 39, 14], ["NYK", "Knicks", 36, 17],
+    ["MIL", "Bucks", 33, 20], ["ORL", "Magic", 32, 22], ["IND", "Pacers", 30, 23]],
+  West: [["OKC", "Thunder", 43, 10], ["DEN", "Nuggets", 38, 15], ["MEM", "Grizzlies", 36, 18],
+    ["HOU", "Rockets", 34, 19], ["LAL", "Lakers", 32, 21], ["DAL", "Mavericks", 31, 22]],
 };
-
 const SCORING_LEADERS = [
   ["Shai Gilgeous-Alexander", "OKC", 32.6], ["Giannis Antetokounmpo", "MIL", 30.4],
   ["Nikola Jokić", "DEN", 29.7], ["Luka Dončić", "DAL", 28.1], ["Jayson Tatum", "BOS", 27.8],
 ];
-
 const CLUTCH_LEADERS = [
-  ["Shai Gilgeous-Alexander", "31.1 PPG", 6.5, "clutch"], ["Anthony Edwards", "28.8 PPG", 5.6, "clutch"],
-  ["Luka Dončić", "33.5 PPG", 5.4, "clutch"], ["Jalen Brunson", "26.3 PPG", 5.1, "clutch"],
-  ["Nikola Jokić", "29.1 PPG", 4.8, "clutch"],
+  ["Shai Gilgeous-Alexander", "OKC", 6.5], ["Anthony Edwards", "MIN", 5.6],
+  ["Luka Dončić", "DAL", 5.4], ["Jalen Brunson", "NYK", 5.1], ["Nikola Jokić", "DEN", 4.8],
 ];
 
-const PLAYER_CARDS = [
-  { name: "Shai Gilgeous-Alexander", team: "OKC", pos: "PG", stats: [["PPG", "32.6"], ["AST", "6.3"], ["TS%", "63.9"]] },
-  { name: "Nikola Jokić", team: "DEN", pos: "C", stats: [["PPG", "29.7"], ["REB", "12.9"], ["AST", "10.1"]] },
-  { name: "Jayson Tatum", team: "BOS", pos: "SF", stats: [["PPG", "27.8"], ["REB", "8.6"], ["3P%", "37.2"]] },
-  { name: "Anthony Edwards", team: "MIN", pos: "SG", stats: [["PPG", "27.1"], ["3PM", "4.1"], ["TS%", "58.4"]] },
-];
+// ── Global search (StatMuse-style) ────────────────────────────────────────────
+function SearchBar() {
+  const [q, setQ] = useState("");
+  const [results, setResults] = useState([]);
+  const [open, setOpen] = useState(false);
+  const boxRef = useRef(null);
+  const nav = useNavigate();
 
-const AI_TOOLS = [
-  { to: "/shot-quality", title: "Shot Quality", desc: "Hot-zone xFG% map, graded A+ to F.", icon: "target" },
-  { to: "/clutch", title: "Clutch DNA", desc: "How much a game elevates under pressure.", icon: "bolt" },
-  { to: "/draft", title: "Draft Simulator", desc: "Future, historical & redraft modes.", icon: "layers" },
-  { to: "/scouting", title: "AI Scouting", desc: "Claude-written reports, PDF export.", icon: "doc" },
-  { to: "/gm", title: "GM Assistant", desc: "Chat over live league data.", icon: "chat" },
-  { to: "/defense", title: "Defense Scanner", desc: "Weaknesses + a full game plan.", icon: "shield" },
-];
+  useEffect(() => {
+    const onClick = (e) => { if (!boxRef.current?.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
-function Icon({ name, className = "h-6 w-6" }) {
-  const paths = {
-    target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></>,
-    bolt: <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />,
-    layers: <><path d="M12 3l9 5-9 5-9-5 9-5z" /><path d="M3 13l9 5 9-5" /></>,
-    doc: <><path d="M6 2h9l5 5v15H6z" /><path d="M15 2v5h5M9 13h6M9 17h6" /></>,
-    chat: <path d="M4 5h16v11H9l-5 4V5z" />,
-    shield: <path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6l7-3z" />,
-  };
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
-      {paths[name]}
-    </svg>
-  );
-}
-
-// ---- AI tools as an interactive orbit (hover a node → it expands) ----
-function AIToolsOrbit() {
-  const [active, setActive] = useState(null);
-  const R = 40; // ring radius as % of container
+  async function search(val) {
+    setQ(val);
+    if (val.length < 2) { setResults([]); return; }
+    try {
+      const data = await api.searchPlayers(val);
+      setResults((data.players ?? data).slice(0, 6));
+      setOpen(true);
+    } catch { setResults([]); }
+  }
+  function go(p) {
+    nav(`/trajectory?player=${p.id}&name=${encodeURIComponent(p.full_name)}`);
+  }
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[560px]">
-      {/* Center label reacts to the hovered node */}
-      <div className="pointer-events-none absolute inset-0 grid place-items-center">
-        <div className="max-w-[230px] px-6 text-center">
-          {active === null ? (
-            <>
-              <p className="font-display text-lg font-bold text-white">AI tools</p>
-              <p className="mt-1 text-xs text-slate-500">Hover a node to explore</p>
-            </>
-          ) : (
-            <>
-              <p className="font-display text-base font-bold text-white">{AI_TOOLS[active].title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-400">{AI_TOOLS[active].desc}</p>
-            </>
-          )}
-        </div>
+    <div ref={boxRef} className="relative">
+      <div className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/[0.03] px-4 py-3.5 transition focus-within:border-white/25">
+        <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-zinc-500" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" />
+        </svg>
+        <input
+          value={q}
+          onChange={(e) => search(e.target.value)}
+          onFocus={() => results.length && setOpen(true)}
+          onKeyDown={(e) => { if (e.key === "Enter" && results[0]) go(results[0]); }}
+          placeholder="Search any player, stat, or matchup…"
+          className="w-full bg-transparent text-[15px] text-white placeholder:text-zinc-600 focus:outline-none"
+        />
+        <kbd className="hidden shrink-0 rounded border border-white/10 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600 sm:block">↵</kbd>
       </div>
-
-      {AI_TOOLS.map((t, i) => {
-        const angle = ((-90 + i * 60) * Math.PI) / 180;
-        const left = 50 + R * Math.cos(angle);
-        const top = 50 + R * Math.sin(angle);
-        const isActive = active === i;
-        const dim = active !== null && !isActive;
-        return (
-          <Link
-            key={t.to}
-            to={t.to}
-            onMouseEnter={() => setActive(i)}
-            onMouseLeave={() => setActive(null)}
-            onFocus={() => setActive(i)}
-            onBlur={() => setActive(null)}
-            aria-label={`${t.title} — ${t.desc}`}
-            style={{ left: `${left}%`, top: `${top}%` }}
-            className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-surface-raised ring-1 ring-white/10 transition-all duration-300 ease-out ${
-              isActive ? "z-10 h-32 w-32 shadow-lift" : "h-[92px] w-[92px]"
-            } ${dim ? "opacity-40" : "opacity-100"}`}
-          >
-            {/* inner orange disc */}
-            <span
-              className={`grid place-items-center rounded-full bg-live text-white transition-all duration-300 ease-out ${
-                isActive ? "h-[104px] w-[104px]" : "h-14 w-14"
-              }`}
-            >
-              <Icon name={t.icon} className={isActive ? "h-9 w-9" : "h-6 w-6"} />
-            </span>
-          </Link>
-        );
-      })}
+      {open && results.length > 0 && (
+        <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-white/12 bg-[#0b0b0d] shadow-2xl">
+          {results.map((p) => (
+            <button key={p.id} onClick={() => go(p)}
+              className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-white/[0.04]">
+              <span className="grid h-7 w-7 place-items-center rounded-full border border-white/10 text-[11px] font-semibold text-zinc-400">
+                {p.full_name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+              </span>
+              <span className="text-sm text-white">{p.full_name}</span>
+              {p.team && <span className="ml-auto text-xs text-zinc-600">{p.team}</span>}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-// Mobile fallback — a plain, tappable list (orbit hover doesn't suit touch)
-function AIToolsList() {
+// ── Editorial hero (real scoring leader) ──────────────────────────────────────
+function Hero({ leader, second }) {
+  const [name, team, ppg] = leader;
+  const gap = second ? (ppg - second[2]).toFixed(1) : null;
   return (
-    <div className="grid gap-3 sm:hidden">
-      {AI_TOOLS.map((t) => (
-        <Link key={t.to} to={t.to} className="card-hover flex items-center gap-3 p-4">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-live text-white">
-            <Icon name={t.icon} className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="font-display font-semibold text-white">{t.title}</p>
-            <p className="text-sm text-slate-400">{t.desc}</p>
+    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0b] p-8 sm:p-10">
+      <div className="flex flex-col justify-between gap-8 sm:flex-row sm:items-start">
+        <div className="max-w-xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+            <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full align-middle" style={{ background: RED }} />
+            NBA Scoring Leader · Today
+          </p>
+          <h1 className="mt-4 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl">
+            {name}
+          </h1>
+          <p className="mt-4 text-[15px] leading-relaxed text-zinc-400">
+            Leading the league at{" "}
+            <span className="font-semibold text-white">{ppg} points per game</span>
+            {gap ? <> — <span style={{ color: RED }}>{gap}</span> clear of {second[0]}.</> : "."}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Chip>#1 in the NBA</Chip>
+            <Chip>{team}</Chip>
+            {gap && <Chip accent>+{gap} vs #2</Chip>}
           </div>
-        </Link>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className="font-mono text-7xl font-bold leading-none tracking-tighter sm:text-8xl" style={{ color: RED }}>
+            {ppg}
+          </p>
+          <p className="mt-1 text-xs font-medium uppercase tracking-widest text-zinc-500">Points / Game</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Chip({ children, accent }) {
+  return (
+    <span
+      className="rounded-full border px-3 py-1 text-xs font-medium"
+      style={accent
+        ? { borderColor: "rgba(239,68,68,0.35)", color: RED, background: "rgba(239,68,68,0.08)" }
+        : { borderColor: "rgba(255,255,255,0.12)", color: "#d4d4d8" }}
+    >
+      {children}
+    </span>
+  );
+}
+
+// ── Leaders (ranked bars) ─────────────────────────────────────────────────────
+function Leaders({ scoring, clutch }) {
+  const [tab, setTab] = useState("Scoring");
+  const rows = tab === "Scoring" ? scoring : clutch;
+  const max = Math.max(...rows.map((r) => r[2]));
+  const unit = tab === "Scoring" ? "PPG" : "CLU";
+  return (
+    <Panel title="Leaders"
+      right={<Toggle options={["Scoring", "Clutch"]} value={tab} onChange={setTab} />}>
+      <div className="space-y-3.5">
+        {rows.map((r, i) => (
+          <div key={r[0]} className="flex items-center gap-3">
+            <span className="w-4 text-right font-mono text-xs" style={{ color: i === 0 ? RED : "#52525b" }}>{i + 1}</span>
+            <div className="min-w-0 flex-1">
+              <div className="mb-1.5 flex items-baseline justify-between gap-2">
+                <span className="truncate text-sm font-medium text-white">{r[0]}</span>
+                <span className="shrink-0 font-mono text-sm tabular-nums text-zinc-300">
+                  {r[2]}<span className="ml-1 text-[10px] text-zinc-600">{unit}</span>
+                </span>
+              </div>
+              <div className="h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                <div className="h-full rounded-full"
+                  style={{ width: `${(r[2] / max) * 100}%`, background: i === 0 ? RED : "rgba(255,255,255,0.35)" }} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+// ── Standings (minimal table) ─────────────────────────────────────────────────
+function Standings({ standings }) {
+  const [conf, setConf] = useState("West");
+  const rows = standings[conf] ?? [];
+  return (
+    <Panel title="Standings" id="standings"
+      right={<Toggle options={["East", "West"]} value={conf} onChange={setConf} />}>
+      <table className="w-full text-sm">
+        <tbody>
+          {rows.map(([tri, name, w, l], i) => (
+            <tr key={tri} className="border-t border-white/[0.06] first:border-0">
+              <td className="py-2.5 pr-3 font-mono text-xs" style={{ color: i === 0 ? RED : "#52525b" }}>{i + 1}</td>
+              <td className="py-2.5">
+                <span className="font-mono text-xs text-zinc-500">{tri}</span>
+                <span className="ml-2.5 font-medium text-white">{name}</span>
+              </td>
+              <td className="py-2.5 text-right font-mono tabular-nums text-white">{w}<span className="text-zinc-600">–{l}</span></td>
+              <td className="py-2.5 pl-3 text-right font-mono tabular-nums text-zinc-500">{(w / (w + l)).toFixed(3).slice(1)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Panel>
+  );
+}
+
+// ── Shared minimal primitives ─────────────────────────────────────────────────
+function Panel({ title, right, children, id }) {
+  return (
+    <section id={id} className="rounded-3xl border border-white/10 bg-[#0a0a0b] p-6">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-zinc-400">{title}</h2>
+        {right}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Toggle({ options, value, onChange }) {
+  return (
+    <div className="flex gap-1">
+      {options.map((o) => (
+        <button key={o} onClick={() => onChange(o)} aria-pressed={value === o}
+          className="rounded-full px-3 py-1 text-xs font-medium transition"
+          style={value === o
+            ? { color: "#fff", background: "rgba(239,68,68,0.9)" }
+            : { color: "#71717a" }}>
+          {o}
+        </button>
       ))}
     </div>
   );
 }
 
-function StandingsCard({ standings = STANDINGS }) {
-  const [conf, setConf] = useState("East");
-  const rows = standings[conf] ?? [];
-  return (
-    <div className="card p-5" id="standings">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-base font-bold text-white">Standings</h2>
-        <div className="flex rounded-lg bg-surface p-0.5 ring-1 ring-white/10">
-          {["East", "West"].map((c) => (
-            <button key={c} type="button" onClick={() => setConf(c)} aria-pressed={conf === c}
-              className={`rounded-md px-3 py-1 text-xs font-semibold transition ${conf === c ? "bg-brand text-white" : "text-slate-400 hover:text-white"}`}>
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-[11px] uppercase tracking-wider text-slate-500">
-            <th className="pb-2 font-medium">#</th>
-            <th className="pb-2 font-medium">Team</th>
-            <th className="pb-2 text-right font-medium">W</th>
-            <th className="pb-2 text-right font-medium">L</th>
-            <th className="pb-2 text-right font-medium">PCT</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(([tri, name, w, l], i) => (
-            <tr key={tri} className="border-t border-white/5">
-              <td className="py-2 font-mono text-slate-500">{i + 1}</td>
-              <td className="py-2">
-                <div className="flex items-center gap-2.5">
-                  <TeamTile tricode={tri} size="sm" />
-                  <span className="font-medium text-white">{name}</span>
-                </div>
-              </td>
-              <td className="py-2 text-right font-mono tabular-nums text-white">{w}</td>
-              <td className="py-2 text-right font-mono tabular-nums text-slate-400">{l}</td>
-              <td className="py-2 text-right font-mono tabular-nums text-slate-400">{(w / (w + l)).toFixed(3).slice(1)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function LeadersCard({ scoring = SCORING_LEADERS, clutch = CLUTCH_LEADERS }) {
-  const [tab, setTab] = useState("Scoring");
-  const rows = tab === "Scoring" ? scoring : clutch;
-  return (
-    <div className="card p-5">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-base font-bold text-white">Leaders</h2>
-        <div className="flex rounded-lg bg-surface p-0.5 ring-1 ring-white/10">
-          {["Scoring", "Clutch"].map((c) => (
-            <button key={c} type="button" onClick={() => setTab(c)} aria-pressed={tab === c}
-              className={`rounded-md px-3 py-1 text-xs font-semibold transition ${tab === c ? "bg-brand text-white" : "text-slate-400 hover:text-white"}`}>
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-      <ul className="space-y-1">
-        {rows.map((r, i) => (
-          <li key={r[0]} className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-white/5">
-            <span className="w-4 text-center font-mono text-xs text-slate-500">{i + 1}</span>
-            <InitialsTile name={r[0]} size="sm" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">{r[0]}</p>
-              <p className="text-xs text-slate-500">{r[1]}</p>
-            </div>
-            {tab === "Scoring" ? (
-              <span className="font-display text-lg font-bold tabular-nums text-white">{r[2]}</span>
-            ) : (
-              <div className="text-right">
-                <span className="font-display text-lg font-bold tabular-nums text-live-glow">{r[2]}</span>
-                <p className="text-[10px] uppercase tracking-wide text-slate-500">{r[3]}</p>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function PlayerCard({ p }) {
-  return (
-    <Link to="/players" className="card-hover flex flex-col gap-3 p-4">
-      <div className="flex items-center gap-3">
-        <InitialsTile name={p.name} size="md" />
-        <div className="min-w-0">
-          <p className="truncate font-display font-semibold text-white">{p.name}</p>
-          <p className="text-xs text-slate-500">{p.team} · {p.pos}</p>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {p.stats.map(([label, val]) => (
-          <div key={label} className="rounded-lg bg-surface/60 py-2 text-center ring-1 ring-white/5">
-            <p className="font-display text-base font-bold tabular-nums text-white">{val}</p>
-            <p className="stat-label mt-0.5">{label}</p>
-          </div>
-        ))}
-      </div>
-    </Link>
-  );
-}
+const TOOLS = [
+  ["/shot-evaluator", "Shot Evaluator"], ["/draft-comps", "Draft Comps"],
+  ["/trajectory", "Trajectory"], ["/clutch", "Clutch DNA"],
+  ["/gm", "GM Assistant"], ["/scouting", "AI Scouting"],
+];
 
 export default function Home() {
-  const [games, setGames] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [apiDown, setApiDown] = useState(false);
   const [summary, setSummary] = useState(null);
+  useEffect(() => { api.standings().then(setSummary).catch(() => {}); }, []);
 
-  useEffect(() => {
-    api
-      .scoreboard()
-      .then((d) => {
-        setGames(d.games || []);
-        if (d.ok === false) setApiDown(true);
-      })
-      .catch(() => setApiDown(true))
-      .finally(() => setLoading(false));
-
-    // Real standings + leaders (pre-computed snapshot on the live site)
-    api.standings().then(setSummary).catch(() => {});
-  }, []);
-
-  const slate = games.slice(0, 6);
-
-  // Transform API objects → the tuple shape the cards use; fall back to the
-  // realistic placeholder constants if the snapshot isn't available.
-  const standings =
-    summary?.standings?.East?.length
-      ? {
-          East: summary.standings.East.map((t) => [t.tri, t.name, t.w, t.l]),
-          West: summary.standings.West.map((t) => [t.tri, t.name, t.w, t.l]),
-        }
-      : STANDINGS;
+  const standings = summary?.standings?.East?.length
+    ? { East: summary.standings.East.map((t) => [t.tri, t.name, t.w, t.l]),
+        West: summary.standings.West.map((t) => [t.tri, t.name, t.w, t.l]) }
+    : STANDINGS;
   const scoring = summary?.scoring_leaders?.length
     ? summary.scoring_leaders.map((s) => [s.name, s.tri, s.ppg])
     : SCORING_LEADERS;
   const clutch = summary?.clutch_leaders?.length
-    ? summary.clutch_leaders.map((c) => [c.name, `${c.reg_ppg} PPG`, c.ppg, "clutch"])
+    ? summary.clutch_leaders.map((c) => [c.name, c.tri, c.ppg])
     : CLUTCH_LEADERS;
 
   return (
-    <div className="animate-fade-in space-y-20 pb-16 sm:space-y-28">
-      {/* Minimal hero + AI orbit */}
-      <section className="pt-6 sm:pt-10">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
-            The numbers behind the game.
-          </h1>
-          <p className="mx-auto mt-4 max-w-lg text-base text-slate-400">
-            Scores and standings daily. AI tools for shot quality, clutch, scouting, and the draft — built for people who actually watch.
+    <div className="animate-fade-in">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="pt-2">
+          <p className="mb-3 text-[13px] font-medium text-zinc-500">
+            <span className="text-white">HoopIQ</span> — the numbers behind the game.
           </p>
+          <SearchBar />
         </div>
-        <div className="mt-10 hidden sm:block">
-          <AIToolsOrbit />
-        </div>
-        <div className="mt-8">
-          <AIToolsList />
-        </div>
-      </section>
 
-      {/* Today's matchups */}
-      <section>
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="text-lg font-bold text-white">Today&apos;s matchups</h2>
-          <Link to="/games" className="text-sm font-medium text-brand-glow hover:text-brand">View all →</Link>
-        </div>
-        {loading ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {[0, 1, 2].map((i) => <div key={i} className="card h-32 animate-pulse bg-surface-raised/40" />)}
-          </div>
-        ) : slate.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {slate.map((g) => <GameCard key={g.game_id} game={g} />)}
-          </div>
-        ) : (
-          <div className="card p-6 text-sm text-slate-400">
-            {apiDown
-              ? "Live scoreboard unavailable — start the API on port 8001 to load today's slate."
-              : "No games on today's slate."}
-          </div>
-        )}
-      </section>
+        <Hero leader={scoring[0]} second={scoring[1]} />
 
-      {/* Standings + Leaders */}
-      <section className="grid gap-6 lg:grid-cols-2">
-        <StandingsCard standings={standings} />
-        <LeadersCard scoring={scoring} clutch={clutch} />
-      </section>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Leaders scoring={scoring} clutch={clutch} />
+          <Standings standings={standings} />
+        </div>
 
-      {/* Player cards */}
-      <section>
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="text-lg font-bold text-white">Around the league</h2>
-          <Link to="/players" className="text-sm font-medium text-brand-glow hover:text-brand">Player search →</Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {PLAYER_CARDS.map((p) => <PlayerCard key={p.name} p={p} />)}
-        </div>
-      </section>
+        {/* Minimal tool index */}
+        <section className="rounded-3xl border border-white/10 bg-[#0a0a0b] p-6">
+          <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-zinc-400">Tools</h2>
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-white/[0.06] sm:grid-cols-3">
+            {TOOLS.map(([to, label]) => (
+              <Link key={to} to={to}
+                className="group flex items-center justify-between bg-[#0a0a0b] px-4 py-3.5 text-sm text-zinc-300 transition hover:bg-white/[0.03] hover:text-white">
+                {label}
+                <span className="text-zinc-700 transition group-hover:translate-x-0.5 group-hover:text-[color:#ef4444]">→</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

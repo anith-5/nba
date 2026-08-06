@@ -98,4 +98,8 @@ export const api = {
     request("/draft/pick", { method: "POST", body: JSON.stringify(body) }),
   draftSimulate: (body) =>
     request("/draft/simulate", { method: "POST", body: JSON.stringify(body) }),
+
+  // Draft Prospect Comparison
+  draftCompList: () => request("/draft-comp/list"),
+  draftComp: (slug) => request(`/draft-comp/${slug}`),
 };

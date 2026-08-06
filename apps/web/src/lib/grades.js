@@ -1,12 +1,12 @@
-// Shared letter-grade color scale (A+ → F).
-// Semantic: A green · B blue(brand) · C amber · D orange · F red.
+// Shared letter-grade color scale (A+ → F), monochrome black/red/white:
+// good = bright white, fading to gray, bad = red.
 const MAP = {
-  a: { text: "text-emerald-400", ring: "ring-emerald-500/30", bg: "bg-emerald-500/10" },
-  b: { text: "text-brand-glow", ring: "ring-brand/30", bg: "bg-brand/10" },
-  c: { text: "text-amber-400", ring: "ring-amber-500/30", bg: "bg-amber-500/10" },
-  d: { text: "text-orange-400", ring: "ring-orange-500/30", bg: "bg-orange-500/10" },
-  f: { text: "text-red-400", ring: "ring-red-500/30", bg: "bg-red-500/10" },
-  na: { text: "text-slate-300", ring: "ring-white/10", bg: "bg-white/5" },
+  a: { text: "text-white", ring: "ring-white/25", bg: "bg-white/10" },
+  b: { text: "text-zinc-200", ring: "ring-white/15", bg: "bg-white/5" },
+  c: { text: "text-zinc-400", ring: "ring-white/10", bg: "bg-white/5" },
+  d: { text: "text-brand-glow", ring: "ring-brand/30", bg: "bg-brand/10" },
+  f: { text: "text-brand", ring: "ring-brand/40", bg: "bg-brand/15" },
+  na: { text: "text-zinc-400", ring: "ring-white/10", bg: "bg-white/5" },
 };
 
 export function gradeTier(grade) {
@@ -20,7 +20,7 @@ export function gradeClasses(grade) {
 
 // Hex equivalents — for contexts that need a raw color (e.g. the share card,
 // which uses inline styles for reliable image capture).
-const HEX = { a: "#22C55E", b: "#3B82F6", c: "#F59E0B", d: "#FB923C", f: "#EF4444", na: "#94A3B8" };
+const HEX = { a: "#FAFAFA", b: "#D4D4D8", c: "#A1A1AA", d: "#F87171", f: "#EF4444", na: "#A1A1AA" };
 
 export function gradeHex(grade) {
   return HEX[gradeTier(grade)];

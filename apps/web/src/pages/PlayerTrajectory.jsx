@@ -3,9 +3,9 @@ import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
 const BADGE_TIER_COLOR = {
-  Gold: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
-  Silver: "text-slate-300 border-slate-400/30 bg-slate-400/10",
-  Bronze: "text-orange-400 border-orange-500/30 bg-orange-500/10",
+  Gold: "text-brand-glow border-brand/30 bg-brand/10",
+  Silver: "text-zinc-200 border-white/20 bg-white/10",
+  Bronze: "text-zinc-500 border-white/10 bg-white/[0.03]",
 };
 
 function BadgePill({ name, tier }) {
@@ -46,7 +46,7 @@ function ProjectionRow({ age, best, median, bust }) {
     <tr className="border-t border-slate-800">
       <td className="py-2 text-slate-400 font-mono">Age {age}</td>
       <td className="py-2 text-center font-mono text-court-glow">{best ?? "—"}</td>
-      <td className="py-2 text-center font-mono text-blue-400">{median ?? "—"}</td>
+      <td className="py-2 text-center font-mono text-zinc-300">{median ?? "—"}</td>
       <td className="py-2 text-center font-mono text-red-400">{bust ?? "—"}</td>
     </tr>
   );
@@ -141,7 +141,7 @@ export default function PlayerTrajectory() {
         {loading && <p className="text-slate-400 text-sm">Fetching career data…</p>}
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up">
@@ -202,7 +202,7 @@ export default function PlayerTrajectory() {
                   <tr className="text-left">
                     <th className="pb-2 text-slate-600 font-normal">Age</th>
                     <th className="pb-2 text-court-glow font-normal text-center">Best Case</th>
-                    <th className="pb-2 text-blue-400 font-normal text-center">Median</th>
+                    <th className="pb-2 text-zinc-400 font-normal text-center">Median</th>
                     <th className="pb-2 text-red-400 font-normal text-center">Bust</th>
                   </tr>
                 </thead>

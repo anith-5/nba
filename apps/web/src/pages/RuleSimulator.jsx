@@ -86,7 +86,7 @@ export default function RuleSimulator() {
         </button>
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up max-w-2xl">

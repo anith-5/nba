@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { api } from "../api.js";
 
 const IQ_COLOR = (score) =>
-  score >= 80 ? "text-court-glow" : score >= 70 ? "text-blue-400" : score >= 60 ? "text-slate-300" : "text-orange-400";
+  score >= 80 ? "text-brand-glow" : score >= 70 ? "text-zinc-100" : score >= 60 ? "text-zinc-400" : "text-zinc-500";
 
 function ProspectCard({ p, onClick }) {
   return (

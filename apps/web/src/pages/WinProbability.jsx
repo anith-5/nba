@@ -119,7 +119,7 @@ export default function WinProbability() {
       </header>
 
       {lastUpdated && <p className="text-xs text-slate-600">Last updated: {lastUpdated}</p>}
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {liveGames.length > 0 && (
         <div>

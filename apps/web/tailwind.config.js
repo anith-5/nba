@@ -4,38 +4,37 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Body copy — calm, readable
-        sans: ["Inter", "system-ui", "sans-serif"],
-        // Headings, scores, big numbers — rounded, friendly, bold
-        display: ["Fredoka", "system-ui", "sans-serif"],
-        // Tabular figures for stat tables / timers (prevents layout shift)
-        mono: ["JetBrains Mono", "monospace"],
+        // One typeface everywhere — Hanken Grotesk (free Calibre-style grotesque,
+        // matching the StatMuse look). Body, headings, and numbers all share it.
+        sans: ["Hanken Grotesk", "system-ui", "sans-serif"],
+        display: ["Hanken Grotesk", "system-ui", "sans-serif"],
+        // Same face for figures; tabular-nums keeps stat columns aligned.
+        mono: ["Hanken Grotesk", "system-ui", "sans-serif"],
       },
       colors: {
-        // Primary — blue. Buttons, links, active nav.
+        // Primary — red. Buttons, links, active nav, emphasis. (black/red/white)
         brand: {
-          DEFAULT: "#2563EB",
-          glow: "#3B82F6",
-          dim: "#1D4ED8",
+          DEFAULT: "#EF4444",
+          glow: "#F87171",
+          dim: "#DC2626",
         },
-        // Live / urgent ONLY — a running sim, a live game, "on the clock".
+        // Live / urgent — same red family, distinguished by the pulse animation.
         live: {
-          DEFAULT: "#EA580C",
-          glow: "#FB923C",
-          dim: "#C2410C",
+          DEFAULT: "#EF4444",
+          glow: "#F87171",
+          dim: "#DC2626",
         },
-        // Surfaces — deep navy
+        // Surfaces — black / near-black
         surface: {
-          DEFAULT: "#0F172A", // background
-          raised: "#1E293B", // cards
-          border: "#334155",
+          DEFAULT: "#000000", // background
+          raised: "#121214", // cards
+          border: "#2A2A2E",
         },
-        // Legacy alias: existing pages reference `court-*`. Repointed
-        // from the old green to the new blue so they inherit the restyle.
+        // Legacy alias: existing pages reference `court-*` → red.
         court: {
-          DEFAULT: "#2563EB",
-          dim: "#1D4ED8",
-          glow: "#3B82F6",
+          DEFAULT: "#EF4444",
+          dim: "#DC2626",
+          glow: "#F87171",
         },
       },
       borderRadius: {
@@ -43,7 +42,7 @@ export default {
       },
       boxShadow: {
         card: "0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5)",
-        lift: "0 8px 30px -8px rgba(37,99,235,0.35)",
+        lift: "0 8px 30px -8px rgba(239,68,68,0.3)",
       },
       animation: {
         "fade-in": "fadeIn 0.4s ease-out",

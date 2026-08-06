@@ -3,15 +3,15 @@ import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 
 const TIER_STYLE = {
-  Elite: "text-court-glow bg-court/10 border-court/30",
-  Good: "text-blue-400 bg-blue-500/10 border-blue-500/30",
-  Average: "text-slate-300 bg-slate-700/30 border-slate-600/30",
-  "Below Avg": "text-orange-400 bg-orange-500/10 border-orange-500/30",
+  Elite: "text-brand-glow bg-brand/10 border-brand/30",
+  Good: "text-zinc-200 bg-white/10 border-white/20",
+  Average: "text-zinc-400 bg-white/5 border-white/10",
+  "Below Avg": "text-zinc-500 bg-white/[0.03] border-white/10",
 };
 
 function ScoreBar({ score }) {
   const color =
-    score >= 75 ? "bg-court" : score >= 55 ? "bg-blue-500" : score >= 40 ? "bg-slate-500" : "bg-orange-500";
+    score >= 75 ? "bg-brand" : score >= 55 ? "bg-zinc-300" : score >= 40 ? "bg-zinc-500" : "bg-zinc-700";
   return (
     <div className="h-2 rounded-full bg-slate-800">
       <div className={`h-2 rounded-full ${color} transition-all duration-700`} style={{ width: `${score}%` }} />
@@ -148,7 +148,7 @@ export default function ClutchDNA() {
         </button>
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {playerResult && !playerResult.insufficient_sample && (
         <div className="card p-4 max-w-sm space-y-2 border-court/30">

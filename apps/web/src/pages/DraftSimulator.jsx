@@ -3,12 +3,12 @@ import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
 import { gradeClasses } from "../lib/grades.js";
 
-const RISK_COLOR = { Low: "text-emerald-400", Medium: "text-amber-400", High: "text-red-400" };
-const MAX_REAL_YEAR = 2025; // latest real NBA draft (Historical / Redraft cap)
+const RISK_COLOR = { Low: "text-zinc-300", Medium: "text-brand-glow", High: "text-red-400" };
+const MAX_HISTORICAL_YEAR = 2026; // latest draft that has actually happened
+const MAX_REDRAFT_YEAR = 2025;    // redraft needs real careers — newest class has none yet
 
 function ModeIcon({ name }) {
   const paths = {
-    future: <path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2M12 8a4 4 0 100 8 4 4 0 000-8z" />,
     historical: <><path d="M12 8v4l3 2" /><circle cx="12" cy="12" r="9" /></>,
     redraft: <path d="M4 12a8 8 0 0114-5m2-2v5h-5M20 12a8 8 0 01-14 5m-2 2v-5h5" />,
   };
@@ -62,7 +62,7 @@ function ProspectRow({ p, onPick, pickable }) {
       {open && (
         <div className="mt-2 grid gap-2 text-xs sm:grid-cols-2">
           <div>
-            <p className="mb-0.5 font-semibold text-emerald-400">Strengths</p>
+            <p className="mb-0.5 font-semibold text-zinc-300">Strengths</p>
             <ul className="space-y-0.5 text-slate-400">
               {(p.strengths || []).map((s, i) => <li key={i}>+ {s}</li>)}
             </ul>
@@ -100,7 +100,7 @@ function PickCard({ pick }) {
             {pick.comparison && <Chip label="Comp" value={pick.comparison} />}
             {pick.peak_rating != null && <Chip label="Peak" value={`${pick.peak_rating} OVR`} />}
             {pick.allstar_pct != null && <Chip label="All-Star" value={`${pick.allstar_pct}%`} className="text-brand-glow" />}
-            {pick.bust_pct != null && <Chip label="Bust" value={`${pick.bust_pct}%`} className="text-orange-400" />}
+            {pick.bust_pct != null && <Chip label="Bust" value={`${pick.bust_pct}%`} className="text-brand-glow" />}
             {pick.risk && <span className={`text-[11px] font-medium ${RISK_COLOR[pick.risk] ?? "text-slate-400"}`}>{pick.risk} risk</span>}
           </div>
         )}
@@ -115,8 +115,8 @@ function PickCard({ pick }) {
 
 export default function DraftSimulator() {
   const [aiReady, setAiReady] = useState(true);
-  const [mode, setMode] = useState("future");
-  const [year, setYear] = useState(2027);
+  const [mode, setMode] = useState("historical");
+  const [year, setYear] = useState(MAX_HISTORICAL_YEAR);
   const [rounds, setRounds] = useState(1);
   const [controlTeam, setControlTeam] = useState("");
 
@@ -140,15 +140,16 @@ export default function DraftSimulator() {
     setCurrent(1); setRedraft(null); setError(null);
   }
 
-  // Historical / Redraft are real past drafts — cap at the latest one (2025).
-  const isPast = mode !== "future";
+  // Both modes are real past drafts. Historical goes through the latest draft (2026);
+  // Redraft stops a year earlier (2025) since the newest class has no career yet.
+  const maxYear = (m = mode) => (m === "redraft" ? MAX_REDRAFT_YEAR : MAX_HISTORICAL_YEAR);
   function changeMode(v) {
     setMode(v);
-    if (v !== "future" && Number(year) > MAX_REAL_YEAR) setYear(MAX_REAL_YEAR);
+    if (Number(year) > maxYear(v)) setYear(maxYear(v));
   }
   function onYearChange(e) {
     let y = e.target.value;
-    if (isPast && Number(y) > MAX_REAL_YEAR) y = String(MAX_REAL_YEAR);
+    if (Number(y) > maxYear()) y = String(maxYear());
     setYear(y);
   }
 
@@ -227,7 +228,6 @@ export default function DraftSimulator() {
   const isUserOnClock = phase === "drafting" && onClockTeam === controlTeam;
 
   const MODES = [
-    ["future", "Future", "Generate & draft a future class"],
     ["historical", "Historical", "Real class, pre-draft scouting"],
     ["redraft", "Redraft", "Real order vs. career results"],
   ];
@@ -237,12 +237,12 @@ export default function DraftSimulator() {
       <header>
         <h1 className="text-3xl font-bold text-white">Draft Simulator</h1>
         <p className="mt-1 text-slate-400">
-          Generate a future class, control any team on the clock, or redraft history by career results.
+          Replay a real draft class, control any team on the clock, or redraft history by career results.
         </p>
       </header>
 
       {!aiReady && (
-        <div className="card border border-amber-500/30 p-3 text-sm text-amber-300">
+        <div className="card border border-brand/30 p-3 text-sm text-brand-glow">
           AI is unavailable — set ANTHROPIC_API_KEY for the Draft Simulator to work.
         </div>
       )}
@@ -252,7 +252,7 @@ export default function DraftSimulator() {
         <div className="card max-w-2xl space-y-5 p-6">
           <div>
             <p className="stat-label mb-2">Mode</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {MODES.map(([v, label, sub]) => (
                 <button
                   key={v}
@@ -276,13 +276,13 @@ export default function DraftSimulator() {
             <label className="block text-sm">
               <span className="stat-label">Draft year</span>
               <input type="number" value={year} onChange={onYearChange}
-                max={isPast ? MAX_REAL_YEAR : undefined}
+                max={maxYear()}
                 className="mt-1 w-full rounded-xl border border-white/10 bg-surface px-3 py-2 text-white focus:border-brand focus:outline-none" />
-              {isPast && (
-                <span className="mt-1 block text-[11px] text-slate-500">
-                  Real drafts available through {MAX_REAL_YEAR}.
-                </span>
-              )}
+              <span className="mt-1 block text-[11px] text-slate-500">
+                {mode === "redraft"
+                  ? `Redrafts available through ${MAX_REDRAFT_YEAR} (needs real career results).`
+                  : `Real drafts available through ${MAX_HISTORICAL_YEAR}.`}
+              </span>
             </label>
             <label className="block text-sm">
               <span className="stat-label">Rounds</span>
@@ -313,7 +313,7 @@ export default function DraftSimulator() {
               mode === "redraft" ? "Run Redraft" :
               controlTeam ? "Start Draft — you're on the clock" : "Generate Big Board"}
           </button>
-          {error && <p className="text-sm text-amber-300">{error}</p>}
+          {error && <p className="text-sm text-brand-glow">{error}</p>}
         </div>
       )}
 
@@ -380,7 +380,7 @@ export default function DraftSimulator() {
               <h2 className="flex items-center gap-2 font-display text-xl font-bold text-white">
                 {redraft.year} Redraft
                 {redraft.grounded && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-2 py-0.5 text-[10px] font-medium text-zinc-300">
                     <svg viewBox="0 0 20 20" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10l4 4 8-8" /></svg>
                     real draft data
                   </span>
@@ -393,8 +393,8 @@ export default function DraftSimulator() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             {redraft.biggest_steal && (
-              <div className="card border border-emerald-500/20 p-3">
-                <p className="stat-label text-emerald-400">Biggest Steal</p>
+              <div className="card border border-white/20 p-3">
+                <p className="stat-label text-zinc-300">Biggest Steal</p>
                 <p className="font-semibold text-white">{redraft.biggest_steal.name}
                   <span className="ml-2 text-xs text-slate-500">originally #{redraft.biggest_steal.original_pick}</span></p>
                 <p className="mt-0.5 text-xs text-slate-400">{redraft.biggest_steal.why}</p>

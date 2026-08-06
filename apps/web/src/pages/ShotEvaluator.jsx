@@ -282,15 +282,31 @@ export default function ShotEvaluator() {
               ))}
             </div>
 
-            {/* Defender DRTG */}
-            <div className="card flex items-center justify-between p-3">
-              <span className="text-sm text-slate-400">{result.defender_name} Defensive Rating</span>
-              <span className={`font-display text-lg font-bold ${
-                result.defender_drtg <= 110 ? "text-red-400" : result.defender_drtg <= 114 ? "text-amber-400" : "text-emerald-400"
-              }`}>
-                {result.defender_drtg.toFixed(0)}
-              </span>
-            </div>
+            {/* Defender shot-defense impact (real matchup data), DRTG fallback */}
+            {result.defender_matchup ? (
+              <div className="card flex items-center justify-between p-3">
+                <div>
+                  <span className="text-sm text-slate-400">{result.defender_name} shot defense</span>
+                  <p className="text-[11px] text-slate-600">
+                    Opp FG% guarded: {(result.defender_matchup.d_fg_pct * 100).toFixed(1)}% vs {(result.defender_matchup.normal_fg_pct * 100).toFixed(1)}% normal
+                  </p>
+                </div>
+                <span className={`font-display text-lg font-bold ${
+                  result.defender_matchup.pct_plusminus <= -0.02 ? "text-red-400" : result.defender_matchup.pct_plusminus < 0.02 ? "text-amber-400" : "text-emerald-400"
+                }`}>
+                  {result.defender_matchup.pct_plusminus > 0 ? "+" : ""}{(result.defender_matchup.pct_plusminus * 100).toFixed(1)}%
+                </span>
+              </div>
+            ) : (
+              <div className="card flex items-center justify-between p-3">
+                <span className="text-sm text-slate-400">{result.defender_name} Defensive Rating</span>
+                <span className={`font-display text-lg font-bold ${
+                  result.defender_drtg <= 110 ? "text-red-400" : result.defender_drtg <= 114 ? "text-amber-400" : "text-emerald-400"
+                }`}>
+                  {result.defender_drtg.toFixed(0)}
+                </span>
+              </div>
+            )}
           </div>
         ) : (
           <div className="card flex min-h-[300px] flex-col items-center justify-center space-y-3 p-6 text-center">

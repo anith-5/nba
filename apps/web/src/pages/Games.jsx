@@ -25,7 +25,7 @@ export default function Games() {
         <p className="mt-1 text-slate-400">Live scoreboard from NBA.com via nba_api</p>
       </header>
       {loading && <p className="text-slate-500">Loading…</p>}
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {games.map((g) => (
           <GameCard key={g.game_id} game={g} />

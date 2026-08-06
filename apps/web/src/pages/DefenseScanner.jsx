@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { api } from "../api.js";
 
 const SEVERITY_STYLE = {
-  Critical:    "text-red-400 bg-red-500/10 border-red-500/30",
-  Exploitable: "text-orange-400 bg-orange-500/10 border-orange-500/30",
+  Critical:    "text-brand bg-brand/15 border-brand/30",
+  Exploitable: "text-brand-glow bg-brand/10 border-brand/20",
 };
-const STRENGTH_STYLE = "text-court-glow bg-court/10 border-court/30";
+const STRENGTH_STYLE = "text-zinc-200 bg-white/5 border-white/15";
 const RANK_COLOR = (r) =>
-  r <= 5 ? "text-court-glow" : r <= 15 ? "text-yellow-400" : r <= 25 ? "text-orange-400" : "text-red-400";
+  r <= 5 ? "text-brand-glow" : r <= 15 ? "text-zinc-200" : r <= 25 ? "text-zinc-400" : "text-zinc-500";
 
 // ── Shared: vulnerability card with exploitation tactics ──────────────────────
 
@@ -110,8 +110,8 @@ function OffensivePlan({ plan, aiPlan }) {
       </div>
 
       {aiPlan && (
-        <div className="rounded-lg bg-blue-500/5 border border-blue-500/20 p-3">
-          <p className="text-xs font-semibold text-blue-400 mb-1.5">🤖 AI Coach's Plan</p>
+        <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
+          <p className="mb-1.5 text-xs font-semibold text-brand-glow">AI Coach&apos;s Plan</p>
           <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">{aiPlan}</p>
         </div>
       )}
@@ -172,7 +172,7 @@ function TeamScanner({ teams }) {
         </button>
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up">
@@ -271,7 +271,7 @@ function LeagueRow({ team, onClick }) {
         )}
       </td>
       <td className="py-2 px-3 text-center">
-        <span className={`text-xs font-mono ${vulnCount > 2 ? "text-red-400" : vulnCount > 0 ? "text-orange-400" : "text-court-glow"}`}>
+        <span className={`text-xs font-mono ${vulnCount > 2 ? "text-brand" : vulnCount > 0 ? "text-zinc-400" : "text-zinc-200"}`}>
           {vulnCount}
         </span>
       </td>
@@ -323,7 +323,7 @@ function LeagueOverview() {
         )}
       </div>
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {/* Detail modal */}
       {selected && (

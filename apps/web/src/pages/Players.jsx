@@ -259,7 +259,7 @@ export default function Players() {
       </div>
 
       {error && (
-        <p className="rounded-xl border border-amber-900/50 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">{error}</p>
+        <p className="rounded-xl border border-brand/50 bg-brand/30 px-4 py-3 text-sm text-brand-glow">{error}</p>
       )}
 
       {loading && (

@@ -2,19 +2,19 @@ import { useState, useEffect, useRef } from "react";
 import { api } from "../api.js";
 
 const GRADE_COLOR = {
-  "A+": "text-court-glow", "A": "text-court-glow", "A-": "text-court-glow",
-  "B+": "text-green-400", "B": "text-green-400", "B-": "text-green-400",
-  "C+": "text-yellow-400", "C": "text-yellow-400", "C-": "text-yellow-400",
-  "D+": "text-orange-400", "D": "text-orange-400",
-  "F": "text-red-400",
+  "A+": "text-white", "A": "text-white", "A-": "text-white",
+  "B+": "text-zinc-200", "B": "text-zinc-200", "B-": "text-zinc-200",
+  "C+": "text-zinc-400", "C": "text-zinc-400", "C-": "text-zinc-400",
+  "D+": "text-brand-glow", "D": "text-brand-glow",
+  "F": "text-brand",
 };
 
 const LIKELIHOOD_COLOR = {
-  "Very Likely": "text-court-glow",
-  "Likely": "text-green-400",
-  "Possible": "text-yellow-400",
-  "Unlikely": "text-orange-400",
-  "Very Unlikely": "text-red-400",
+  "Very Likely": "text-white",
+  "Likely": "text-zinc-200",
+  "Possible": "text-zinc-400",
+  "Unlikely": "text-brand-glow",
+  "Very Unlikely": "text-brand",
 };
 
 // Team roster picker: shows this team's players (with salaries), filtered by a
@@ -49,7 +49,7 @@ function RosterPicker({ teamAbbr, selectedNames, onAdd }) {
         className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500"
       />
       {loading && <p className="text-xs text-slate-500">Loading roster…</p>}
-      {error && <p className="text-xs text-amber-300">{error}</p>}
+      {error && <p className="text-xs text-brand-glow">{error}</p>}
       {!loading && !error && (
         <div className="max-h-64 overflow-y-auto rounded border border-slate-800 divide-y divide-slate-800/70">
           {filtered.map((p) => {
@@ -330,7 +330,7 @@ export default function TradeMachine() {
         </div>
       </form>
 
-      {error && <p className="text-amber-300 text-center">{error}</p>}
+      {error && <p className="text-brand-glow text-center">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up">

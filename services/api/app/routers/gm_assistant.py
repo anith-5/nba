@@ -2,6 +2,7 @@ from app.config import settings
 """GM Assistant  " Claude-powered natural language Q&A with NBA context."""
 
 import asyncio
+import re
 import time
 from typing import Optional
 from fastapi import APIRouter, HTTPException
@@ -27,10 +28,13 @@ You have access to the following current season ({season}) data:
 Answer the user's question analytically and concisely. Be specific  " reference team names, player names, and data when available. If a question requires data you don't have, say so clearly rather than guessing.
 
 Key rules to know:
-- Salary cap 2024-25: ~$141M. Luxury tax line: ~$170M. First apron: ~$178M. Second apron: ~$189M.
+- Salary cap 2025-26: ~$154.6M. Luxury tax line: ~$187.9M. First apron: ~$195.9M. Second apron: ~$207.8M.
 - Trade salary matching: teams sending more must receive within 125% + $100K of salary sent.
-- MLE (Mid-Level Exception): ~$12.4M for taxpayers, ~$5.7M for hard-cap teams.
+- MLE (Mid-Level Exception): ~$14.1M non-taxpayer, ~$5.7M taxpayer, ~$8.8M room exception.
 - Restricted free agency: team has right of first refusal on their own RFAs.
+
+When TEAM SALARY CAP data is present below, use those specific per-team numbers for cap-space
+and payroll questions. Negative cap space means the team is over the cap by that amount.
 """
 
 
@@ -127,11 +131,109 @@ def _section_defense() -> str:
         return ""
 
 
+def _section_shot_defenders() -> str:
+    """Best individual shot defenders by REAL matchup impact — how much a player
+    lowers opponents' FG% when guarding them (per-player, not team-inflated)."""
+    try:
+        from nba_api.stats.endpoints import leaguedashptdefend
+        _sleep()
+        df = leaguedashptdefend.LeagueDashPtDefend(
+            season=SEASON, defense_category="Overall",
+            per_mode_simple="PerGame", timeout=60,
+        ).get_data_frames()[0]
+        # High volume + enough games so the leaderboard is real anchors, not
+        # small-sample flukes (low-minute players post extreme deltas on ~4 FGA).
+        df = df.assign(
+            _fga=df["D_FGA"].apply(_safe_float),
+            _gp=df["GP"].apply(_safe_float),
+            _pm=df["PCT_PLUSMINUS"].apply(_safe_float),
+        )
+        df = df[(df["_fga"] >= 7.0) & (df["_gp"] >= 30)]
+        if df.empty:
+            return ""
+        best = df.sort_values("_pm").head(12)
+
+        def line(r):
+            return (f"{r['PLAYER_NAME']}: opp FG% {_safe_float(r['D_FG_PCT'])*100:.1f}% vs "
+                    f"{_safe_float(r['NORMAL_FG_PCT'])*100:.1f}% normal "
+                    f"({_safe_float(r['PCT_PLUSMINUS'])*100:+.1f}%), on {_safe_float(r['D_FGA']):.1f} FGA/g")
+        return ("=== BEST SHOT DEFENDERS (opponent FG% impact when guarding; "
+                "more negative = better) ===\n" + "\n".join(line(r) for _, r in best.iterrows()))
+    except Exception:
+        return ""
+
+
+_SPOTRAC_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.google.com/",
+}
+
+
+def _money_to_int(s: str) -> int:
+    """'$-3,003,285' -> -3003285; non-numeric -> 0."""
+    digits = re.sub(r"[^\d-]", "", s or "")
+    try:
+        return int(digits)
+    except ValueError:
+        return 0
+
+
+def _section_cap() -> str:
+    """Team salary-cap space scraped from Spotrac.
+
+    Fragile by nature: depends on Spotrac's HTML and their bot policy. It may be
+    rate-limited or blocked (especially from cloud IPs) — in which case it returns
+    "" and the assistant simply won't have team cap numbers this session.
+    """
+    try:
+        import requests
+        import lxml.html as H
+
+        year = SEASON.split("-")[0]  # "2025-26" -> "2025"
+        url = f"https://www.spotrac.com/nba/cap/_/year/{year}"
+        r = requests.get(url, headers=_SPOTRAC_HEADERS, timeout=20)
+        if r.status_code != 200:
+            return ""
+
+        doc = H.fromstring(r.text)
+        entries = []  # (team, total_committed, cap_space, dead_money)
+        for tr in doc.xpath("//table//tr"):
+            cells = [c.text_content().strip() for c in tr.xpath("./td")]
+            if len(cells) < 7:
+                continue
+            team = cells[1].split()[0] if cells[1].split() else cells[1]
+            if not re.fullmatch(r"[A-Z]{2,3}", team):  # skip totals/average rows
+                continue
+            entries.append((team, cells[5], cells[6], cells[-1]))
+
+        if not entries:
+            return ""
+
+        entries.sort(key=lambda e: _money_to_int(e[2]), reverse=True)
+        lines = [
+            f"{team}: cap space {space}, total committed {total}, dead money {dead}"
+            for (team, total, space, dead) in entries
+        ]
+        return (
+            f"=== TEAM SALARY CAP ({SEASON}, via Spotrac; sorted by cap space, "
+            "most to least; negative = over the cap) ===\n" + "\n".join(lines)
+        )
+    except Exception:
+        return ""
+
+
 def _build_context() -> str:
     sections = [
         _section_standings_scorers(),
         _section_clutch(),
         _section_defense(),
+        _section_shot_defenders(),
+        _section_cap(),
     ]
     ctx = "\n\n".join(s for s in sections if s)
     return ctx or "[No live data sections available this session.]"

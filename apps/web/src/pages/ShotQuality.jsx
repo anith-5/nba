@@ -98,7 +98,7 @@ function HotZoneMap({ zones, playerName }) {
               <p className="text-slate-300">FG%: <span className="font-mono text-white">{(tip.fg_pct * 100).toFixed(1)}%</span></p>
               <p className="text-slate-300">xFG%: <span className="font-mono text-slate-400">{(tip.xfg_pct * 100).toFixed(1)}%</span></p>
               <p className="text-slate-300">Delta:
-                <span className={`ml-1 font-mono font-bold ${tip.delta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                <span className={`ml-1 font-mono font-bold ${tip.delta >= 0 ? "text-zinc-300" : "text-red-400"}`}>
                   {tip.delta >= 0 ? "+" : ""}{(tip.delta * 100).toFixed(1)}%
                 </span>
               </p>
@@ -126,9 +126,9 @@ function ZoneRow({ zone }) {
   return (
     <div className="grid grid-cols-[1fr_72px_72px_56px_56px] items-center gap-2 border-t border-white/5 py-2 text-sm">
       <span className="truncate text-slate-300">{zone.zone}</span>
-      <span className={`text-right font-mono ${zone.delta >= 0 ? "text-emerald-400" : "text-red-400"}`}>{(zone.fg_pct * 100).toFixed(1)}%</span>
+      <span className={`text-right font-mono ${zone.delta >= 0 ? "text-zinc-300" : "text-red-400"}`}>{(zone.fg_pct * 100).toFixed(1)}%</span>
       <span className="text-right font-mono text-slate-500">{(zone.xfg_pct * 100).toFixed(1)}%</span>
-      <span className={`text-right font-mono text-xs font-bold ${zone.delta >= 0 ? "text-emerald-400" : "text-red-400"}`}>{sign}{(zone.delta * 100).toFixed(1)}%</span>
+      <span className={`text-right font-mono text-xs font-bold ${zone.delta >= 0 ? "text-zinc-300" : "text-red-400"}`}>{sign}{(zone.delta * 100).toFixed(1)}%</span>
       <span className="text-right text-xs text-slate-500">{zone.attempts}</span>
     </div>
   );
@@ -216,7 +216,7 @@ export default function ShotQuality() {
         {loading && <p className="animate-pulse text-sm text-slate-400">Fetching shot chart… ~15s</p>}
       </div>
 
-      {error && <p className="rounded-xl border border-amber-900/50 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">{error}</p>}
+      {error && <p className="rounded-xl border border-brand/50 bg-brand/30 px-4 py-3 text-sm text-brand-glow">{error}</p>}
 
       {result && (
         <div className="animate-slide-up space-y-5">

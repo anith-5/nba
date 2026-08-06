@@ -7,7 +7,11 @@ import time
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from nba_api.stats.endpoints import shotchartdetail, leaguedashplayerstats
+from nba_api.stats.endpoints import (
+    shotchartdetail,
+    leaguedashplayerstats,
+    leaguedashptdefend,
+)
 from nba_api.stats.static import players as static_players
 
 from app.config import settings
@@ -189,6 +193,34 @@ def _fetch_advanced_stats(player_id: str) -> dict | None:
     }
 
 
+def _fetch_defense_matchup(player_id: str) -> dict | None:
+    """Real on-ball defense: how much this player changes opponents' FG% when
+    they are the closest defender (opponent FG% vs. that opponent's normal FG%).
+    This is a per-player shot-defense signal — unlike DEF_RATING it isn't
+    inflated by teammates. Returns None if the player has too few possessions.
+    """
+    try:
+        df = leaguedashptdefend.LeagueDashPtDefend(
+            season=SEASON, defense_category="Overall",
+            per_mode_simple="PerGame", timeout=30,
+        ).get_data_frames()[0]
+    except Exception:
+        return None
+    row = df[df["CLOSE_DEF_PERSON_ID"].astype(str) == str(player_id)]
+    if row.empty:
+        return None
+    r = row.iloc[0]
+    d_fga = float(r.get("D_FGA", 0) or 0)
+    if d_fga < 2.0:            # not enough defended shots to be meaningful
+        return None
+    return {
+        "d_fg_pct":      float(r.get("D_FG_PCT", 0) or 0),
+        "normal_fg_pct": float(r.get("NORMAL_FG_PCT", 0) or 0),
+        "pct_plusminus": float(r.get("PCT_PLUSMINUS", 0) or 0),  # neg = lowers opp FG%
+        "d_fga":         d_fga,
+    }
+
+
 def _ppp_grade(ppp: float) -> str:
     if ppp >= 1.40: return "A+"
     if ppp >= 1.25: return "A"
@@ -206,10 +238,11 @@ def _ppp_grade(ppp: float) -> str:
 
 @router.post("/evaluate-shot")
 async def evaluate_shot(body: ShotEvalRequest):
-    # Fetch shooter base + defender advanced in parallel
-    shooter_stats, def_stats = await asyncio.gather(
+    # Fetch shooter offense + defender advanced + defender matchup in parallel
+    shooter_stats, def_stats, def_matchup = await asyncio.gather(
         asyncio.to_thread(_fetch_base_stats, body.shooter_id),
         asyncio.to_thread(_fetch_advanced_stats, body.defender_id),
+        asyncio.to_thread(_fetch_defense_matchup, body.defender_id),
     )
 
     if not shooter_stats:
@@ -239,10 +272,18 @@ async def evaluate_shot(body: ShotEvalRequest):
     shooter_zone_fg = max(0.18, min(0.88, shooter_zone_fg))
 
     # ── 2. Defender difficulty ───────────────────────────────────────────────
-    drtg_delta = LEAGUE_AVG_DRTG - def_stats["drtg"]       # positive = good defender
-    def_adj = -(drtg_delta / 3.0) * 0.010                  # each 3 DRTG pts ≈ 1% FG%
-    if not is_three:
-        def_adj -= def_stats["blk_pct"] * 0.45             # rim protection penalty
+    # Prefer the defender's REAL matchup impact (opponent FG% change when they
+    # guard) — a true per-player shot-defense stat. Fall back to the DEF_RATING
+    # proxy only when the player has too little matchup data.
+    if def_matchup:
+        def_adj = def_matchup["pct_plusminus"]             # e.g. -0.086 = holds opp 8.6% below
+        if not is_three:
+            def_adj -= def_stats["blk_pct"] * 0.30         # extra rim-protection weight inside
+    else:
+        drtg_delta = LEAGUE_AVG_DRTG - def_stats["drtg"]   # positive = good defender
+        def_adj = -(drtg_delta / 3.0) * 0.010              # each 3 DRTG pts ≈ 1% FG%
+        if not is_three:
+            def_adj -= def_stats["blk_pct"] * 0.45         # rim protection penalty
 
     # ── 3. Distance modifier ────────────────────────────────────────────────
     dist_adj = DISTANCE_ADJ.get(body.defender_distance, 0.0)
@@ -275,10 +316,20 @@ async def evaluate_shot(body: ShotEvalRequest):
         else:
             factors.append({"icon": "-", "text": f"Low-efficiency scorer ({fg:.1%} FG%, {pts:.1f} PPG)"})
 
-    # Defender quality
+    # Defender quality — prefer real matchup impact, fall back to DEF_RATING
     drtg = def_stats["drtg"]
     defender_name = _player_name(body.defender_id)
-    if drtg <= 108:
+    if def_matchup:
+        pm = def_matchup["pct_plusminus"]
+        if pm <= -0.04:
+            factors.append({"icon": "-", "text": f"{defender_name} holds opponents {abs(pm):.1%} below their normal FG% — elite shot defense"})
+        elif pm <= -0.015:
+            factors.append({"icon": "-", "text": f"{defender_name} lowers opponent FG% by {abs(pm):.1%} when guarding — solid defender"})
+        elif pm < 0.015:
+            factors.append({"icon": "~", "text": f"{defender_name} has a roughly neutral effect on opponent FG% ({pm:+.1%})"})
+        else:
+            factors.append({"icon": "+", "text": f"Opponents shoot {pm:+.1%} vs their normal against {defender_name} — exploitable"})
+    elif drtg <= 108:
         factors.append({"icon": "-", "text": f"{defender_name} is elite defensively (DRTG {drtg:.0f}) — major challenge"})
     elif drtg <= 111:
         factors.append({"icon": "-", "text": f"{defender_name} is a good defender (DRTG {drtg:.0f})"})
@@ -325,6 +376,13 @@ async def evaluate_shot(body: ShotEvalRequest):
         "shooter_zone_fg_est": round(shooter_zone_fg, 3),
         "final_fg_est":      round(final_fg, 3),
         "defender_drtg":     drtg,
+        "defender_matchup":  (
+            {
+                "pct_plusminus": round(def_matchup["pct_plusminus"], 3),
+                "d_fg_pct":      round(def_matchup["d_fg_pct"], 3),
+                "normal_fg_pct": round(def_matchup["normal_fg_pct"], 3),
+            } if def_matchup else None
+        ),
         "factors":           factors,
     }
 

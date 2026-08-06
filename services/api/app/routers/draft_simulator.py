@@ -2,12 +2,14 @@
 NBA Draft Simulator — Claude-powered.
 
 Modes:
-  - future      : generate a realistic future draft class + board + mock
   - historical  : real draft class with pre-draft scouting (control any team)
   - redraft     : re-rank a past draft by how careers actually played out
 
-Claude does the generation/analysis, so this feature has NO NBA-API dependency
-and works fully on the deployed (cloud) site.
+(A "future" mode once generated invented prospects; it was retired because the
+players/measurements/comps were model-fabricated rather than grounded in real data.)
+
+Both modes are grounded in the real NBA draft-history rosters, so the analysis
+stays anchored to players who were actually drafted.
 """
 
 import json
@@ -25,7 +27,8 @@ router = APIRouter(prefix="/draft", tags=["draft"])
 
 SONNET = "claude-sonnet-4-6"
 HAIKU = "claude-haiku-4-5-20251001"
-MAX_REAL_DRAFT_YEAR = 2025  # Historical / Redraft can't go past the latest real draft
+MAX_HISTORICAL_YEAR = 2026  # latest draft that has actually happened
+MAX_REDRAFT_YEAR = 2025     # redraft needs real careers — the newest class has none yet
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -115,7 +118,7 @@ def _claude_json(model: str, system: str, user: str, max_tokens: int) -> dict:
 class SetupRequest(BaseModel):
     year: int
     rounds: int = 1          # 1 = 30 picks, 2 = 60 picks
-    mode: str = "future"     # future | historical
+    mode: str = "historical"  # historical (future mode retired)
     board_size: int = 30     # how many prospects on the big board
 
 
@@ -175,38 +178,36 @@ def draft_setup(body: SetupRequest):
     picks = 30 if body.rounds == 1 else 60
     board_size = max(body.board_size, picks)
 
-    if body.mode != "future" and body.year > MAX_REAL_DRAFT_YEAR:
+    if body.mode == "future":
         raise HTTPException(
             400,
-            f"Historical drafts are only available through {MAX_REAL_DRAFT_YEAR}. "
-            f"Use Future mode for {body.year}.",
+            "Future mode has been retired — its prospects were model-invented rather than "
+            "grounded in real data. Use Historical or Redraft (real drafts through "
+            f"{MAX_HISTORICAL_YEAR}).",
+        )
+    if body.year > MAX_HISTORICAL_YEAR:
+        raise HTTPException(
+            400,
+            f"Historical drafts are only available through {MAX_HISTORICAL_YEAR}.",
         )
 
-    if body.mode == "future":
-        ctx = (
-            f"Generate a REALISTIC projected {body.year} NBA Draft class. Invent believable "
-            f"prospects (or use real current young/college/international players who would "
-            f"plausibly be in this class), with realistic measurements, scouting reports, and "
-            f"NBA comparisons. Use a plausible {body.year} draft order and current-era team needs."
+    draft_class = get_draft_class(body.year)
+    roster = _roster_text(draft_class, limit=picks) if draft_class else ""
+    ctx = (
+        f"Recreate the REAL {body.year} NBA Draft using only information known BEFORE that "
+        f"draft happened: the actual draft order, actual prospects, period-accurate scouting "
+        f"reports, measurements, and team needs. Do not use hindsight about their careers."
+    )
+    if roster:
+        ctx += (
+            f"\n\nUse EXACTLY these real players, pick numbers, and teams (do not add anyone "
+            f"not listed, do not change pick order):\n{roster}"
         )
-    else:  # historical
-        draft_class = get_draft_class(body.year)
-        roster = _roster_text(draft_class, limit=picks) if draft_class else ""
-        ctx = (
-            f"Recreate the REAL {body.year} NBA Draft using only information known BEFORE that "
-            f"draft happened: the actual draft order, actual prospects, period-accurate scouting "
-            f"reports, measurements, and team needs. Do not use hindsight about their careers."
+    else:
+        ctx += (
+            f"\nACCURACY: include ONLY players actually selected in the {body.year} draft — "
+            f"never a player from a different draft year."
         )
-        if roster:
-            ctx += (
-                f"\n\nUse EXACTLY these real players, pick numbers, and teams (do not add anyone "
-                f"not listed, do not change pick order):\n{roster}"
-            )
-        else:
-            ctx += (
-                f"\nACCURACY: include ONLY players actually selected in the {body.year} draft — "
-                f"never a player from a different draft year."
-            )
 
     user = (
         f"{ctx}\n\n"
@@ -254,10 +255,11 @@ Respond with ONLY valid JSON — no prose, no fences. Schema:
 
 @router.post("/redraft")
 def draft_redraft(body: RedraftRequest):
-    if body.year > MAX_REAL_DRAFT_YEAR:
+    if body.year > MAX_REDRAFT_YEAR:
         raise HTTPException(
             400,
-            f"Redrafts are only available through {MAX_REAL_DRAFT_YEAR} (a draft must have happened first).",
+            f"Redrafts are only available through {MAX_REDRAFT_YEAR} — newer classes haven't "
+            f"played enough NBA basketball to re-rank by career results yet.",
         )
     draft_class = get_draft_class(body.year)
     if draft_class:

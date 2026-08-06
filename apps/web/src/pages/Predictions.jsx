@@ -115,7 +115,7 @@ export default function Predictions() {
             ) : "Load &amp; Train Model"}
           </button>
           {status.error && (
-            <p className="text-amber-300 text-sm">{status.error}</p>
+            <p className="text-brand-glow text-sm">{status.error}</p>
           )}
         </div>
       )}
@@ -178,7 +178,7 @@ export default function Predictions() {
         </form>
       )}
 
-      {error && <p className="text-amber-300">{error}</p>}
+      {error && <p className="text-brand-glow">{error}</p>}
 
       {/* Results */}
       {result && (
@@ -194,7 +194,7 @@ export default function Predictions() {
               &nbsp;·&nbsp;
               <span className={
                 result.confidence === "High" ? "text-court-glow" :
-                result.confidence === "Medium" ? "text-yellow-400" : "text-slate-400"
+                result.confidence === "Medium" ? "text-brand-glow" : "text-slate-400"
               }>
                 {result.confidence} confidence
               </span>
