@@ -214,6 +214,199 @@ function FiveHintsConfigForm({ config, setConfig }) {
   );
 }
 
+function HintAuctionConfigForm({ config, setConfig }) {
+  return (
+    <div className="card space-y-5 p-5 text-left">
+      <p className="stat-label">Hint Auction Settings</p>
+
+      <div>
+        <label className="stat-label mb-1 block">Starting Budget</label>
+        <input
+          type="number"
+          min={10}
+          max={1000}
+          step={10}
+          value={config.budget}
+          onChange={(e) => setConfig({ ...config, budget: Math.max(10, Math.min(1000, Number(e.target.value) || 100)) })}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        />
+        <p className="mt-1 text-xs text-slate-500">Every player starts with this much to spend across the whole draft.</p>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Roster Spots</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, benchEnabled: false })}
+            className={config.benchEnabled === false ? "btn-primary" : "btn-ghost"}
+          >
+            PG / SG / SF / PF / C
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, benchEnabled: true })}
+            className={config.benchEnabled === true ? "btn-primary" : "btn-ghost"}
+          >
+            + Bench Spot
+          </button>
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          One mystery player is auctioned per round, so the draft runs until every player's roster is full
+          — total rounds scale with lobby size.
+        </p>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Hint Mode</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, hintMode: "standard", hintCount: 7 })}
+            className={config.hintMode === "standard" ? "btn-primary" : "btn-ghost"}
+          >
+            Standard (7 hints)
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, hintMode: "obscure", hintCount: config.hintCount === 7 ? 4 : config.hintCount })}
+            className={config.hintMode === "obscure" ? "btn-primary" : "btn-ghost"}
+          >
+            Obscure (fewer hints)
+          </button>
+        </div>
+        {config.hintMode === "obscure" && (
+          <div className="mt-3 grid grid-cols-3 gap-3">
+            {[3, 4, 5].map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setConfig({ ...config, hintCount: n })}
+                className={config.hintCount === n ? "btn-primary" : "btn-ghost"}
+              >
+                {n} hints
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <label className="stat-label mb-1 block">Auction Timer</label>
+        <select
+          value={config.auctionTimerSeconds}
+          onChange={(e) => setConfig({ ...config, auctionTimerSeconds: Number(e.target.value) })}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        >
+          {[10, 15, 20, 30].map((n) => (
+            <option key={n} value={n}>
+              {n}s
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Timer Extensions</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, extensionsEnabled: true })}
+            className={config.extensionsEnabled ? "btn-primary" : "btn-ghost"}
+          >
+            Extend on New Bids
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, extensionsEnabled: false })}
+            className={!config.extensionsEnabled ? "btn-primary" : "btn-ghost"}
+          >
+            Hard Countdown
+          </button>
+        </div>
+        {config.extensionsEnabled && (
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div>
+              <label className="stat-label mb-1 block text-xs">Extend By</label>
+              <select
+                value={config.extensionSeconds}
+                onChange={(e) => setConfig({ ...config, extensionSeconds: Number(e.target.value) })}
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              >
+                {[3, 5, 10].map((n) => (
+                  <option key={n} value={n}>
+                    {n}s
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="stat-label mb-1 block text-xs">Max Extensions</label>
+              <select
+                value={config.maxExtensions}
+                onChange={(e) => setConfig({ ...config, maxExtensions: Number(e.target.value) })}
+                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              >
+                {[3, 5, 10, 20].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Player Era</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, era: "all-time" })}
+            className={config.era === "all-time" ? "btn-primary" : "btn-ghost"}
+          >
+            All-Time
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, era: "current" })}
+            className={config.era === "current" ? "btn-primary" : "btn-ghost"}
+          >
+            Current Rosters
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label className="stat-label mb-1 block">Player Pool</label>
+        <select
+          value={config.poolFilter}
+          onChange={(e) => setConfig({ ...config, poolFilter: e.target.value, position: null })}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        >
+          <option value="all">All Players</option>
+          <option value="legends">Elite Tier Only</option>
+          <option value="position">By Position</option>
+        </select>
+        {config.poolFilter === "position" && (
+          <select
+            value={config.position || "PG"}
+            onChange={(e) => setConfig({ ...config, position: e.target.value })}
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          >
+            <option value="PG">Point Guard</option>
+            <option value="SG">Shooting Guard</option>
+            <option value="SF">Small Forward</option>
+            <option value="PF">Power Forward</option>
+            <option value="C">Center</option>
+          </select>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const CURRENT_YEAR = new Date().getFullYear();
 
 function ClosestToConfigForm({ config, setConfig }) {
@@ -349,6 +542,19 @@ export default function WaitingRoom() {
     position: null,
     maxHints: 5,
   });
+  const [hintAuctionConfig, setHintAuctionConfig] = useState({
+    budget: 100,
+    benchEnabled: false,
+    hintMode: "standard",
+    hintCount: 7,
+    auctionTimerSeconds: 20,
+    extensionsEnabled: true,
+    extensionSeconds: 5,
+    maxExtensions: 5,
+    poolFilter: "all",
+    position: null,
+    era: "all-time",
+  });
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
   const isHost = room && myId === room.hostSocketId;
@@ -397,6 +603,9 @@ export default function WaitingRoom() {
         {isHost && room.gameMode === "five-hints" && (
           <FiveHintsConfigForm config={fiveHintsConfig} setConfig={setFiveHintsConfig} />
         )}
+        {isHost && room.gameMode === "hint-auction" && (
+          <HintAuctionConfigForm config={hintAuctionConfig} setConfig={setHintAuctionConfig} />
+        )}
 
         {isHost ? (
           <button
@@ -408,7 +617,9 @@ export default function WaitingRoom() {
                     ? closestToConfig
                     : room.gameMode === "five-hints"
                       ? fiveHintsConfig
-                      : {}
+                      : room.gameMode === "hint-auction"
+                        ? hintAuctionConfig
+                        : {}
               )
             }
             disabled={!canStart}
@@ -416,7 +627,7 @@ export default function WaitingRoom() {
           >
             {canStart ? "Start Game" : "Waiting for at least 2 players…"}
           </button>
-        ) : room.gameMode === "closest-to" || room.gameMode === "five-hints" ? (
+        ) : room.gameMode === "closest-to" || room.gameMode === "five-hints" || room.gameMode === "hint-auction" ? (
           <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
         ) : (
           <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>

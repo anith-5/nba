@@ -20,13 +20,13 @@ export const GAME_MODES = [
     route: "/arena/games/closest-to",
   },
   {
-    id: "auction",
+    id: "hint-auction",
     name: "Hint Auction",
-    description: "Bid tokens on mystery players revealed through progressive hints.",
+    description: "Bid on mystery players revealed through progressive hints and draft a full roster.",
     minPlayers: 2,
     maxPlayers: 8,
-    estimate: "15-30 min",
-    status: "coming-soon",
+    estimate: "10-45 min",
+    status: "playable",
     route: "/arena/games/hint-auction",
   },
   {

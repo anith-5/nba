@@ -26,6 +26,15 @@ import {
   goToNextRound,
   TIMERS,
 } from "../game-logic/fiveHints.js";
+import {
+  advanceHint as advanceHintAuctionHint,
+  openAuction as openHintAuctionAuction,
+  placeBid as placeHintAuctionBid,
+  resolveAuction as resolveHintAuction,
+  finalizeRoundHistory as finalizeHintAuctionRoundHistory,
+  goToNextRound as goToNextHintAuctionRound,
+  TIMERS as HINT_AUCTION_TIMERS,
+} from "../game-logic/hintAuction.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const NEXT_ROUND_DELAY_MS = 5000;
@@ -45,6 +54,8 @@ export function registerGameHandlers(io, socket) {
       });
     } else if (room.gameMode === "five-hints") {
       handleFiveHintsAction(io, room, socket, action, data || {});
+    } else if (room.gameMode === "hint-auction") {
+      handleHintAuctionAction(io, room, socket, action, data || {});
     }
   });
 }
@@ -512,5 +523,119 @@ function onBuzzTimeout(io, room, socketId) {
     endRoundUnsolved(io, room);
   } else {
     armHintPhase(io, room);
+  }
+}
+
+// --- Hint Auction ---
+//
+// Unlike Five Hints, there's no buzz/guess to wait on -- hints reveal on a
+// steady clock, then the auction opens on its own timer (extended a few
+// seconds on every valid bid, up to a host-configured cap), and once it
+// closes the round auto-resolves and auto-advances with no host action
+// required at any step. A many-round auction draft (total rounds scale with
+// lobby size -- see hintAuction.js's beginGame) would make a host-click
+// gate on every single round a real drag, so pacing here is fully
+// server-driven, the same way Over Under's reveal-then-advance loop is.
+const HINT_AUCTION_ROUND_PAUSE_MS = 6000;
+
+function clearHintAuctionTimers(round) {
+  if (!round) return;
+  clearTimeout(round._hintTimeout);
+  clearTimeout(round._auctionTimeout);
+  clearTimeout(round._nextRoundTimeout);
+}
+
+export function armHintAuctionHintPhase(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved || round.subPhase !== "hints") return;
+  round._hintTimeout = setTimeout(() => onHintAuctionHintTimeout(io, room), HINT_AUCTION_TIMERS.HINT_REVEAL_SECONDS * 1000);
+}
+
+function onHintAuctionHintTimeout(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved || round.subPhase !== "hints") return; // stale timer
+
+  const advanced = advanceHintAuctionHint(gameState);
+  touchRoom(room);
+  if (advanced) {
+    broadcast(io, room, "hint_revealed");
+    armHintAuctionHintPhase(io, room);
+    return;
+  }
+  beginHintAuctionAuction(io, room);
+}
+
+function beginHintAuctionAuction(io, room) {
+  const gameState = room.gameState;
+  openHintAuctionAuction(gameState);
+  touchRoom(room);
+  broadcast(io, room, "auction_open");
+  armHintAuctionAuctionTimer(io, room);
+}
+
+function armHintAuctionAuctionTimer(io, room) {
+  const round = room.gameState.currentRound;
+  clearTimeout(round._auctionTimeout);
+  const msRemaining = Math.max(0, round.auctionDeadlineAt - Date.now());
+  round._auctionTimeout = setTimeout(() => onHintAuctionAuctionTimeout(io, room), msRemaining);
+}
+
+function onHintAuctionAuctionTimeout(io, room) {
+  const gameState = room.gameState;
+  const round = gameState.currentRound;
+  if (!round || round.resolved || round.subPhase !== "auction") return; // stale timer
+
+  // A bid's extension can move auctionDeadlineAt further out than this
+  // exact timer instance is still counting down to (the normal case
+  // re-arms a fresh setTimeout on every bid, but a timer already queued a
+  // tick before an extension lands can still fire slightly early) -- if the
+  // real deadline hasn't actually passed yet, just re-arm instead of
+  // resolving prematurely.
+  if (Date.now() < round.auctionDeadlineAt) {
+    armHintAuctionAuctionTimer(io, room);
+    return;
+  }
+
+  const result = resolveHintAuction(gameState);
+  finalizeHintAuctionRoundHistory(gameState);
+  touchRoom(room);
+  io.to(room.code).emit("auction_resolved", result);
+  broadcast(io, room, "auction_resolved");
+
+  round._nextRoundTimeout = setTimeout(() => advanceHintAuctionRoundOrEnd(io, room), HINT_AUCTION_ROUND_PAUSE_MS);
+}
+
+function advanceHintAuctionRoundOrEnd(io, room) {
+  const gameState = room.gameState;
+  const advanced = goToNextHintAuctionRound(gameState);
+  if (!advanced) {
+    room.status = "finished";
+    touchRoom(room);
+    broadcast(io, room, "game_finished");
+    return;
+  }
+  clearHintAuctionTimers(gameState.currentRound);
+  touchRoom(room);
+  broadcast(io, room, "round_started");
+  armHintAuctionHintPhase(io, room);
+}
+
+function handleHintAuctionAction(io, room, socket, action, data) {
+  const gameState = room.gameState;
+  if (!gameState) return;
+  const round = gameState.currentRound;
+  if (!round || gameState.phase !== "round_active") return;
+
+  if (action === "place_bid") {
+    const result = placeHintAuctionBid(gameState, socket.id, data.amount);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "bid_placed");
+    if (result.extended) armHintAuctionAuctionTimer(io, room);
   }
 }

@@ -6,8 +6,9 @@ import {
   ensurePlayerLineup,
 } from "../game-logic/closestTo.js";
 import { initGameState as initFiveHintsGameState, startRound as startFiveHintsRound } from "../game-logic/fiveHints.js";
+import { initGameState as initHintAuctionGameState, beginGame as beginHintAuctionGame } from "../game-logic/hintAuction.js";
 import { sanitizeGameStateForBroadcast } from "../game-logic/sanitize.js";
-import { revealRound, armHintPhase as armFiveHintsHintPhase } from "./gameHandlers.js";
+import { revealRound, armHintPhase as armFiveHintsHintPhase, armHintAuctionHintPhase } from "./gameHandlers.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const DEFAULT_CLOSEST_TO_CONFIG = {
@@ -38,6 +39,20 @@ const DEFAULT_OVER_UNDER_CONFIG = {
   poolFilter: "all",
 };
 
+const DEFAULT_HINT_AUCTION_CONFIG = {
+  budget: 100,
+  benchEnabled: false,
+  hintMode: "standard",
+  hintCount: 7,
+  auctionTimerSeconds: 20,
+  extensionsEnabled: true,
+  extensionSeconds: 5,
+  maxExtensions: 5,
+  poolFilter: "all",
+  position: null,
+  era: "all-time",
+};
+
 function initialGameState(gameMode, configOverrides) {
   if (gameMode === "over-under") {
     const gameConfig = { ...DEFAULT_OVER_UNDER_CONFIG, ...(configOverrides || {}) };
@@ -55,6 +70,9 @@ function initialGameState(gameMode, configOverrides) {
   }
   if (gameMode === "five-hints") {
     return initFiveHintsGameState({ ...DEFAULT_FIVE_HINTS_CONFIG, ...(configOverrides || {}) });
+  }
+  if (gameMode === "hint-auction") {
+    return initHintAuctionGameState({ ...DEFAULT_HINT_AUCTION_CONFIG, ...(configOverrides || {}) });
   }
   return { config: configOverrides || {} };
 }
@@ -151,6 +169,18 @@ export function registerLobbyHandlers(io, socket) {
       startFiveHintsRound(room.gameState);
     }
 
+    if (room.gameMode === "hint-auction") {
+      // beginGame also sets up every connected player's roster/budget and
+      // computes totalRounds from the connected player count (one shared
+      // mystery player is auctioned per round, so filling N players' Y-slot
+      // rosters takes N*Y rounds) before starting round 1 -- same
+      // starts-atomically rationale as Five Hints above.
+      beginHintAuctionGame(
+        room.gameState,
+        room.players.map((p) => p.socketId)
+      );
+    }
+
     touchRoom(room);
     io.to(room.code).emit("game_update", {
       gameState: sanitizeGameStateForBroadcast(room.gameState),
@@ -164,6 +194,10 @@ export function registerLobbyHandlers(io, socket) {
     // broadcast above instead of emitting its own).
     if (room.gameMode === "five-hints") {
       armFiveHintsHintPhase(io, room);
+    }
+
+    if (room.gameMode === "hint-auction") {
+      armHintAuctionHintPhase(io, room);
     }
 
     callback?.({ ok: true });

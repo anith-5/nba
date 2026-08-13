@@ -166,6 +166,51 @@ def _recognition_tier(name: str, stats: dict | None) -> str:
     return "Deep Cut"
 
 
+# Hint Auction's 4-tier pool classifier (Elite/Star/Role Player/Deep Bench),
+# separate from Wordle's recognition_tier above since the auction needs finer
+# granularity to force real budget tradeoffs across a multi-round draft.
+# Percentile-ranked rather than absolute-thresholded (see _auction_tier_pass)
+# because thresholds tuned by feel would drift as the league's scoring
+# environment changes season to season; a percentile cut self-calibrates to
+# whatever this season's real distribution looks like.
+AUCTION_TIER_PERCENTILE_CUTS = {"Elite": 0.20, "Star": 0.55, "Role Player": 0.85}
+
+
+def _auction_score(name: str, stats: dict | None, years_in_league: int) -> float:
+    if not stats:
+        return 40.0 if name in RECENT_ALL_STARS else 0.0
+    score = 40.0 if name in RECENT_ALL_STARS else 0.0
+    score += stats["pts_pg"] * 2.5
+    score += stats["ast_pg"] * 1.5
+    score += stats["reb_pg"] * 1.2
+    score += stats["stl_pg"] * 4
+    score += stats["blk_pg"] * 4
+    score += stats["min_pg"] * 0.5
+    score += min(years_in_league, 10) * 0.5
+    return score
+
+
+def _auction_tier_pass(players: list[dict[str, Any]]) -> None:
+    """Assigns `auction_tier` on every player in place. Requires a second
+    pass over the full pool (rather than a per-player threshold like
+    _recognition_tier) because percentile bucketing needs the whole
+    distribution's sorted order before any single player's tier is knowable.
+    """
+    ranked = sorted(players, key=lambda p: p["_auction_score"], reverse=True)
+    total = len(ranked)
+    for i, player in enumerate(ranked):
+        percentile = i / total if total else 0
+        if percentile < AUCTION_TIER_PERCENTILE_CUTS["Elite"]:
+            player["auction_tier"] = "Elite"
+        elif percentile < AUCTION_TIER_PERCENTILE_CUTS["Star"]:
+            player["auction_tier"] = "Star"
+        elif percentile < AUCTION_TIER_PERCENTILE_CUTS["Role Player"]:
+            player["auction_tier"] = "Role Player"
+        else:
+            player["auction_tier"] = "Deep Bench"
+        del player["_auction_score"]
+
+
 def _fetch_stats_by_player_id() -> dict[int, dict]:
     result = _retry(lambda: leaguedashplayerstats.LeagueDashPlayerStats(season=SEASON, timeout=30))
     result_dict = result.get_dict()
@@ -261,8 +306,21 @@ def fetch_current_players() -> list[dict[str, Any]]:
                 "era_label": _era_label(debut_year),
                 "style_tag": _style_tag(position, stats),
                 "recognition_tier": _recognition_tier(name, stats),
+                # Real per-game stats, surfaced for Hint Auction's hints and
+                # post-auction reveal (Wordle, the endpoint's original
+                # consumer, never needed them — recognition_tier/style_tag
+                # above already summarize `stats` without exposing it raw).
+                # None rather than 0 for players with no confirmed minutes,
+                # so a client can't mistake "no data" for "scored zero".
+                "pts_pg": stats["pts_pg"] if stats else None,
+                "ast_pg": stats["ast_pg"] if stats else None,
+                "reb_pg": stats["reb_pg"] if stats else None,
+                "stl_pg": stats["stl_pg"] if stats else None,
+                "blk_pg": stats["blk_pg"] if stats else None,
+                "_auction_score": _auction_score(name, stats, years_in_league),
             })
 
+    _auction_tier_pass(players)
     return players
 
 

@@ -3,6 +3,10 @@
 // it is broadcast to clients. Everything is revealed only once the round's
 // reveal timer/vote-completion fires.
 export function sanitizeGameStateForBroadcast(gameState) {
+  // Checked before Five Hints below: both shapes have currentRound.hints,
+  // but only Hint Auction has a top-level `rosters` map, so that has to be
+  // the discriminator, not the hints array.
+  if (gameState?.rosters) return sanitizeHintAuction(gameState);
   if (gameState?.currentRound?.hints) return sanitizeFiveHints(gameState);
   if (gameState?.currentRound) return sanitizeOverUnder(gameState);
   if (gameState?.playerLineups) return sanitizeClosestTo(gameState);
@@ -62,6 +66,37 @@ function sanitizeFiveHints(gameState) {
     lastHintReveal: round.lastHintReveal || null,
     resolved: false,
     winners: [],
+  };
+  return { ...gameState, currentRound: publicRound };
+}
+
+// Hint Auction's hidden information is only ever the mystery player's real
+// identity/stats and the hints not yet revealed -- unlike Five Hints, bid
+// state is meant to be fully public live ("all players can see everyone's
+// current highest bid in real time"), so bids/highBid/rosters/budgets all
+// pass through untouched. Once the round resolves, the player is revealed
+// to everyone, so nothing needs redacting at all.
+function sanitizeHintAuction(gameState) {
+  const round = gameState.currentRound;
+  if (!round || round.resolved) return gameState;
+
+  const publicRound = {
+    tier: round.tier,
+    era: round.era,
+    hints: round.hints.slice(0, round.hintNumber),
+    hintNumber: round.hintNumber,
+    hintRevealedAt: round.hintRevealedAt,
+    subPhase: round.subPhase,
+    bids: round.bids,
+    highBid: round.highBid,
+    highBidderSocketId: round.highBidderSocketId,
+    auctionDeadlineAt: round.auctionDeadlineAt,
+    extensionsUsed: round.extensionsUsed,
+    resolved: false,
+    winnerSocketId: null,
+    winningBid: null,
+    assignedSlot: null,
+    unsold: false,
   };
   return { ...gameState, currentRound: publicRound };
 }

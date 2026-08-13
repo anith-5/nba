@@ -17,7 +17,7 @@ import players from "../data/nba_players.json" with { type: "json" };
 
 export const POSITIONS = ["PG", "SG", "SF", "PF", "C"];
 
-const POSITION_NAMES = {
+export const POSITION_NAMES = {
   PG: "point guard",
   SG: "shooting guard",
   SF: "small forward",
@@ -33,7 +33,7 @@ const POSITION_WEIGHT_BASELINE = {
   C: { weight: 250, heightInches: 83 },
 };
 
-const TEAM_FULL_NAMES = {
+export const TEAM_FULL_NAMES = {
   ATL: "Atlanta Hawks", BAL: "Baltimore Bullets", BKN: "Brooklyn Nets", BOS: "Boston Celtics",
   BUF: "Buffalo Braves", CAP: "Capital Bullets", CHA: "Charlotte Hornets", CHH: "Charlotte Hornets",
   CHI: "Chicago Bulls", CHS: "Chicago Stags", CIN: "Cincinnati Royals", CLE: "Cleveland Cavaliers",
@@ -50,7 +50,7 @@ const TEAM_FULL_NAMES = {
   WAS: "Washington Wizards", WSB: "Washington Bullets", WSC: "Washington Capitols",
 };
 
-const KNOWN_NICKNAMES = {
+export const KNOWN_NICKNAMES = {
   "shaquille-o-neal": "Shaq",
   "hakeem-olajuwon": "The Dream",
   "kobe-bryant": "Black Mamba",
@@ -78,41 +78,214 @@ const KNOWN_NICKNAMES = {
   "dominique-wilkins": "The Human Highlight Film",
   "rudy-gobert": "The Stifle Tower",
   "kevin-durant": "The Slim Reaper",
+  "michael-jordan": "His Airness",
+  "larry-bird": "Larry Legend",
+  "wilt-chamberlain": "Wilt the Stilt",
+  "oscar-robertson": "The Big O",
+  "jerry-west": "The Logo",
+  "george-gervin": "Iceman",
+  "vince-carter": "Vinsanity",
+  "tracy-mcgrady": "T-Mac",
+  "chris-webber": "C-Webb",
+  "alonzo-mourning": "Zo",
+  "rasheed-wallace": "Sheed",
+  "gilbert-arenas": "Agent Zero",
+  "james-harden": "The Beard",
+  "stephen-curry": "Chef Curry",
+  "nikola-jokic": "The Joker",
+  "damian-lillard": "Dame Time",
+  "kawhi-leonard": "The Klaw",
+  "chris-paul": "CP3",
+  "charles-barkley": "The Round Mound of Rebound",
+  "kevin-garnett": "The Big Ticket",
+  "ben-wallace": "Big Ben",
+  "amare-stoudemire": "STAT",
+  "jason-williams": "White Chocolate",
+  "joel-embiid": "The Process",
+  "karl-anthony-towns": "KAT",
+  "luka-doncic": "Luka Magic",
+  "anthony-edwards": "Ant-Man",
+  "shai-gilgeous-alexander": "SGA",
+  "victor-wembanyama": "Wemby",
+  "demarcus-cousins": "Boogie",
+  "klay-thompson": "Splash Brother",
+  "jimmy-butler": "Jimmy Buckets",
+  "kyrie-irving": "Uncle Drew",
+  "anthony-davis": "The Brow",
+  "tim-hardaway": "Killer Crossover",
+  "reggie-miller": "Miller Time",
+  "earl-monroe": "Earl the Pearl",
+  "walt-frazier": "Clyde",
+  "pete-maravich": "Pistol Pete",
+  "connie-hawkins": "The Hawk",
+  "willis-reed": "The Captain",
+  "artis-gilmore": "The A-Train",
+  "dan-issel": "Horse",
+  "glenn-robinson": "Big Dog",
+  "larry-johnson": "Grandmama",
+  "anfernee-hardaway": "Penny",
+  "latrell-sprewell": "Spree",
+  "donovan-mitchell": "Spida",
+  "trae-young": "Ice Trae",
+  "shawn-kemp": "The Reign Man",
+  "robert-parish": "The Chief",
+  "robert-horry": "Big Shot Bob",
+  "dan-majerle": "Thunder Dan",
+  "mitch-richmond": "Rock",
+  "chauncey-billups": "Mr. Big Shot",
+  "richard-hamilton": "Rip",
+  "kyle-lowry": "Playoff Kyle",
+  "pascal-siakam": "Spicy P",
+  "john-havlicek": "Hondo",
+  "nate-archibald": "Tiny",
+  "billy-cunningham": "The Kangaroo Kid",
+  "gus-williams": "The Wizard",
+  "xavier-mcdaniel": "The X-Man",
+  "joe-ingles": "Jingles",
+  "rik-smits": "The Dunking Dutchman",
+  "sam-perkins": "Big Smooth",
+  "nick-van-exel": "Nick the Quick",
+  "bryant-reeves": "Big Country",
+  "joe-johnson": "Iso Joe",
+  "caron-butler": "Tuff Juice",
+  "zach-randolph": "Z-Bo",
+  "lou-williams": "Sweet Lou",
+  "kentavious-caldwell-pope": "KCP",
+  "maurice-lucas": "The Enforcer",
+  "paul-arizin": "Pitchin' Paul",
+  "micheal-ray-richardson": "Sugar",
+  "a-c-green": "The Iron Man",
+  "dennis-scott": "3-D",
+  "cliff-robinson": "Uncle Cliffy",
+  "zydrunas-ilgauskas": "Big Z",
+  "glen-davis": "Big Baby",
+  "marreese-speights": "Mo Buckets",
+  "chris-andersen": "Birdman",
+  "avery-johnson": "The Little General",
+  "vernon-maxwell": "Mad Max",
+  "kenny-smith": "The Jet",
+  "terry-rozier": "Scary Terry",
+  "collin-sexton": "Young Bull",
+  "damon-stoudamire": "Mighty Mouse",
+  "antonio-mcdyess": "Dice",
+  "steve-francis": "Stevie Franchise",
+  "cuttino-mobley": "Cat",
+  "sasha-vujacic": "The Machine",
+  "mehmet-okur": "Memo",
+  "goran-dragic": "Dragon",
+  "marcin-gortat": "The Polish Hammer",
+  "kyle-anderson": "Slo Mo",
+  "michael-beasley": "B-Easy",
+  "pervis-ellison": "Never Nervous Pervis",
+  "baron-davis": "B-Diddy",
+  "andrei-kirilenko": "AK-47",
 };
 
-// Hint 5, priority 3: nba_players.json has no award fields at all, so this
-// is a curated (necessarily partial) list of unambiguous major-award
-// winners, used only for players who fall through priorities 1-2 -- which,
-// since every player has a primary_team, in practice means this and
-// everything below it are a defensive fallback rather than a commonly-hit
-// path. Only includes players NOT already covered by KNOWN_NICKNAMES above.
-const MAJOR_AWARDS = {
-  "stephen-curry": "Won the NBA MVP award, including a unanimous selection.",
-  "kawhi-leonard": "Won Finals MVP and Defensive Player of the Year.",
-  "dirk-nowitzki": "Won the NBA MVP award and a Finals MVP.",
-  "steve-nash": "Won the NBA MVP award twice.",
-  "russell-westbrook": "Won the NBA MVP award.",
-  "james-harden": "Won the NBA MVP award.",
-  "larry-bird": "Won the NBA MVP award three times.",
-  "wilt-chamberlain": "Won the NBA MVP award multiple times.",
-  "moses-malone": "Won the NBA MVP award three times.",
-  "bill-walton": "Won the NBA MVP award.",
-  "draymond-green": "Won Defensive Player of the Year.",
-  "ben-wallace": "Won Defensive Player of the Year multiple times.",
+// Hint 5, priority 2: real major-award data (MVP, Finals MVP, DPOY, Rookie
+// of the Year, Sixth Man of the Year), sourced from each player's `awards`
+// field in nba_players.json rather than a hardcoded lookup -- see
+// majorAwardHint below. Ordered by prestige, most impressive first, so a
+// five-time MVP is described as an MVP winner rather than (say) a one-time
+// Rookie of the Year.
+export function majorAwardHint(player) {
+  const awards = player.awards;
+  if (!awards) return null;
+  if (awards.mvp >= 2) return "Won the NBA Most Valuable Player award multiple times.";
+  if (awards.mvp === 1) return "Won the NBA Most Valuable Player award.";
+  if (awards.finals_mvp >= 2) return "Won NBA Finals MVP multiple times.";
+  if (awards.finals_mvp === 1) return "Won NBA Finals MVP.";
+  if (awards.dpoy >= 2) return "Won NBA Defensive Player of the Year multiple times.";
+  if (awards.dpoy === 1) return "Won NBA Defensive Player of the Year.";
+  if (awards.roy === 1) return "Named NBA Rookie of the Year.";
+  if (awards.sixth_man >= 2) return "Won the NBA Sixth Man of the Year award multiple times.";
+  if (awards.sixth_man === 1) return "Won the NBA Sixth Man of the Year award.";
+  return null;
+}
+
+// Hint 5, priority 3: draft notability. The number-one-overall and
+// top-three checks are fully data-driven off draft_round/draft_pick.
+// FAMOUS_LATE_DRAFT_STORIES is a small curated allow-list for the opposite
+// end -- a player drafted very late (or not at all) who nonetheless became
+// a genuine star -- since "how late is notably late" and "did they actually
+// become notable" aren't things draft_pick alone can answer; only real,
+// well-documented stories included.
+export const FAMOUS_LATE_DRAFT_STORIES = {
+  "isaiah-thomas": "Selected with the very last pick in the NBA Draft before becoming an All-Star.",
+  "ben-wallace": "Went undrafted before becoming a four-time Defensive Player of the Year.",
 };
 
-function heightPhrase(player) {
+export function draftNotabilityHint(player) {
+  if (player.draft_round === 1 && player.draft_pick === 1) {
+    return "Selected first overall in the NBA Draft.";
+  }
+  if (player.draft_round === 1 && player.draft_pick <= 3) {
+    return "Selected with a top-three pick in the NBA Draft.";
+  }
+  return FAMOUS_LATE_DRAFT_STORIES[player.player_id] || null;
+}
+
+// Hint 5, priority 4: a real statistical rank or record -- never a raw
+// number, since hint 4 already gave one of those. A small curated set of
+// verified all-time NBA rankings/records (not computed from this dataset's
+// own totals, several of which are marked "approximate") so nothing here is
+// a guess -- every entry is a fact that would hold up against the real
+// official NBA record book.
+export const STAT_RANK_CALLOUTS = {
+  "elvin-hayes": "Ranks among the top 10 players in NBA history in career rebounds.",
+  "nate-thurmond": "Ranks among the top 10 players in NBA history in career rebounds.",
+  "john-stockton": "Holds the NBA all-time record for career assists, by a wide margin.",
+  "patrick-ewing": "Ranks among the top 10 players in NBA history in career blocked shots.",
+  "maurice-cheeks": "Ranks among the top 10 players in NBA history in career steals.",
+  "scottie-pippen": "Ranks among the top 10 players in NBA history in career steals.",
+  "russell-westbrook":
+    "Set the NBA record for most triple-doubles in a single season, and is one of only a handful of players to ever average a triple-double for a full season.",
+  "alex-english": "Was the NBA's leading scorer across the entire decade of the 1980s.",
+};
+
+// Hint 5, priority 5 (last resort): primary team, but never bare -- always
+// paired with era and, when available, a real achievement (championships or
+// multiple All-Star selections) or length of tenure, so it never reads as a
+// repeat of hint 3's "just a team name" category. Only reached by players
+// with no known nickname, no major award, no notable draft story, and no
+// curated stat-rank fact -- in practice, credible role players and
+// journeymen rather than genuine stars.
+export function primaryTeamWithContext(player) {
+  const primaryTeamName = TEAM_FULL_NAMES[player.primary_team] || player.primary_team;
+  if (!primaryTeamName) return "One of the most recognizable names of their playing era.";
+
+  const era = decadeDescription(player.years_active_start, player.years_active_end);
+  const championships = player.championships || 0;
+  const allStars = player.all_star_appearances || 0;
+  // Championships/All-Star nods are career totals, not attributed to a
+  // specific team in this data -- primary_team is sometimes a late-career
+  // or otherwise arbitrary designation (e.g. a player's title could have
+  // come with a different team entirely). Phrased as two adjacent true
+  // facts rather than claiming the achievement happened "with" this team,
+  // so the hint never asserts something the data can't actually support.
+  if (championships > 0) {
+    return `An NBA champion (${championships}x) who spent time with the ${primaryTeamName} during ${era}.`;
+  }
+  if (allStars >= 2) {
+    return `A ${allStars}-time All-Star who spent time with the ${primaryTeamName} during ${era}.`;
+  }
+  if (seasonsPlayed(player) >= 10) {
+    return `Spent over a decade in the league, including time with the ${primaryTeamName}, primarily during ${era}.`;
+  }
+  return `Best remembered for their run with the ${primaryTeamName} during ${era}.`;
+}
+
+export function heightPhrase(player) {
   return `${player.height_feet} foot ${player.height_inches_remainder ?? 0}`;
 }
 
-function approximateWeight(player) {
+export function approximateWeight(player) {
   const baseline = POSITION_WEIGHT_BASELINE[player.position] || POSITION_WEIGHT_BASELINE.SF;
   const totalHeightInches = (player.height_feet || 6) * 12 + (player.height_inches_remainder ?? 0);
   const delta = totalHeightInches - baseline.heightInches;
   return Math.round((baseline.weight + delta * 5) / 5) * 5;
 }
 
-function decadeDescription(startYear, endYear) {
+export function decadeDescription(startYear, endYear) {
   if (!startYear || !endYear) return "an earlier era of the league";
   const startDecade = Math.floor(startYear / 10) * 10;
   const endDecade = Math.floor(endYear / 10) * 10;
@@ -123,7 +296,7 @@ function decadeDescription(startYear, endYear) {
   return `the ${decades.slice(0, -1).join(", ")}, and ${decades[decades.length - 1]}`;
 }
 
-function seasonsPlayed(player) {
+export function seasonsPlayed(player) {
   return player.total_seasons || Math.max(1, (player.years_active_end || 0) - (player.years_active_start || 0) + 1);
 }
 
@@ -131,7 +304,7 @@ function seasonsPlayed(player) {
 // short careers (under 3 seasons) skip the decade description entirely --
 // "primarily during the 2020s" is meaningless noise for someone who only
 // played one or two seasons.
-function hint2Text(player) {
+export function hint2Text(player) {
   const seasons = seasonsPlayed(player);
   if (seasons < 3) {
     return `Played ${seasons} season${seasons === 1 ? "" : "s"} in the NBA.`;
@@ -146,7 +319,7 @@ function hint2Text(player) {
 // down for people who actually follow roster movement). Falls back to
 // allowing the first entry back in for two-team players, since excluding
 // both leaves nothing to pick from.
-function secondaryTeamName(player) {
+export function secondaryTeamName(player) {
   const teams = player.teams || [];
   if (teams.length <= 1) return null;
   const primary = player.primary_team || teams[0];
@@ -162,7 +335,7 @@ function secondaryTeamName(player) {
 // ahead of a plain points-per-game line, since that combination is far
 // more distinctive than points alone. Otherwise falls through a priority
 // chain keyed to whichever stat is that player's signature.
-function hint4StatLine(player) {
+export function hint4StatLine(player) {
   const ppg = typeof player.career_ppg === "number" ? player.career_ppg : null;
   const rpg = typeof player.career_rpg === "number" ? player.career_rpg : null;
   const apg = typeof player.career_apg === "number" ? player.career_apg : null;
@@ -188,32 +361,25 @@ function hint4StatLine(player) {
   return `Career averages included ${(ppg ?? 0).toFixed(1)} points per game.`;
 }
 
-// Hint 5: priority cascade, first match wins. Every real player has a
-// primary_team, so priority 2 is always reachable -- priorities 3-5 exist
-// for defensiveness (and are written to spec) but in practice only ever
-// fire for the rare record missing team data.
+// Hint 5: priority cascade, first match wins -- nickname, then a real major
+// award, then draft notability, then a verified stat-rank/record fact, and
+// only as a last resort a team (always paired with era/achievement so it
+// never repeats hint 3's team-only category). Ordered so the vast majority
+// of mystery players resolve well before the team fallback.
 function hint5Reveal(player) {
   const nickname = KNOWN_NICKNAMES[player.player_id];
   if (nickname) return `Known by the nickname ${nickname}.`;
 
-  const primaryTeamName = TEAM_FULL_NAMES[player.primary_team] || player.primary_team;
-  if (primaryTeamName) return `Best known for their time with the ${primaryTeamName}.`;
+  const awardLine = majorAwardHint(player);
+  if (awardLine) return awardLine;
 
-  const award = MAJOR_AWARDS[player.player_id];
-  if (award) return award;
+  const draftLine = draftNotabilityHint(player);
+  if (draftLine) return draftLine;
 
-  if (player.draft_round === 1 && player.draft_pick === 1) {
-    return "Selected as the number one overall pick in the NBA Draft.";
-  }
-  if (player.draft_round === 1 && player.draft_pick <= 3) {
-    return "Selected with a top-three pick in the NBA Draft.";
-  }
+  const statLine = STAT_RANK_CALLOUTS[player.player_id];
+  if (statLine) return statLine;
 
-  if (player.birth_country && player.birth_country !== "USA") {
-    return `Born and raised in ${player.birth_country} before coming to the NBA.`;
-  }
-
-  return "One of the most recognizable names of their playing era.";
+  return primaryTeamWithContext(player);
 }
 
 export function generateHints(player) {
