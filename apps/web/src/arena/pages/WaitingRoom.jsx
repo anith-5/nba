@@ -784,6 +784,37 @@ function BuildAPlayerConfigForm({ config, setConfig }) {
   );
 }
 
+function EightyTwoOhConfigForm({ config, setConfig }) {
+  return (
+    <div className="card space-y-5 p-5 text-left">
+      <p className="stat-label">NBA 82-0 Settings</p>
+
+      <div>
+        <label className="stat-label mb-2 block">Roster Slots</label>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, benchEnabled: false })}
+            className={config.benchEnabled === false ? "btn-primary" : "btn-ghost"}
+          >
+            PG / SG / SF / PF / C
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfig({ ...config, benchEnabled: true })}
+            className={config.benchEnabled === true ? "btn-primary" : "btn-ghost"}
+          >
+            + Bench Spot
+          </button>
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          Spin a team + decade each round, draft the best available player, then reassign freely before finalizing.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function WaitingRoom() {
   const { code } = useParams();
   const navigate = useNavigate();
@@ -834,6 +865,9 @@ export default function WaitingRoom() {
   const [buildAPlayerConfig, setBuildAPlayerConfig] = useState({
     traitSlotCount: 12,
     pickTimerSeconds: 30,
+  });
+  const [eightyTwoOhConfig, setEightyTwoOhConfig] = useState({
+    benchEnabled: false,
   });
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
@@ -892,6 +926,9 @@ export default function WaitingRoom() {
         {isHost && room.gameMode === "build-a-player" && (
           <BuildAPlayerConfigForm config={buildAPlayerConfig} setConfig={setBuildAPlayerConfig} />
         )}
+        {isHost && room.gameMode === "82-0" && (
+          <EightyTwoOhConfigForm config={eightyTwoOhConfig} setConfig={setEightyTwoOhConfig} />
+        )}
 
         {isHost ? (
           <button
@@ -909,7 +946,9 @@ export default function WaitingRoom() {
                           ? themedDraftConfig
                           : room.gameMode === "build-a-player"
                             ? buildAPlayerConfig
-                            : {}
+                            : room.gameMode === "82-0"
+                              ? eightyTwoOhConfig
+                              : {}
               )
             }
             disabled={!canStart}
@@ -921,7 +960,8 @@ export default function WaitingRoom() {
           room.gameMode === "five-hints" ||
           room.gameMode === "hint-auction" ||
           room.gameMode === "draft" ||
-          room.gameMode === "build-a-player" ? (
+          room.gameMode === "build-a-player" ||
+          room.gameMode === "82-0" ? (
           <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
         ) : (
           <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>

@@ -56,6 +56,18 @@ import {
   allActed as allBuildAPlayerActed,
   finalizeGame as finalizeBuildAPlayerGame,
 } from "../game-logic/buildAPlayer.js";
+import {
+  resolveTeamRoster as resolveEightyTwoOhTeamRoster,
+  buildSelectionListForDecade,
+  handleSpin as handleEightyTwoOhSpin,
+  handleRespinDecade as handleEightyTwoOhRespinDecade,
+  handleRespinTeam as handleEightyTwoOhRespinTeam,
+  handleConfirmPick as handleEightyTwoOhConfirmPick,
+  handleReassign as handleEightyTwoOhReassign,
+  handleFinalizeBuild as handleEightyTwoOhFinalizeBuild,
+  allPlayersDone as allEightyTwoOhDone,
+  calculateResults as calculateEightyTwoOhResults,
+} from "../game-logic/eightyTwoOh.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const NEXT_ROUND_DELAY_MS = 5000;
@@ -81,6 +93,11 @@ export function registerGameHandlers(io, socket) {
       handleThemedDraftAction(io, room, socket, action, data || {});
     } else if (room.gameMode === "build-a-player") {
       handleBuildAPlayerAction(io, room, socket, action, data || {});
+    } else if (room.gameMode === "82-0") {
+      handleEightyTwoOhAction(io, room, socket, action, data || {}).catch((err) => {
+        console.error("[82-0] action handler error:", err);
+        socket.emit("game_error", { message: "Something went wrong processing that action." });
+      });
     }
   });
 }
@@ -852,5 +869,140 @@ function handleBuildAPlayerAction(io, room, socket, action, data) {
     touchRoom(room);
     broadcast(io, room, "player_passed");
     advanceBuildAPlayerFlow(io, room);
+  }
+}
+
+// --- NBA 82-0 ---
+//
+// No timer, fully public the whole time (no sanitize.js branch needed --
+// see that module's comment). Unlike Closest To's private-only spin_result
+// (needed there because Blind Mode redacts playerLineups in the broadcast,
+// so the acting player has no other way to see their own real pendingTeam),
+// 82-0's pendingSpin/respin-token state already lives inside
+// gameState.playerBuilds untouched by sanitize.js -- so spin/respin just
+// broadcast a normal game_update like every other action here, and the
+// client reads pendingSpin straight off its own playerBuilds entry rather
+// than mirroring a separate local copy. Only the roster list itself
+// (players_list) stays a private emit, since it's fetched on demand and
+// broadcasting it to everyone would be pure waste -- nobody else needs it.
+
+function finishEightyTwoOhIfAllDone(io, room) {
+  const gameState = room.gameState;
+  const connectedIds = room.players.filter((p) => p.connected).map((p) => p.socketId);
+  if (allEightyTwoOhDone(gameState, connectedIds)) {
+    calculateEightyTwoOhResults(gameState, room.players);
+    room.status = "finished";
+    touchRoom(room);
+    broadcast(io, room, "game_finished");
+  }
+}
+
+async function handleEightyTwoOhAction(io, room, socket, action, data) {
+  const gameState = room.gameState;
+  if (!gameState) return;
+
+  if (action === "spin" && gameState.phase === "building") {
+    const result = handleEightyTwoOhSpin(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "spin_result");
+    return;
+  }
+
+  if (action === "respin_decade" && gameState.phase === "building") {
+    const result = handleEightyTwoOhRespinDecade(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "spin_result");
+    return;
+  }
+
+  if (action === "respin_team" && gameState.phase === "building") {
+    const result = handleEightyTwoOhRespinTeam(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "spin_result");
+    return;
+  }
+
+  if (action === "list_players" && gameState.phase === "building") {
+    const state = gameState.playerBuilds[socket.id];
+    if (!state?.pendingSpin) return;
+    const { abbr, decade } = state.pendingSpin;
+
+    let rosterData;
+    try {
+      rosterData = await resolveEightyTwoOhTeamRoster(abbr);
+    } catch (err) {
+      console.warn(`[82-0] roster fetch failed for ${abbr}: ${err.message}`);
+      // Same staleness guard as the success path below -- don't report a
+      // failure for a team/decade the player has since respun away from.
+      const stillPending = gameState.playerBuilds[socket.id]?.pendingSpin;
+      if (stillPending?.abbr === abbr && stillPending?.decade === decade) {
+        socket.emit("team_players_error", {
+          spin: state.pendingSpin,
+          message: "Could not load player data for this team. Try a respin.",
+        });
+      }
+      return;
+    }
+
+    // The (possibly slow) fetch could still be in flight after either
+    // respin action changes the pending spin -- re-check BOTH the team and
+    // the decade before handing back a now-stale list.
+    const stillPending = gameState.playerBuilds[socket.id]?.pendingSpin;
+    if (!stillPending || stillPending.abbr !== abbr || stillPending.decade !== decade) return;
+
+    const options = buildSelectionListForDecade(rosterData, decade);
+    socket.emit("players_list", {
+      spin: state.pendingSpin,
+      players: options,
+      source: rosterData.source,
+      dataComplete: rosterData.data_complete,
+      note: rosterData.note || null,
+    });
+    return;
+  }
+
+  if (action === "confirm_pick" && gameState.phase === "building") {
+    const result = handleEightyTwoOhConfirmPick(gameState, socket.id, data || {});
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "pick_confirmed");
+    return;
+  }
+
+  if (action === "reassign" && gameState.phase === "building") {
+    const result = handleEightyTwoOhReassign(gameState, socket.id, data || {});
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "lineup_reassigned");
+    return;
+  }
+
+  if (action === "finalize_build" && gameState.phase === "building") {
+    const result = handleEightyTwoOhFinalizeBuild(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "build_finalized");
+    finishEightyTwoOhIfAllDone(io, room);
   }
 }

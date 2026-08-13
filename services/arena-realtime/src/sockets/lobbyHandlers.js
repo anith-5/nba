@@ -5,6 +5,7 @@ import {
   initGameState as initClosestToGameState,
   ensurePlayerLineup,
 } from "../game-logic/closestTo.js";
+import { initGameState as initEightyTwoOhGameState, ensurePlayerBuild } from "../game-logic/eightyTwoOh.js";
 import { initGameState as initFiveHintsGameState, startRound as startFiveHintsRound } from "../game-logic/fiveHints.js";
 import { initGameState as initHintAuctionGameState, beginGame as beginHintAuctionGame } from "../game-logic/hintAuction.js";
 import { initGameState as initThemedDraftGameState, beginDraft as beginThemedDraftGame } from "../game-logic/themedDraft.js";
@@ -73,6 +74,10 @@ const DEFAULT_BUILD_A_PLAYER_CONFIG = {
   pickTimerSeconds: 30,
 };
 
+const DEFAULT_EIGHTY_TWO_OH_CONFIG = {
+  benchEnabled: false,
+};
+
 function initialGameState(gameMode, configOverrides) {
   if (gameMode === "over-under") {
     const gameConfig = { ...DEFAULT_OVER_UNDER_CONFIG, ...(configOverrides || {}) };
@@ -99,6 +104,9 @@ function initialGameState(gameMode, configOverrides) {
   }
   if (gameMode === "build-a-player") {
     return initBuildAPlayerGameState({ ...DEFAULT_BUILD_A_PLAYER_CONFIG, ...(configOverrides || {}) });
+  }
+  if (gameMode === "82-0") {
+    return initEightyTwoOhGameState({ ...DEFAULT_EIGHTY_TWO_OH_CONFIG, ...(configOverrides || {}) });
   }
   return { config: configOverrides || {} };
 }
@@ -205,6 +213,16 @@ export function registerLobbyHandlers(io, socket) {
         room.gameState,
         room.players.map((p) => p.socketId)
       );
+    }
+
+    if (room.gameMode === "82-0") {
+      // Pre-create an empty build entry for every player so any "X of Y
+      // done" style counter has the right denominator from the very first
+      // tick, even before anyone has spun -- same reasoning as Closest To's
+      // identical pre-creation of ensurePlayerLineup above.
+      for (const player of room.players) {
+        ensurePlayerBuild(room.gameState, player.socketId);
+      }
     }
 
     if (room.gameMode === "draft") {

@@ -168,6 +168,14 @@ def _fetch_season_roster_with_stats(team: dict[str, Any], season: str) -> list[d
             "player_id": str(player_id),
             "name": name,
             "ppg": ppg,
+            # ast_pg/reb_pg for NBA 82-0's skill-score formula -- both were
+            # already being computed by _fetch_dash_stats above (used
+            # internally by _refine_position) and simply discarded before
+            # this point. Surfacing them costs zero additional API calls.
+            # Shares ppg_confirmed's status since all three come from the
+            # exact same stats row.
+            "ast_pg": stats["ast_pg"] if stats is not None else None,
+            "reb_pg": stats["reb_pg"] if stats is not None else None,
             "position": position,
             "ppg_confirmed": ppg_confirmed,
         })
@@ -190,6 +198,8 @@ def fetch_team_players(abbr: str, season_delay: float = 0.1) -> dict[str, Any]:
             entry["seasons"][season] = {
                 "season": season,
                 "ppg": row["ppg"],
+                "ast_pg": row["ast_pg"],
+                "reb_pg": row["reb_pg"],
                 "position": row["position"],
                 "ppg_confirmed": row["ppg_confirmed"],
             }

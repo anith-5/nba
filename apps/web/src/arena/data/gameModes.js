@@ -1,5 +1,15 @@
 export const GAME_MODES = [
   {
+    id: "82-0",
+    name: "NBA 82-0",
+    description: "Spin a team + decade, build a 5-position lineup, and see whose projected record is best.",
+    minPlayers: 2,
+    maxPlayers: 8,
+    estimate: "15-25 min",
+    status: "playable",
+    route: "/arena/games/82-0",
+  },
+  {
     id: "build-a-player",
     name: "Build a Player",
     description: "Pick real stat-graded traits off revealed players to assemble your best custom build.",
