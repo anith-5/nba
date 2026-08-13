@@ -6,8 +6,8 @@ export const GAME_MODES = [
     minPlayers: 2,
     maxPlayers: 8,
     estimate: "15-30 min",
-    status: "coming-soon",
-    route: "/arena/games/themed-draft",
+    status: "playable",
+    route: "/arena/games/draft",
   },
   {
     id: "closest-to",

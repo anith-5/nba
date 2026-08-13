@@ -7,8 +7,14 @@ import {
 } from "../game-logic/closestTo.js";
 import { initGameState as initFiveHintsGameState, startRound as startFiveHintsRound } from "../game-logic/fiveHints.js";
 import { initGameState as initHintAuctionGameState, beginGame as beginHintAuctionGame } from "../game-logic/hintAuction.js";
+import { initGameState as initThemedDraftGameState, beginDraft as beginThemedDraftGame } from "../game-logic/themedDraft.js";
 import { sanitizeGameStateForBroadcast } from "../game-logic/sanitize.js";
-import { revealRound, armHintPhase as armFiveHintsHintPhase, armHintAuctionHintPhase } from "./gameHandlers.js";
+import {
+  revealRound,
+  armHintPhase as armFiveHintsHintPhase,
+  armHintAuctionHintPhase,
+  armThemedDraftTurnTimer,
+} from "./gameHandlers.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const DEFAULT_CLOSEST_TO_CONFIG = {
@@ -53,6 +59,13 @@ const DEFAULT_HINT_AUCTION_CONFIG = {
   era: "all-time",
 };
 
+const DEFAULT_THEMED_DRAFT_CONFIG = {
+  category: "team",
+  secondaryParam: { team: "LAL" },
+  rosterSize: 5,
+  turnTimerSeconds: 30,
+};
+
 function initialGameState(gameMode, configOverrides) {
   if (gameMode === "over-under") {
     const gameConfig = { ...DEFAULT_OVER_UNDER_CONFIG, ...(configOverrides || {}) };
@@ -73,6 +86,9 @@ function initialGameState(gameMode, configOverrides) {
   }
   if (gameMode === "hint-auction") {
     return initHintAuctionGameState({ ...DEFAULT_HINT_AUCTION_CONFIG, ...(configOverrides || {}) });
+  }
+  if (gameMode === "draft") {
+    return initThemedDraftGameState({ ...DEFAULT_THEMED_DRAFT_CONFIG, ...(configOverrides || {}) });
   }
   return { config: configOverrides || {} };
 }
@@ -181,6 +197,17 @@ export function registerLobbyHandlers(io, socket) {
       );
     }
 
+    if (room.gameMode === "draft") {
+      // beginDraft resolves the theme's pool once and sets up every
+      // connected player's empty roster + the full snake pick sequence
+      // before round 1 -- same starts-atomically rationale as Five Hints
+      // and Hint Auction above.
+      beginThemedDraftGame(
+        room.gameState,
+        room.players.map((p) => p.socketId)
+      );
+    }
+
     touchRoom(room);
     io.to(room.code).emit("game_update", {
       gameState: sanitizeGameStateForBroadcast(room.gameState),
@@ -198,6 +225,10 @@ export function registerLobbyHandlers(io, socket) {
 
     if (room.gameMode === "hint-auction") {
       armHintAuctionHintPhase(io, room);
+    }
+
+    if (room.gameMode === "draft") {
+      armThemedDraftTurnTimer(io, room);
     }
 
     callback?.({ ok: true });

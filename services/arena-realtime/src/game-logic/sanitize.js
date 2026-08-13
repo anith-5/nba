@@ -3,6 +3,10 @@
 // it is broadcast to clients. Everything is revealed only once the round's
 // reveal timer/vote-completion fires.
 export function sanitizeGameStateForBroadcast(gameState) {
+  // Checked first: Themed Draft also has a top-level `rosters` map (one
+  // array per team), which would otherwise collide with Hint Auction's own
+  // `rosters` discriminator below -- `pickOrder` is unique to Themed Draft.
+  if (gameState?.pickOrder) return sanitizeThemedDraft(gameState);
   // Checked before Five Hints below: both shapes have currentRound.hints,
   // but only Hint Auction has a top-level `rosters` map, so that has to be
   // the discriminator, not the hints array.
@@ -99,6 +103,20 @@ function sanitizeHintAuction(gameState) {
     unsold: false,
   };
   return { ...gameState, currentRound: publicRound };
+}
+
+// Themed Draft's hidden information is only ever in-progress vote choices
+// during the voting phase -- picks are fully public the instant they're
+// made (there's nothing to hide during drafting, unlike Closest To's
+// in-progress lineups), and once resolveVoting fires the real votes are
+// safe to reveal in full, mirroring Over Under's reveal-then-show-everything
+// shape. `_turnTimeout` is a non-serializable Node timer handle (same
+// category as Over Under's `_timeout` on currentRound) so it's always
+// stripped regardless of phase, not just during voting.
+function sanitizeThemedDraft(gameState) {
+  const { _turnTimeout, ...publicState } = gameState;
+  if (gameState.phase !== "voting") return publicState;
+  return { ...publicState, votes: {}, votedSocketIds: Object.keys(gameState.votes || {}) };
 }
 
 function sanitizeClosestTo(gameState) {

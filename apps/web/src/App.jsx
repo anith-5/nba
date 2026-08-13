@@ -30,6 +30,7 @@ import ClosestTo from "./arena/pages/games/ClosestTo.jsx";
 import Wordle from "./arena/pages/games/Wordle.jsx";
 import FiveHints from "./arena/pages/games/FiveHints.jsx";
 import HintAuction from "./arena/pages/games/HintAuction.jsx";
+import ThemedDraft from "./arena/pages/games/ThemedDraft.jsx";
 import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 
 export default function App() {
@@ -63,10 +64,6 @@ export default function App() {
           <Route path="arena" element={<ArenaHome />} />
           <Route path="arena/games/wordle" element={<Wordle />} />
           <Route
-            path="arena/games/themed-draft"
-            element={<ComingSoon title="Themed Player Draft" description="Draft NBA players based on a category set by the host." />}
-          />
-          <Route
             path="arena/games/trade-evaluator"
             element={<ComingSoon title="Trade Evaluator" description="Vote on who wins NBA trades then see the model's verdict." />}
           />
@@ -79,6 +76,7 @@ export default function App() {
             <Route path="games/closest-to/:code" element={<ClosestTo />} />
             <Route path="games/five-hints/:code" element={<FiveHints />} />
             <Route path="games/hint-auction/:code" element={<HintAuction />} />
+            <Route path="games/draft/:code" element={<ThemedDraft />} />
           </Route>
         </Route>
       </Routes>

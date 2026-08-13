@@ -35,6 +35,18 @@ import {
   goToNextRound as goToNextHintAuctionRound,
   TIMERS as HINT_AUCTION_TIMERS,
 } from "../game-logic/hintAuction.js";
+import {
+  currentTurnSocketId,
+  makePick as makeThemedDraftPick,
+  autoPickRandom as autoPickThemedDraftRandom,
+  advanceTurn as advanceThemedDraftTurn,
+  skipCurrentTurn as skipThemedDraftTurn,
+  openVoting as openThemedDraftVoting,
+  castVote as castThemedDraftVote,
+  allVoted as allThemedDraftVoted,
+  resolveVoting as resolveThemedDraftVoting,
+  finalizeGame as finalizeThemedDraftGame,
+} from "../game-logic/themedDraft.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const NEXT_ROUND_DELAY_MS = 5000;
@@ -56,6 +68,8 @@ export function registerGameHandlers(io, socket) {
       handleFiveHintsAction(io, room, socket, action, data || {});
     } else if (room.gameMode === "hint-auction") {
       handleHintAuctionAction(io, room, socket, action, data || {});
+    } else if (room.gameMode === "draft") {
+      handleThemedDraftAction(io, room, socket, action, data || {});
     }
   });
 }
@@ -637,5 +651,98 @@ function handleHintAuctionAction(io, room, socket, action, data) {
     touchRoom(room);
     broadcast(io, room, "bid_placed");
     if (result.extended) armHintAuctionAuctionTimer(io, room);
+  }
+}
+
+// --- Themed Player Draft ---
+//
+// Turn-based snake draft: exactly one player picks at a time (see
+// currentTurnSocketId), auto-picking a random available player if their
+// turn timer expires so one slow/disconnected drafter can never stall the
+// whole room -- same "never leave a stall point" philosophy as Hint
+// Auction's forced roster-slot fill cascade above. Voting afterward mirrors
+// Over Under's simultaneous-reveal shape: every connected player votes
+// once (changeable until resolution), resolution fires the instant all of
+// them have (not on a timer), and nobody can vote for their own team.
+
+function clearThemedDraftTimer(gameState) {
+  clearTimeout(gameState._turnTimeout);
+}
+
+export function armThemedDraftTurnTimer(io, room) {
+  const gameState = room.gameState;
+  if (!gameState || gameState.phase !== "drafting" || !gameState.pickDeadlineAt) return;
+  clearThemedDraftTimer(gameState);
+  const msRemaining = Math.max(0, gameState.pickDeadlineAt - Date.now());
+  gameState._turnTimeout = setTimeout(() => onThemedDraftTurnTimeout(io, room), msRemaining);
+}
+
+function onThemedDraftTurnTimeout(io, room) {
+  const gameState = room.gameState;
+  if (!gameState || gameState.phase !== "drafting") return; // stale timer
+
+  const socketId = currentTurnSocketId(gameState);
+  let player = null;
+  let draftComplete;
+  if (gameState.availablePool.length === 0) {
+    ({ draftComplete } = skipThemedDraftTurn(gameState));
+  } else {
+    const pick = autoPickThemedDraftRandom(gameState);
+    player = pick.player;
+    ({ draftComplete } = advanceThemedDraftTurn(gameState));
+  }
+
+  touchRoom(room);
+  io.to(room.code).emit("pick_timed_out", { socketId, player });
+  broadcast(io, room, "pick_made");
+  advanceThemedDraftFlow(io, room, draftComplete);
+}
+
+function advanceThemedDraftFlow(io, room, draftComplete) {
+  const gameState = room.gameState;
+  if (draftComplete) {
+    clearThemedDraftTimer(gameState);
+    openThemedDraftVoting(gameState, connectedSocketIds(room));
+    touchRoom(room);
+    broadcast(io, room, "voting_started");
+    return;
+  }
+  armThemedDraftTurnTimer(io, room);
+}
+
+function handleThemedDraftAction(io, room, socket, action, data) {
+  const gameState = room.gameState;
+  if (!gameState) return;
+
+  if (action === "make_pick" && gameState.phase === "drafting") {
+    const result = makeThemedDraftPick(gameState, socket.id, data.playerId);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    clearThemedDraftTimer(gameState);
+    const { draftComplete } = advanceThemedDraftTurn(gameState);
+    touchRoom(room);
+    broadcast(io, room, "pick_made");
+    advanceThemedDraftFlow(io, room, draftComplete);
+    return;
+  }
+
+  if (action === "cast_vote" && gameState.phase === "voting") {
+    const result = castThemedDraftVote(gameState, socket.id, data.votedForSocketId);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "vote_cast");
+
+    if (allThemedDraftVoted(gameState, connectedSocketIds(room))) {
+      resolveThemedDraftVoting(gameState);
+      finalizeThemedDraftGame(gameState);
+      room.status = "finished";
+      touchRoom(room);
+      broadcast(io, room, "game_finished");
+    }
   }
 }

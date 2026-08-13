@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GAME_MODES } from "../data/gameModes.js";
 import { STAT_CATEGORIES, STAT_GROUP_ORDER, STAT_GROUP_LABELS } from "../data/statCategories.js";
+import { TEAM_FULL_NAMES } from "../utils/fiveHintsGenerator.js";
 import RoomCodeBadge from "../components/RoomCodeBadge.jsx";
 import PlayerList from "../components/PlayerList.jsx";
 import { useSocket } from "../socket/useSocket.js";
@@ -514,6 +515,231 @@ function ClosestToConfigForm({ config, setConfig }) {
   );
 }
 
+const THEMED_DRAFT_TEAM_OPTIONS = Object.entries(TEAM_FULL_NAMES).sort((a, b) => a[1].localeCompare(b[1]));
+
+const THEMED_DRAFT_AWARD_OPTIONS = [
+  { value: "mvp", label: "MVP Winners" },
+  { value: "finals_mvp", label: "Finals MVP Winners" },
+  { value: "dpoy", label: "Defensive Player of the Year Winners" },
+  { value: "roy", label: "Rookie of the Year Winners" },
+  { value: "sixth_man", label: "Sixth Man of the Year Winners" },
+  { value: "all-star", label: "All-Stars" },
+  { value: "hall-of-fame", label: "Hall of Famers" },
+];
+
+const THEMED_DRAFT_ARCHETYPE_OPTIONS = [
+  { value: "guard-scorer", label: "Guard Scorers" },
+  { value: "guard-defender", label: "Guard Defenders" },
+  { value: "wing-scorer", label: "Wing Scorers" },
+  { value: "wing-defender", label: "Wing Defenders" },
+  { value: "big-scorer", label: "Big Scorers" },
+  { value: "big-defender", label: "Big Defenders" },
+];
+
+const THEMED_DRAFT_CATEGORY_OPTIONS = [
+  { value: "team", label: "Single Team" },
+  { value: "era", label: "Era / Decade" },
+  { value: "award", label: "Award Winners" },
+  { value: "archetype", label: "Playstyle Archetype" },
+  { value: "stat-threshold", label: "Stat Threshold" },
+  { value: "current-season", label: "Current Season Only" },
+];
+
+function ThemedDraftConfigForm({ config, setConfig }) {
+  const secondary = config.secondaryParam || {};
+
+  function setSecondary(patch) {
+    setConfig({ ...config, secondaryParam: { ...secondary, ...patch } });
+  }
+
+  function setCategory(category) {
+    // Each category gets a sensible default secondaryParam the moment it's
+    // selected, so the draft is always startable without extra required
+    // steps -- same "never leave a stall point" default-friendliness as the
+    // rest of the config forms above.
+    const defaults = {
+      team: { team: "LAL" },
+      era: { era: "modern" },
+      award: { award: "all-star" },
+      archetype: { archetype: "guard-scorer" },
+      "stat-threshold": { statKey: "career_ppg", threshold: 25 },
+      "current-season": {},
+    };
+    setConfig({ ...config, category, secondaryParam: defaults[category] || {} });
+  }
+
+  return (
+    <div className="card space-y-5 p-5 text-left">
+      <p className="stat-label">Themed Player Draft Settings</p>
+
+      <div>
+        <label className="stat-label mb-1 block">Theme</label>
+        <select
+          value={config.category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+        >
+          {THEMED_DRAFT_CATEGORY_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+
+        {config.category === "team" && (
+          <select
+            value={secondary.team || "LAL"}
+            onChange={(e) => setSecondary({ team: e.target.value })}
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          >
+            {THEMED_DRAFT_TEAM_OPTIONS.map(([abbr, name]) => (
+              <option key={abbr} value={abbr}>
+                {name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {config.category === "era" && (
+          <>
+            <select
+              value={secondary.era || "modern"}
+              onChange={(e) => setSecondary({ era: e.target.value })}
+              className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            >
+              <option value="modern">Modern Only (2015-16 to present)</option>
+              <option value="classic">Classic Only (before 2000)</option>
+              <option value="custom">Custom Range</option>
+            </select>
+            {secondary.era === "custom" && (
+              <div className="mt-2 grid grid-cols-2 gap-3">
+                <div>
+                  <label className="stat-label mb-1 block text-xs">Start Year</label>
+                  <input
+                    type="number"
+                    min={1946}
+                    max={CURRENT_YEAR}
+                    value={secondary.eraStart ?? 1946}
+                    onChange={(e) => setSecondary({ eraStart: Number(e.target.value) })}
+                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                  />
+                </div>
+                <div>
+                  <label className="stat-label mb-1 block text-xs">End Year</label>
+                  <input
+                    type="number"
+                    min={1946}
+                    max={CURRENT_YEAR}
+                    value={secondary.eraEnd ?? CURRENT_YEAR}
+                    onChange={(e) => setSecondary({ eraEnd: Number(e.target.value) })}
+                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                  />
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {config.category === "award" && (
+          <select
+            value={secondary.award || "all-star"}
+            onChange={(e) => setSecondary({ award: e.target.value })}
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          >
+            {THEMED_DRAFT_AWARD_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {config.category === "archetype" && (
+          <select
+            value={secondary.archetype || "guard-scorer"}
+            onChange={(e) => setSecondary({ archetype: e.target.value })}
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          >
+            {THEMED_DRAFT_ARCHETYPE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {config.category === "stat-threshold" && (
+          <div className="mt-2 grid grid-cols-2 gap-3">
+            <select
+              value={secondary.statKey || "career_ppg"}
+              onChange={(e) => setSecondary({ statKey: e.target.value })}
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            >
+              {STAT_GROUP_ORDER.map((group) => (
+                <optgroup key={group} label={STAT_GROUP_LABELS[group]}>
+                  {Object.entries(STAT_CATEGORIES)
+                    .filter(([, meta]) => meta.group === group)
+                    .map(([key, meta]) => (
+                      <option key={key} value={key}>
+                        {meta.label}
+                      </option>
+                    ))}
+                </optgroup>
+              ))}
+            </select>
+            <input
+              type="number"
+              value={secondary.threshold ?? 25}
+              onChange={(e) => setSecondary({ threshold: Number(e.target.value) })}
+              placeholder="Minimum value"
+              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            />
+          </div>
+        )}
+
+        {config.category === "current-season" && (
+          <p className="mt-2 text-xs text-slate-500">Draws from this season's live rosters, synced automatically.</p>
+        )}
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Roster Size</label>
+        <div className="grid grid-cols-5 gap-2">
+          {[3, 4, 5, 6, 7].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setConfig({ ...config, rosterSize: n })}
+              className={config.rosterSize === n ? "btn-primary" : "btn-ghost"}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Turn Timer</label>
+        <div className="grid grid-cols-4 gap-2">
+          {[15, 30, 60, null].map((n) => (
+            <button
+              key={n ?? "none"}
+              type="button"
+              onClick={() => setConfig({ ...config, turnTimerSeconds: n })}
+              className={config.turnTimerSeconds === n ? "btn-primary" : "btn-ghost"}
+            >
+              {n ? `${n}s` : "No Timer"}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          If a pick isn't made in time, a random available player is auto-picked so the draft never stalls.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function WaitingRoom() {
   const { code } = useParams();
   const navigate = useNavigate();
@@ -554,6 +780,12 @@ export default function WaitingRoom() {
     poolFilter: "all",
     position: null,
     era: "all-time",
+  });
+  const [themedDraftConfig, setThemedDraftConfig] = useState({
+    category: "team",
+    secondaryParam: { team: "LAL" },
+    rosterSize: 5,
+    turnTimerSeconds: 30,
   });
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
@@ -606,6 +838,9 @@ export default function WaitingRoom() {
         {isHost && room.gameMode === "hint-auction" && (
           <HintAuctionConfigForm config={hintAuctionConfig} setConfig={setHintAuctionConfig} />
         )}
+        {isHost && room.gameMode === "draft" && (
+          <ThemedDraftConfigForm config={themedDraftConfig} setConfig={setThemedDraftConfig} />
+        )}
 
         {isHost ? (
           <button
@@ -619,7 +854,9 @@ export default function WaitingRoom() {
                       ? fiveHintsConfig
                       : room.gameMode === "hint-auction"
                         ? hintAuctionConfig
-                        : {}
+                        : room.gameMode === "draft"
+                          ? themedDraftConfig
+                          : {}
               )
             }
             disabled={!canStart}
@@ -627,7 +864,10 @@ export default function WaitingRoom() {
           >
             {canStart ? "Start Game" : "Waiting for at least 2 players…"}
           </button>
-        ) : room.gameMode === "closest-to" || room.gameMode === "five-hints" || room.gameMode === "hint-auction" ? (
+        ) : room.gameMode === "closest-to" ||
+          room.gameMode === "five-hints" ||
+          room.gameMode === "hint-auction" ||
+          room.gameMode === "draft" ? (
           <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
         ) : (
           <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>
