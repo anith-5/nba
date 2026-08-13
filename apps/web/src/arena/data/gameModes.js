@@ -1,5 +1,15 @@
 export const GAME_MODES = [
   {
+    id: "build-a-player",
+    name: "Build a Player",
+    description: "Pick real stat-graded traits off revealed players to assemble your best custom build.",
+    minPlayers: 2,
+    maxPlayers: 8,
+    estimate: "15-25 min",
+    status: "playable",
+    route: "/arena/games/build-a-player",
+  },
+  {
     id: "draft",
     name: "Themed Player Draft",
     description: "Draft NBA players based on a category set by the host.",

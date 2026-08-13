@@ -740,6 +740,50 @@ function ThemedDraftConfigForm({ config, setConfig }) {
   );
 }
 
+function BuildAPlayerConfigForm({ config, setConfig }) {
+  return (
+    <div className="card space-y-5 p-5 text-left">
+      <p className="stat-label">Build a Player Settings</p>
+
+      <div>
+        <label className="stat-label mb-2 block">Trait Slots to Fill</label>
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+          {[6, 7, 8, 9, 10, 11, 12].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setConfig({ ...config, traitSlotCount: n })}
+              className={config.traitSlotCount === n ? "btn-primary" : "btn-ghost"}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-slate-500">Fewer slots means a shorter game — everyone builds toward the same count.</p>
+      </div>
+
+      <div>
+        <label className="stat-label mb-2 block">Pick Timer</label>
+        <div className="grid grid-cols-4 gap-2">
+          {[15, 30, 60, null].map((n) => (
+            <button
+              key={n ?? "none"}
+              type="button"
+              onClick={() => setConfig({ ...config, pickTimerSeconds: n })}
+              className={config.pickTimerSeconds === n ? "btn-primary" : "btn-ghost"}
+            >
+              {n ? `${n}s` : "No Timer"}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1 text-xs text-slate-500">
+          If you haven't picked or passed in time, a random eligible trait is auto-picked so the round never stalls.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function WaitingRoom() {
   const { code } = useParams();
   const navigate = useNavigate();
@@ -786,6 +830,10 @@ export default function WaitingRoom() {
     secondaryParam: { team: "LAL" },
     rosterSize: 5,
     turnTimerSeconds: 30,
+  });
+  const [buildAPlayerConfig, setBuildAPlayerConfig] = useState({
+    traitSlotCount: 12,
+    pickTimerSeconds: 30,
   });
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
@@ -841,6 +889,9 @@ export default function WaitingRoom() {
         {isHost && room.gameMode === "draft" && (
           <ThemedDraftConfigForm config={themedDraftConfig} setConfig={setThemedDraftConfig} />
         )}
+        {isHost && room.gameMode === "build-a-player" && (
+          <BuildAPlayerConfigForm config={buildAPlayerConfig} setConfig={setBuildAPlayerConfig} />
+        )}
 
         {isHost ? (
           <button
@@ -856,7 +907,9 @@ export default function WaitingRoom() {
                         ? hintAuctionConfig
                         : room.gameMode === "draft"
                           ? themedDraftConfig
-                          : {}
+                          : room.gameMode === "build-a-player"
+                            ? buildAPlayerConfig
+                            : {}
               )
             }
             disabled={!canStart}
@@ -867,7 +920,8 @@ export default function WaitingRoom() {
         ) : room.gameMode === "closest-to" ||
           room.gameMode === "five-hints" ||
           room.gameMode === "hint-auction" ||
-          room.gameMode === "draft" ? (
+          room.gameMode === "draft" ||
+          room.gameMode === "build-a-player" ? (
           <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
         ) : (
           <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>

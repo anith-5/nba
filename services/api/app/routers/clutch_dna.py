@@ -29,6 +29,16 @@ def _norm(val: float, lo: float, hi: float) -> float:
     return max(0.0, min(1.0, (val - lo) / (hi - lo)))
 
 
+# Shared with rosters.py's Build a Player trait grading (Overall Efficiency
+# trait) -- imported from there rather than reimplemented, so there's exactly
+# one place this formula lives. denom<=0 (a player with zero FGA and zero
+# FTA, e.g. a DNP-but-rostered player slipping through) returns 0.0 rather
+# than dividing by zero.
+def true_shooting_pct(pts: float, fga: float, fta: float) -> float:
+    denom = fga + 0.44 * fta
+    return (pts / (2 * denom)) if denom > 0 else 0.0
+
+
 def _clutch_score(
     pts_delta: float, fg_delta: float, ts_delta: float,
     ast_delta: float, tov_delta: float,
@@ -94,16 +104,12 @@ def _fetch_leaderboard_live() -> dict:
         cr_pts = float(cr.get("PTS", 0))
         cr_fga = float(cr.get("FGA", 1))
         cr_fta = float(cr.get("FTA", 0))
-        cr_fgm = float(cr.get("FGM", 0))
-        cr_fg3m = float(cr.get("FG3M", 0))
-        denom = cr_fga + 0.44 * cr_fta
-        clutch_ts = (cr_pts / (2 * denom)) if denom > 0 else 0.0
+        clutch_ts = true_shooting_pct(cr_pts, cr_fga, cr_fta)
 
         rr_pts = float(rr.get("PTS", 0))
         rr_fga = float(rr.get("FGA", 1))
         rr_fta = float(rr.get("FTA", 0))
-        denom2 = rr_fga + 0.44 * rr_fta
-        reg_ts = (rr_pts / (2 * denom2)) if denom2 > 0 else 0.0
+        reg_ts = true_shooting_pct(rr_pts, rr_fga, rr_fta)
         ts_d = clutch_ts - reg_ts
 
         deltas["pts"].append(pts_d)

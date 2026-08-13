@@ -3,6 +3,8 @@
 // it is broadcast to clients. Everything is revealed only once the round's
 // reveal timer/vote-completion fires.
 export function sanitizeGameStateForBroadcast(gameState) {
+  // `builds` is unique to Build a Player.
+  if (gameState?.builds) return sanitizeBuildAPlayer(gameState);
   // Checked first: Themed Draft also has a top-level `rosters` map (one
   // array per team), which would otherwise collide with Hint Auction's own
   // `rosters` discriminator below -- `pickOrder` is unique to Themed Draft.
@@ -103,6 +105,16 @@ function sanitizeHintAuction(gameState) {
     unsold: false,
   };
   return { ...gameState, currentRound: publicRound };
+}
+
+// Build a Player has no hidden information at all -- the revealed player's
+// traits and every player's build-in-progress are public the instant they
+// happen (confirmed default, unlike Closest To's Blind Mode), so this only
+// ever strips the non-serializable timer handle, same as Over Under's
+// `_timeout` and Themed Draft's `_turnTimeout` above.
+function sanitizeBuildAPlayer(gameState) {
+  const { _pickTimeout, ...publicState } = gameState;
+  return publicState;
 }
 
 // Themed Draft's hidden information is only ever in-progress vote choices

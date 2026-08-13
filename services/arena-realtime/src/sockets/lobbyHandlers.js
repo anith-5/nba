@@ -8,12 +8,14 @@ import {
 import { initGameState as initFiveHintsGameState, startRound as startFiveHintsRound } from "../game-logic/fiveHints.js";
 import { initGameState as initHintAuctionGameState, beginGame as beginHintAuctionGame } from "../game-logic/hintAuction.js";
 import { initGameState as initThemedDraftGameState, beginDraft as beginThemedDraftGame } from "../game-logic/themedDraft.js";
+import { initGameState as initBuildAPlayerGameState, beginGame as beginBuildAPlayerGame } from "../game-logic/buildAPlayer.js";
 import { sanitizeGameStateForBroadcast } from "../game-logic/sanitize.js";
 import {
   revealRound,
   armHintPhase as armFiveHintsHintPhase,
   armHintAuctionHintPhase,
   armThemedDraftTurnTimer,
+  armBuildAPlayerPickTimer,
 } from "./gameHandlers.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
@@ -66,6 +68,11 @@ const DEFAULT_THEMED_DRAFT_CONFIG = {
   turnTimerSeconds: 30,
 };
 
+const DEFAULT_BUILD_A_PLAYER_CONFIG = {
+  traitSlotCount: 12,
+  pickTimerSeconds: 30,
+};
+
 function initialGameState(gameMode, configOverrides) {
   if (gameMode === "over-under") {
     const gameConfig = { ...DEFAULT_OVER_UNDER_CONFIG, ...(configOverrides || {}) };
@@ -89,6 +96,9 @@ function initialGameState(gameMode, configOverrides) {
   }
   if (gameMode === "draft") {
     return initThemedDraftGameState({ ...DEFAULT_THEMED_DRAFT_CONFIG, ...(configOverrides || {}) });
+  }
+  if (gameMode === "build-a-player") {
+    return initBuildAPlayerGameState({ ...DEFAULT_BUILD_A_PLAYER_CONFIG, ...(configOverrides || {}) });
   }
   return { config: configOverrides || {} };
 }
@@ -208,6 +218,16 @@ export function registerLobbyHandlers(io, socket) {
       );
     }
 
+    if (room.gameMode === "build-a-player") {
+      // beginGame sets up every connected player's empty build and reveals
+      // round 1's player -- same starts-atomically rationale as every other
+      // mode above.
+      beginBuildAPlayerGame(
+        room.gameState,
+        room.players.map((p) => p.socketId)
+      );
+    }
+
     touchRoom(room);
     io.to(room.code).emit("game_update", {
       gameState: sanitizeGameStateForBroadcast(room.gameState),
@@ -229,6 +249,10 @@ export function registerLobbyHandlers(io, socket) {
 
     if (room.gameMode === "draft") {
       armThemedDraftTurnTimer(io, room);
+    }
+
+    if (room.gameMode === "build-a-player") {
+      armBuildAPlayerPickTimer(io, room);
     }
 
     callback?.({ ok: true });

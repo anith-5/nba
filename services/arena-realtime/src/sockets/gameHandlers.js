@@ -47,6 +47,15 @@ import {
   resolveVoting as resolveThemedDraftVoting,
   finalizeGame as finalizeThemedDraftGame,
 } from "../game-logic/themedDraft.js";
+import {
+  revealPlayer as revealBuildAPlayerPlayer,
+  pickTrait as pickBuildAPlayerTrait,
+  passReveal as passBuildAPlayerReveal,
+  autoActOrSkip as autoActOrSkipBuildAPlayerTrait,
+  allPlayersDone as allBuildAPlayerDone,
+  allActed as allBuildAPlayerActed,
+  finalizeGame as finalizeBuildAPlayerGame,
+} from "../game-logic/buildAPlayer.js";
 import players from "../data/nba_players.json" with { type: "json" };
 
 const NEXT_ROUND_DELAY_MS = 5000;
@@ -70,6 +79,8 @@ export function registerGameHandlers(io, socket) {
       handleHintAuctionAction(io, room, socket, action, data || {});
     } else if (room.gameMode === "draft") {
       handleThemedDraftAction(io, room, socket, action, data || {});
+    } else if (room.gameMode === "build-a-player") {
+      handleBuildAPlayerAction(io, room, socket, action, data || {});
     }
   });
 }
@@ -744,5 +755,102 @@ function handleThemedDraftAction(io, room, socket, action, data) {
       touchRoom(room);
       broadcast(io, room, "game_finished");
     }
+  }
+}
+
+// --- Build a Player ---
+//
+// Every round, every connected player who isn't done yet gets one window to
+// either pick a trait off the shared revealed player or explicitly pass --
+// simultaneous, not turn-based (unlike Themed Draft's snake order). The
+// round timer is round-wide, not per-player: it's set once when a player is
+// revealed (see revealBuildAPlayerPlayer) and never reset just because one
+// person acted, only cleared/re-armed when the round actually resolves. On
+// expiry, every still-pending connected player is auto-handled at once
+// (random eligible trait, or a silent skip if this reveal has nothing left
+// they need) -- never a per-player stall like Themed Draft's single active
+// turn, since here everyone could be waiting on the timer at once.
+
+function clearBuildAPlayerTimer(gameState) {
+  clearTimeout(gameState._pickTimeout);
+}
+
+export function armBuildAPlayerPickTimer(io, room) {
+  const gameState = room.gameState;
+  if (!gameState || gameState.phase !== "picking" || !gameState.pickDeadlineAt) return;
+  clearBuildAPlayerTimer(gameState);
+  const msRemaining = Math.max(0, gameState.pickDeadlineAt - Date.now());
+  gameState._pickTimeout = setTimeout(() => onBuildAPlayerPickTimeout(io, room), msRemaining);
+}
+
+function onBuildAPlayerPickTimeout(io, room) {
+  const gameState = room.gameState;
+  if (!gameState || gameState.phase !== "picking") return; // stale timer
+
+  const connected = connectedSocketIds(room);
+  const pending = connected.filter(
+    (id) => !gameState.doneSocketIds.includes(id) && !gameState.actedSocketIds.includes(id)
+  );
+  for (const socketId of pending) {
+    autoActOrSkipBuildAPlayerTrait(gameState, socketId);
+  }
+
+  touchRoom(room);
+  broadcast(io, room, "trait_picked");
+  advanceBuildAPlayerFlow(io, room);
+}
+
+// Resolves the round once every connected not-done player has acted: ends
+// the game if everyone's build is now full, otherwise reveals the next
+// player and re-arms the round timer. Called after every individual
+// pick/pass too (not just timeouts) since any single action might be the
+// last one the round was waiting on.
+function advanceBuildAPlayerFlow(io, room) {
+  const gameState = room.gameState;
+  const connected = connectedSocketIds(room);
+
+  if (allBuildAPlayerDone(gameState, connected)) {
+    clearBuildAPlayerTimer(gameState);
+    finalizeBuildAPlayerGame(gameState);
+    room.status = "finished";
+    touchRoom(room);
+    broadcast(io, room, "game_finished");
+    return;
+  }
+
+  if (allBuildAPlayerActed(gameState, connected)) {
+    clearBuildAPlayerTimer(gameState);
+    const result = revealBuildAPlayerPlayer(gameState);
+    touchRoom(room);
+    broadcast(io, room, "player_revealed");
+    if (!result.error) armBuildAPlayerPickTimer(io, room);
+  }
+}
+
+function handleBuildAPlayerAction(io, room, socket, action, data) {
+  const gameState = room.gameState;
+  if (!gameState) return;
+
+  if (action === "pick_trait" && gameState.phase === "picking") {
+    const result = pickBuildAPlayerTrait(gameState, socket.id, data.traitKey);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "trait_picked");
+    advanceBuildAPlayerFlow(io, room);
+    return;
+  }
+
+  if (action === "pass_reveal" && gameState.phase === "picking") {
+    const result = passBuildAPlayerReveal(gameState, socket.id);
+    if (result.error) {
+      socket.emit("game_error", { message: result.error });
+      return;
+    }
+    touchRoom(room);
+    broadcast(io, room, "player_passed");
+    advanceBuildAPlayerFlow(io, room);
   }
 }

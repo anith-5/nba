@@ -18,6 +18,8 @@ from fastapi import APIRouter
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
+from app.routers.clutch_dna import true_shooting_pct
+from app.routers.clutch_dna import _fetch_leaderboard as _fetch_clutch_leaderboard
 from app.utils.season import get_current_nba_season, get_current_nba_season_start_year
 
 router = APIRouter(prefix="/api/arena", tags=["arena"])
@@ -217,6 +219,100 @@ def _auction_tier_pass(players: list[dict[str, Any]]) -> None:
         del player["_auction_score"]
 
 
+# --- Build a Player trait grading ---
+#
+# 12-bucket percentile scale (95th+ -> A+ ... below 10th -> D-), applied
+# identically to every trait once the whole qualified population for that
+# trait is known. Computed once per sync (here, not per-request) and
+# embedded directly on each player -- see _trait_grade_pass below -- so
+# nothing downstream (arena-realtime, the client) ever recomputes a grade.
+GRADE_PERCENTILE_CUTS = [
+    (0.95, "A+"), (0.90, "A"), (0.85, "A-"), (0.80, "B+"), (0.70, "B"),
+    (0.60, "B-"), (0.50, "C+"), (0.40, "C"), (0.30, "C-"), (0.20, "D+"),
+    (0.10, "D"),
+]
+
+
+def _grade_for_percentile(percentile: float) -> str:
+    for cut, grade in GRADE_PERCENTILE_CUTS:
+        if percentile >= cut:
+            return grade
+    return "D-"
+
+
+# trait key -> (label, _raw_stats key to read, invert-percentile?). Ball
+# Security is the only inverted trait (fewer turnovers = higher grade); every
+# other trait grades "higher raw value = higher percentile" directly.
+TRAIT_STAT_KEYS: dict[str, tuple[str, str, bool]] = {
+    "three_pt": ("3PT Shooting", "fg3_pct", False),
+    "mid_range": ("Mid-Range Shooting", "two_pt_pct", False),
+    "free_throw": ("Free Throw Shooting", "ft_pct", False),
+    "finishing": ("Finishing/Interior Scoring", "fg_pct", False),
+    "playmaking": ("Playmaking", "ast_pg", False),
+    "ball_security": ("Ball Security", "tov_pg", True),
+    "perimeter_defense": ("Perimeter Defense", "stl_pg", False),
+    "interior_defense": ("Interior Defense", "blk_pg", False),
+    "rebounding": ("Rebounding", "reb_pg", False),
+    "durability": ("Durability", "gp", False),
+    "efficiency": ("Overall Efficiency", "ts_pct", False),
+    "clutch": ("Clutch Performance", "clutch_score", False),
+}
+
+
+def _trait_grade_pass(players: list[dict[str, Any]]) -> None:
+    """Assigns `traits` on every player in place. Each trait gets its own
+    pass over only the players who actually have a value for it (e.g.
+    Clutch Performance's population is just whoever cleared clutch_dna.py's
+    own clutch-minutes floor, not the full roster) -- a player missing one
+    trait's data shouldn't skew, or be excluded from, another trait's
+    percentile ranking. Mirrors _auction_tier_pass's percentile-bucketing
+    shape, just run once per trait instead of once overall.
+    """
+    for player in players:
+        player["traits"] = {}
+
+    for trait_key, (label, stat_key, invert) in TRAIT_STAT_KEYS.items():
+        qualified = [p for p in players if p["_raw_stats"] and p["_raw_stats"].get(stat_key) is not None]
+        if not qualified:
+            continue
+        ranked = sorted(qualified, key=lambda p: p["_raw_stats"][stat_key])
+        total = len(ranked)
+        for i, player in enumerate(ranked):
+            # i/total (not (i+1)/total) so the single worst qualified player
+            # lands at percentile 0.0 rather than a small positive value that
+            # could round into the bottom bucket instead of D-.
+            percentile = i / total
+            if invert:
+                percentile = 1 - percentile
+            value = player["_raw_stats"][stat_key]
+            player["traits"][trait_key] = {
+                "label": label,
+                "value": round(value, 3) if isinstance(value, float) else value,
+                "percentile": round(percentile * 100, 1),
+                "grade": _grade_for_percentile(percentile),
+            }
+
+
+def _fetch_clutch_scores() -> dict[int, float]:
+    """player_id -> Build a Player's Clutch Performance trait value, reusing
+    clutch_dna.py's existing 0-100 clutch score outright rather than
+    recomputing anything. _fetch_leaderboard (not the /clutch/leaderboard
+    route handler -- that adds its own redundant 1h TTL cache on top) is
+    already environment-aware via data_cache.cached_or_live: live locally,
+    the committed data_cache/clutch_leaderboard.json snapshot in the cloud,
+    where stats.nba.com blocks the request outright. A player absent here
+    means "hasn't cleared clutch_dna's own minimum clutch-minutes floor yet,"
+    not "graded zero" -- _trait_grade_pass's qualified-population filter
+    already excludes them from Clutch Performance's percentile pool rather
+    than penalizing them for it.
+    """
+    try:
+        data = _fetch_clutch_leaderboard()
+        return {p["player_id"]: p["clutch_score"] for p in data.get("players", [])}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def _fetch_stats_by_player_id() -> dict[int, dict]:
     result = _retry(lambda: leaguedashplayerstats.LeagueDashPlayerStats(season=SEASON, timeout=30))
     result_dict = result.get_dict()
@@ -229,6 +325,7 @@ def _fetch_stats_by_player_id() -> dict[int, dict]:
         if not gp:
             continue
         player_id = row[idx["PLAYER_ID"]]
+        pts, fga, fta = row[idx["PTS"]], row[idx["FGA"]], row[idx["FTA"]]
         out[player_id] = {
             "pts_pg": round(row[idx["PTS"]] / gp, 1),
             "ast_pg": round(row[idx["AST"]] / gp, 1),
@@ -237,6 +334,31 @@ def _fetch_stats_by_player_id() -> dict[int, dict]:
             "blk_pg": round(row[idx["BLK"]] / gp, 1),
             "fg3a_pg": round(row[idx["FG3A"]] / gp, 1),
             "min_pg": round(row[idx["MIN"]] / gp, 1),
+            # Everything below is for Build a Player's trait grading
+            # (_trait_grade_pass) -- raw totals/percentages straight off the
+            # same Base dashboard response the fields above already come
+            # from, so none of this costs another API round trip.
+            "gp": gp,
+            "fg_pct": row[idx["FG_PCT"]],
+            "fg3_pct": row[idx["FG3_PCT"]],
+            "ft_pct": row[idx["FT_PCT"]],
+            "fgm": row[idx["FGM"]],
+            "fga": fga,
+            "fg3m": row[idx["FG3M"]],
+            "fg3a": row[idx["FG3A"]],
+            "tov_pg": round(row[idx["TOV"]] / gp, 1),
+            "ts_pct": true_shooting_pct(pts, fga, fta),
+            # Mid-Range Shooting's real-stat proxy: nba_api's Base dashboard
+            # has no zone breakdown, so this backs out overall 2-point FG%
+            # from the totals it does have (2PM = FGM-FG3M, 2PA = FGA-FG3A)
+            # rather than pulling a real "jumpers only" split. None (not 0)
+            # for the rare all-three-point-attempts case, so a 0-for-0 split
+            # isn't graded as a 0% shooter.
+            "two_pt_pct": (
+                (row[idx["FGM"]] - row[idx["FG3M"]]) / (fga - row[idx["FG3A"]])
+                if (fga - row[idx["FG3A"]]) > 0
+                else None
+            ),
         }
     return out
 
@@ -248,6 +370,12 @@ def fetch_current_players() -> list[dict[str, Any]]:
         stats_by_id = _fetch_stats_by_player_id()
     except Exception:  # noqa: BLE001
         stats_by_id = {}
+
+    # _fetch_clutch_scores handles its own failure internally (empty dict on
+    # error) -- a clutch-pull failure should cost the Clutch Performance
+    # trait alone, not the whole sync, same isolate-the-failure shape as the
+    # try/except right above it.
+    clutch_by_id = _fetch_clutch_scores()
 
     players: list[dict[str, Any]] = []
     for team in all_teams:
@@ -324,9 +452,18 @@ def fetch_current_players() -> list[dict[str, Any]]:
                 "stl_pg": stats["stl_pg"] if stats else None,
                 "blk_pg": stats["blk_pg"] if stats else None,
                 "_auction_score": _auction_score(name, stats, years_in_league),
+                # Internal-only, consumed by _trait_grade_pass and deleted
+                # below -- same shape as _auction_score above. clutch_score
+                # is merged in here (rather than left as a separate lookup)
+                # so _trait_grade_pass can treat every trait identically,
+                # one dict of raw values per player.
+                "_raw_stats": {**stats, "clutch_score": clutch_by_id.get(player_id)} if stats else None,
             })
 
     _auction_tier_pass(players)
+    _trait_grade_pass(players)
+    for player in players:
+        del player["_raw_stats"]
     return players
 
 

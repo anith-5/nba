@@ -31,6 +31,7 @@ import Wordle from "./arena/pages/games/Wordle.jsx";
 import FiveHints from "./arena/pages/games/FiveHints.jsx";
 import HintAuction from "./arena/pages/games/HintAuction.jsx";
 import ThemedDraft from "./arena/pages/games/ThemedDraft.jsx";
+import BuildAPlayer from "./arena/pages/games/BuildAPlayer.jsx";
 import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 
 export default function App() {
@@ -77,6 +78,7 @@ export default function App() {
             <Route path="games/five-hints/:code" element={<FiveHints />} />
             <Route path="games/hint-auction/:code" element={<HintAuction />} />
             <Route path="games/draft/:code" element={<ThemedDraft />} />
+            <Route path="games/build-a-player/:code" element={<BuildAPlayer />} />
           </Route>
         </Route>
       </Routes>
