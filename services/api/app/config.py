@@ -1,4 +1,7 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.utils.season import get_current_nba_season
 
 
 class Settings(BaseSettings):
@@ -8,7 +11,10 @@ class Settings(BaseSettings):
     api_host: str = "0.0.0.0"
     api_port: int = 8001
     anthropic_api_key: str = ""
-    current_season: str = "2025-26"
+    # Computed fresh every process start rather than hardcoded -- see
+    # app/utils/season.py. Still overridable via a CURRENT_SEASON env var
+    # for local testing/pinning, same as every other setting here.
+    current_season: str = Field(default_factory=get_current_nba_season)
 
     @property
     def cors_origin_list(self) -> list[str]:

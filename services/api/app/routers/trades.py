@@ -15,6 +15,7 @@ import pandas as pd
 from app.config import settings
 from app.claude_client import chat_completion, is_available
 from app import data_cache
+from app.utils.season import get_current_nba_season_start_year, season_string_for_start_year
 
 router = APIRouter(prefix="/trades", tags=["trades"])
 SEASON = settings.current_season
@@ -50,10 +51,20 @@ def _fetch_bbref_salaries() -> dict:
 
     # Find player name column and the nearest-season salary column. BBRef's
     # contracts table drops past seasons, so which year is "current" shifts —
-    # try the configured season, then the next couple, then any Salary column.
+    # try the configured season, then the next couple, then the previous one,
+    # then any Salary column. Candidates are computed relative to the actual
+    # current season (see app/utils/season.py) rather than hardcoded literals,
+    # so this window rolls forward automatically every season.
     name_col = next((c for c in df.columns if "player" in c.lower()), None)
+    _current_start_year = get_current_nba_season_start_year()
     sal_col = None
-    for candidate in (SEASON, "2025-26", "2026-27", "2027-28", "2024-25"):
+    for candidate in (
+        SEASON,
+        season_string_for_start_year(_current_start_year),
+        season_string_for_start_year(_current_start_year + 1),
+        season_string_for_start_year(_current_start_year + 2),
+        season_string_for_start_year(_current_start_year - 1),
+    ):
         sal_col = next((c for c in df.columns if candidate in str(c)), None)
         if sal_col:
             break

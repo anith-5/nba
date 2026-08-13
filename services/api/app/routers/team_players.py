@@ -29,9 +29,18 @@ from fastapi import APIRouter, HTTPException, Query
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
+from app.utils.season import get_current_nba_season_start_year
+
 router = APIRouter(prefix="/api/arena", tags=["arena"])
 
-CURRENT_SEASON_START_YEAR = 2025
+# The upper bound of the founding-year-to-now walk below -- computed fresh
+# (see app/utils/season.py) so the most recent season is always included as
+# time passes, rather than the walk silently stopping at a season that was
+# "current" when this was last hand-edited. This is about correctly
+# identifying what "now" is, not a change to Closest To's All-Time mode's
+# fixed-historical-range intent -- the walk still starts at each franchise's
+# founding year exactly as before.
+CURRENT_SEASON_START_YEAR = get_current_nba_season_start_year()
 STATS_RETRY_DELAY_SECONDS = 2.0
 
 

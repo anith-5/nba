@@ -18,10 +18,16 @@ from fastapi import APIRouter
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
+from app.utils.season import get_current_nba_season, get_current_nba_season_start_year
+
 router = APIRouter(prefix="/api/arena", tags=["arena"])
 
-SEASON = "2025-26"
-CURRENT_SEASON_START_YEAR = 2025
+# Computed fresh every process start (see app/utils/season.py) rather than
+# hardcoded -- this endpoint is the live current-roster pull, so a stale
+# season here means every current-mode game (Wordle, Hint Auction's Current
+# era) silently keeps pulling last season's rosters after a season rollover.
+SEASON = get_current_nba_season()
+CURRENT_SEASON_START_YEAR = get_current_nba_season_start_year()
 
 # Conference/division is stable franchise metadata (not roster data), so it's
 # fine to keep as a lookup table here rather than deriving it per-request.

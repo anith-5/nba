@@ -8,13 +8,19 @@
 //
 // Fallback chain if the live pull fails (FastAPI down, nba_api timeout, etc):
 //   1. Keep serving whatever is already cached on disk — don't clobber good
-//      data with a failed sync.
-//   2. If there's no cached file at all yet, write a small best-effort
-//      dataset so the game still works, clearly marked source: "fallback"
-//      with a note to run /api/arena/sync-rosters for live data.
+//      data with a failed sync -- UNLESS that cached data is stamped with a
+//      season that no longer matches the real current season (see
+//      isCacheForCurrentSeason below), in which case a season rollover has
+//      made it wrong by definition, not just old, so it's treated as if no
+//      cache existed at all rather than served.
+//   2. If there's no cached file at all yet (or it just got invalidated by
+//      the season check above), write a small best-effort dataset so the
+//      game still works, clearly marked source: "fallback" with a note to
+//      run /api/arena/sync-rosters for live data.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { getCurrentNbaSeason } from "../utils/currentSeason.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,6 +32,12 @@ const SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const CACHE_FILE = path.resolve(__dirname, "../../../../apps/web/src/data/current_nba_players.json");
 
 let cachedRosterData = null;
+
+// A season rollover makes last season's roster data wrong, not merely old --
+// so this is checked instead of (not in addition to) any age-based TTL.
+function isCacheForCurrentSeason(entry) {
+  return !!entry && entry.season === getCurrentNbaSeason();
+}
 
 async function fetchFromApi() {
   const controller = new AbortController();
@@ -67,7 +79,7 @@ function generateFallbackData() {
   return {
     generated_at: new Date().toISOString(),
     source: "fallback",
-    season: "2025-26",
+    season: getCurrentNbaSeason(),
     count: players.length,
     note: "This is a minimal best-effort placeholder, not a full roster sync. Call POST /api/arena/sync-rosters (or restart the arena-realtime server with services/api running) to pull live rosters.",
     players,
@@ -79,19 +91,25 @@ export async function syncRosters() {
     const data = await fetchFromApi();
     cachedRosterData = data;
     writeCacheFile(data);
-    console.log(`[rosterSync] synced ${data.count} players live from nba_api at ${data.generated_at}`);
+    console.log(`[rosterSync] synced ${data.count} players live from nba_api at ${data.generated_at} (season ${data.season})`);
     return data;
   } catch (err) {
     console.warn(`[rosterSync] live sync failed (${err.message}), falling back to cached data`);
     const cached = loadCachedFile();
-    if (cached) {
+    if (isCacheForCurrentSeason(cached)) {
       cachedRosterData = cached;
       return cached;
+    }
+    if (cached) {
+      console.warn(
+        `[rosterSync] cached data on disk is for season ${cached.season}, but the current season is ${getCurrentNbaSeason()} -- ` +
+          "a season rollover means it's wrong by definition, not just old, so it can't be used even as a fallback"
+      );
     }
     const fallback = generateFallbackData();
     cachedRosterData = fallback;
     writeCacheFile(fallback);
-    console.warn("[rosterSync] no cached file existed — wrote minimal fallback dataset");
+    console.warn("[rosterSync] no valid same-season cached file existed — wrote minimal fallback dataset");
     return fallback;
   }
 }
@@ -103,8 +121,19 @@ export function getCachedRosterData() {
 export function startRosterSync() {
   // Don't block server startup on a ~15-20s roster pull — sync in the
   // background and let whatever was already on disk serve requests until it
-  // completes.
-  cachedRosterData = loadCachedFile();
+  // completes. But only trust that disk cache if it's stamped with the
+  // actual current season -- a stale-season cache is treated as if it
+  // didn't exist at all (never served, not even briefly) rather than
+  // handed out while the live resync races in the background below.
+  const cached = loadCachedFile();
+  if (isCacheForCurrentSeason(cached)) {
+    cachedRosterData = cached;
+  } else if (cached) {
+    console.warn(
+      `[rosterSync] startup: cached data on disk is for season ${cached.season}, but the current season is ${getCurrentNbaSeason()} -- ` +
+        "ignoring it and waiting on a fresh pull instead of serving stale-season data"
+    );
+  }
   syncRosters();
   setInterval(syncRosters, SYNC_INTERVAL_MS);
 }
