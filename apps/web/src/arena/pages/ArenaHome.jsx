@@ -1,36 +1,27 @@
 import { Link } from "react-router-dom";
 import { GAME_MODES } from "../data/gameModes.js";
-import GameModeCard from "../components/GameModeCard.jsx";
-import FocusRecedeGroup from "../../components/FocusRecedeGroup.jsx";
+import GameModeCarousel from "../components/GameModeCarousel.jsx";
 
 export default function ArenaHome() {
   return (
-    <div className="animate-fade-in space-y-8">
+    <div className="animate-fade-in min-h-[calc(100dvh-4rem)] -mx-4 -my-6 space-y-8 bg-paper px-4 py-6 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <header>
-        <h1 className="text-3xl font-bold text-white">HoopIQ Arena</h1>
-        <p className="mt-1 text-slate-400">Play NBA games with your friends</p>
+        <h1 className="font-hoop text-3xl font-bold text-ink">HoopIQ Arena</h1>
+        <p className="mt-1 text-ink/60">Play NBA games with your friends</p>
       </header>
 
       <div className="flex gap-3">
-        <a href="#game-modes" className="btn-primary">
+        <a href="#game-modes" className="hoop-btn-primary">
           Create Room
         </a>
-        <Link to="/arena/join" className="btn-ghost">
+        <Link to="/arena/join" className="hoop-btn-ghost">
           Join Room
         </Link>
       </div>
 
-      {/* Phase 0 demo of the shared FocusRecedeGroup pattern against real
-          content -- this flat grid gets fully replaced by the carousel in
-          Phase 1, this is just proving the reusable hover-to-focus pattern
-          works before wiring it in anywhere else. GameModeCard itself is
-          untouched (still legacy card-hover/btn-primary styling); Arena
-          hub's real visual migration happens in Phase 1. */}
-      <FocusRecedeGroup id="game-modes" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {GAME_MODES.map((mode) => (
-          <GameModeCard key={mode.id} mode={mode} />
-        ))}
-      </FocusRecedeGroup>
+      <div id="game-modes">
+        <GameModeCarousel modes={GAME_MODES} />
+      </div>
     </div>
   );
 }
