@@ -18,7 +18,11 @@ function ProbGauge({ prob, homeTeam, awayTeam }) {
   );
 }
 
-function GameCard({ game }) {
+// Named distinctly from the shared components/GameCard.jsx (live NBA
+// scoreboard tile used by Games.jsx) -- this one adds a win-probability
+// gauge and isn't the same component, despite the identical name it had
+// before. Pure rename, no behavior change.
+function ProbabilityGameCard({ game }) {
   const isLive = game.status === "Live";
   const isFinal = game.status === "Final";
   return (
@@ -125,7 +129,7 @@ export default function WinProbability() {
         <div>
           <p className="stat-label mb-3">Live Games</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {liveGames.map(g => <GameCard key={g.game_id} game={g} />)}
+            {liveGames.map(g => <ProbabilityGameCard key={g.game_id} game={g} />)}
           </div>
         </div>
       )}
@@ -134,7 +138,7 @@ export default function WinProbability() {
         <div>
           <p className="stat-label mb-3">Final</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {finalGames.map(g => <GameCard key={g.game_id} game={g} />)}
+            {finalGames.map(g => <ProbabilityGameCard key={g.game_id} game={g} />)}
           </div>
         </div>
       )}
@@ -143,7 +147,7 @@ export default function WinProbability() {
         <div>
           <p className="stat-label mb-3">Upcoming Today</p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {upcomingGames.map(g => <GameCard key={g.game_id} game={g} />)}
+            {upcomingGames.map(g => <ProbabilityGameCard key={g.game_id} game={g} />)}
           </div>
         </div>
       )}

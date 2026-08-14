@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import HoopWordmark from "./HoopWordmark.jsx";
 
 // ---- Sidebar: tools grouped by category (matches the app) ----
 const navGroups = [
@@ -54,40 +55,21 @@ const topNav = [
   { to: "/#standings", label: "Standings" },
 ];
 
-function Logo() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white ring-1 ring-white/15">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 3v18M3 12h18M5.6 5.6c3 2.4 3 10.4 0 12.8M18.4 5.6c-3 2.4-3 10.4 0 12.8" />
-        </svg>
-      </span>
-      <div className="leading-none">
-        <p className="font-display text-base font-extrabold tracking-tight text-white">HoopIQ</p>
-        <p className="text-[10px] uppercase tracking-widest text-slate-500">NBA Analytics</p>
-      </div>
-    </div>
-  );
-}
-
 function TopLink({ to, label, end }) {
   return (
     <NavLink
       to={to}
       end={end}
       className={({ isActive }) =>
-        `relative px-1 py-2 text-sm font-medium transition ${
-          isActive ? "text-white" : "text-slate-400 hover:text-white"
+        `relative px-1 py-2 font-hoop text-sm font-semibold transition ${
+          isActive ? "text-ink" : "text-ink/50 hover:text-ink"
         }`
       }
     >
       {({ isActive }) => (
         <>
           {label}
-          {isActive && (
-            <span className="absolute inset-x-0 -bottom-[1px] h-0.5 rounded-full bg-[#ef4444]" />
-          )}
+          {isActive && <span className="absolute inset-x-0 -bottom-[1px] h-[3px] rounded-full bg-terracotta" />}
         </>
       )}
     </NavLink>
@@ -113,8 +95,8 @@ function AnalyticsMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
         aria-expanded={open}
-        className={`flex items-center gap-1 px-1 py-2 text-sm font-medium transition ${
-          open ? "text-white" : "text-slate-400 hover:text-white"
+        className={`flex items-center gap-1 px-1 py-2 font-hoop text-sm font-semibold transition ${
+          open ? "text-ink" : "text-ink/50 hover:text-ink"
         }`}
       >
         Analytics
@@ -128,7 +110,7 @@ function AnalyticsMenu() {
       </button>
       {open && (
         <div
-          className="absolute left-1/2 top-full z-50 mt-3 w-[520px] -translate-x-1/2 rounded-card border border-white/10 bg-surface-raised/95 p-4 shadow-card backdrop-blur-xl"
+          className="absolute left-1/2 top-full z-50 mt-3 w-[520px] -translate-x-1/2 rounded-hoop border-2 border-ink bg-paper p-4 shadow-hoop"
           role="menu"
         >
           <div className="grid grid-cols-3 gap-x-4 gap-y-1">
@@ -136,13 +118,13 @@ function AnalyticsMenu() {
               .filter((g) => g.label !== "Scouting")
               .map((g) => (
                 <div key={g.label}>
-                  <p className="stat-label mb-1.5 px-2">{g.label}</p>
+                  <p className="hoop-stat-label mb-1.5 px-2">{g.label}</p>
                   {g.items.map((it) => (
                     <NavLink
                       key={it.to}
                       to={it.to}
                       onClick={() => setOpen(false)}
-                      className="block rounded-lg px-2 py-1.5 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                      className="block rounded-lg px-2 py-1.5 text-sm font-medium text-ink/70 transition hover:bg-terracotta/10 hover:text-ink"
                       role="menuitem"
                     >
                       {it.label}
@@ -162,7 +144,7 @@ function SidebarNav({ onNavigate }) {
     <nav className="space-y-5 p-4">
       {navGroups.map((group) => (
         <div key={group.label}>
-          <p className="stat-label mb-1 px-3">{group.label}</p>
+          <p className="hoop-stat-label mb-1 px-3">{group.label}</p>
           <div className="space-y-0.5">
             {group.items.map((item) => (
               <NavLink
@@ -170,10 +152,8 @@ function SidebarNav({ onNavigate }) {
                 to={item.to}
                 onClick={onNavigate}
                 className={({ isActive }) =>
-                  `block rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                    isActive
-                      ? "bg-[#ef4444]/15 text-[#f87171]"
-                      : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  `block rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
+                    isActive ? "bg-ink text-paper" : "text-ink/60 hover:bg-ink/5 hover:text-ink"
                   }`
                 }
               >
@@ -213,14 +193,14 @@ export default function Shell() {
   return (
     <div className="min-h-dvh">
       {/* Sticky top nav */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b-2 border-ink bg-paper">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-4 px-4 sm:px-6">
           {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setDrawer(true)}
             aria-label="Open menu"
-            className="grid h-10 w-10 place-items-center rounded-lg text-slate-300 hover:bg-white/5 lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-lg text-ink hover:bg-ink/5 lg:hidden"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M4 6h16M4 12h16M4 18h16" />
@@ -228,7 +208,7 @@ export default function Shell() {
           </button>
 
           <NavLink to="/" className="shrink-0">
-            <Logo />
+            <HoopWordmark className="h-8" />
           </NavLink>
 
           {/* Center nav (desktop) */}
@@ -248,7 +228,7 @@ export default function Shell() {
               <div className="relative">
                 <svg
                   viewBox="0 0 24 24"
-                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/40"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -262,14 +242,14 @@ export default function Shell() {
                   type="text"
                   placeholder="Search players…"
                   aria-label="Search players"
-                  className="w-44 rounded-xl border border-white/10 bg-surface-raised/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:w-56 focus:border-brand focus:outline-none"
+                  className="hoop-input w-44 py-2 pl-9 pr-3 shadow-none focus:w-56 focus:border-terracotta focus:shadow-none"
                 />
               </div>
             </form>
             <button
               type="button"
               aria-label="Profile"
-              className="grid h-9 w-9 place-items-center rounded-full bg-surface-raised text-sm font-semibold text-slate-300 ring-1 ring-white/10 hover:text-white"
+              className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink bg-paper text-sm font-semibold text-ink hover:bg-ink/5"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="8" r="4" />
@@ -282,9 +262,9 @@ export default function Shell() {
 
       <div className="mx-auto flex max-w-[1600px]">
         {/* Sidebar (desktop) */}
-        <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r border-white/5 lg:block">
+        <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r-2 border-ink bg-paper lg:block">
           <SidebarNav />
-          <p className="px-5 py-4 text-[10px] text-slate-600">HoopIQ · 11 AI/ML features</p>
+          <p className="px-5 py-4 text-[10px] text-ink/40">HoopIQ · 11 AI/ML features</p>
         </aside>
 
         {/* Mobile drawer */}
@@ -296,14 +276,14 @@ export default function Shell() {
               onClick={() => setDrawer(false)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
-            <aside className="absolute inset-y-0 left-0 w-72 overflow-y-auto border-r border-white/10 bg-surface">
-              <div className="flex items-center justify-between border-b border-white/5 px-4 py-4">
-                <Logo />
+            <aside className="absolute inset-y-0 left-0 w-72 overflow-y-auto border-r-2 border-ink bg-paper">
+              <div className="flex items-center justify-between border-b-2 border-ink px-4 py-4">
+                <HoopWordmark className="h-7" />
                 <button
                   type="button"
                   onClick={() => setDrawer(false)}
                   aria-label="Close menu"
-                  className="grid h-9 w-9 place-items-center rounded-lg text-slate-300 hover:bg-white/5"
+                  className="grid h-9 w-9 place-items-center rounded-lg text-ink hover:bg-ink/5"
                 >
                   <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 6l12 12M18 6L6 18" />

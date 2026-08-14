@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { GAME_MODES } from "../data/gameModes.js";
 import GameModeCard from "../components/GameModeCard.jsx";
+import FocusRecedeGroup from "../../components/FocusRecedeGroup.jsx";
 
 export default function ArenaHome() {
   return (
@@ -19,11 +20,17 @@ export default function ArenaHome() {
         </Link>
       </div>
 
-      <div id="game-modes" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Phase 0 demo of the shared FocusRecedeGroup pattern against real
+          content -- this flat grid gets fully replaced by the carousel in
+          Phase 1, this is just proving the reusable hover-to-focus pattern
+          works before wiring it in anywhere else. GameModeCard itself is
+          untouched (still legacy card-hover/btn-primary styling); Arena
+          hub's real visual migration happens in Phase 1. */}
+      <FocusRecedeGroup id="game-modes" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {GAME_MODES.map((mode) => (
           <GameModeCard key={mode.id} mode={mode} />
         ))}
-      </div>
+      </FocusRecedeGroup>
     </div>
   );
 }

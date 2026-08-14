@@ -55,6 +55,56 @@
   .live-badge {
     @apply inline-flex items-center gap-1.5 rounded-full bg-live/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-live-glow;
   }
+
+  /* ───────────────────────────────────────────────────────────────────────
+   * NEW — "hoop-*" primitives for the redesign. Additive alongside every
+   * legacy class above; a page migrates by swapping its classNames from the
+   * legacy set to this set, not by these replacing the legacy ones in place.
+   * Screen-printed/sticker feel: solid fills, bold 2px ink borders, crisp
+   * hard-offset shadows (never blurred), no backdrop-blur/glassmorphism.
+   * ─────────────────────────────────────────────────────────────────────── */
+
+  /* Default card treatment: solid terracotta fill. Use for the primary
+     "this is a selectable/featured thing" cards — game-mode cards, player
+     cards, stat/featured cards. */
+  .hoop-card {
+    @apply rounded-hoop border-2 border-ink bg-terracotta text-paper shadow-hoop;
+  }
+  /* Lighter alternative: paper fill + terracotta border. Use where a full
+     solid-terracotta fill would be too heavy — dense tables/lists, nested
+     cards, secondary content sitting inside another hoop-card. */
+  .hoop-card-outline {
+    @apply rounded-hoop border-2 border-terracotta bg-paper text-ink shadow-hoop;
+  }
+  .hoop-card-hover {
+    @apply hoop-card transition duration-150 motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[7px_7px_0_0_#131313];
+  }
+
+  .hoop-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-ink bg-ink px-4 py-2 text-sm font-bold text-paper shadow-hoop transition active:translate-x-[5px] active:translate-y-[5px] active:shadow-hoop-pressed disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-hoop;
+  }
+  .hoop-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-ink bg-paper px-4 py-2 text-sm font-bold text-ink shadow-hoop transition hover:bg-ink/5 active:translate-x-[5px] active:translate-y-[5px] active:shadow-hoop-pressed disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-x-0 disabled:active:translate-y-0 disabled:active:shadow-hoop;
+  }
+  /* Same pressed-shadow tactile language extended to the basketball-orange
+     accent, for CTAs that specifically want that third color (not primary,
+     not secondary) rather than a new one-off class per page. */
+  .hoop-btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-ink bg-basketball px-4 py-2 text-sm font-bold text-ink shadow-hoop transition active:translate-x-[5px] active:translate-y-[5px] active:shadow-hoop-pressed disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .hoop-input {
+    @apply w-full rounded-xl border-2 border-ink bg-paper px-3 py-2 text-sm text-ink shadow-hoop-sm outline-none placeholder:text-ink/40 focus:shadow-hoop;
+  }
+  .hoop-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-paper px-2.5 py-0.5 text-xs font-bold text-ink;
+  }
+  .hoop-stat-value {
+    @apply font-hoop text-2xl font-bold tracking-tight text-ink;
+  }
+  .hoop-stat-label {
+    @apply text-xs font-semibold uppercase tracking-wider text-terracotta;
+  }
 }
 
 /* Respect reduced-motion: kill decorative motion entirely */
