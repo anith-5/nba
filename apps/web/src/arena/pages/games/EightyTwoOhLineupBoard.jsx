@@ -30,8 +30,8 @@ export default function EightyTwoOhLineupBoard({ lineup, benchEnabled, editable,
   }
 
   return (
-    <div className="card space-y-3 p-5">
-      <p className="stat-label">
+    <div className="hoop-card-outline space-y-3 p-5">
+      <p className="hoop-stat-label">
         {editable ? "Your Lineup — click a filled slot, then click another to move or swap" : "Lineup"}
       </p>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
@@ -46,30 +46,30 @@ export default function EightyTwoOhLineupBoard({ lineup, benchEnabled, editable,
               onClick={() => handleSlotClick(slot)}
               className={`rounded-lg border p-2 text-center transition ${
                 isSelected
-                  ? "border-court bg-court/20"
+                  ? "border-terracotta bg-terracotta/20"
                   : occupant
-                    ? "border-court/40 bg-court/10"
-                    : "border-slate-800 bg-slate-950"
-              } ${editable ? "hover:border-court/60" : ""}`}
+                    ? "border-terracotta/40 bg-terracotta/10"
+                    : "border-ink/15 bg-paper"
+              } ${editable ? "hover:border-terracotta/60" : ""}`}
             >
-              <p className="stat-label text-[10px]">{slot}</p>
+              <p className="hoop-stat-label text-[10px]">{slot}</p>
               {occupant ? (
                 <>
-                  <p className="mt-1 truncate text-xs font-semibold text-white">{occupant.name}</p>
-                  <p className="truncate text-[10px] text-slate-500">
+                  <p className="mt-1 truncate text-xs font-semibold text-ink">{occupant.name}</p>
+                  <p className="truncate text-[10px] text-ink/60">
                     {occupant.teamName} · {occupant.decade}s
                   </p>
-                  <p className="text-[10px] text-slate-500">{occupant.realPosition}</p>
+                  <p className="text-[10px] text-ink/60">{occupant.realPosition}</p>
                 </>
               ) : (
-                <p className="mt-3 text-xs text-slate-600">—</p>
+                <p className="mt-3 text-xs text-ink/50">—</p>
               )}
             </button>
           );
         })}
       </div>
       {selectedSlot && (
-        <p className="text-center text-xs text-court-glow">Selected {selectedSlot} — click another slot to move or swap.</p>
+        <p className="text-center text-xs text-terracotta">Selected {selectedSlot} — click another slot to move or swap.</p>
       )}
     </div>
   );

@@ -2,16 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
 
-// Matched to the site's dark theme. Prospect = brand blue (solid), comp = live
-// orange (dashed/outline) — the app's own tokens; validated on the dark surface
-// (CVD ΔE 118, in-band). Identity never rests on color alone.
-const CARD_BG = "#1E293B"; // surface-raised — used for hex gaps
-const INK = "#E2E8F0";     // slate-200
-const SUBINK = "#94A3B8";  // slate-400
-const BLUE = "#3B82F6";    // brand-glow
-const ORANGE = "#EA580C";  // live
-const GRID = "#334155";    // surface-border
-const TRACK = "rgba(255,255,255,0.08)";
+// Matched to the site's paper/ink theme. Prospect = ink blue (solid fill),
+// comp = terracotta (dashed outline) — the app's own tokens. Identity never
+// rests on color alone: the two series also differ in fill vs dashed stroke.
+//
+// These are raw hex rather than Tailwind classes because they feed SVG
+// fill/stroke attributes, so they don't pick up token changes automatically —
+// keep them in step with tailwind.config.js by hand. Every value below is
+// chosen for contrast against paper (#F2F1EA): labels land ~8:1, the two
+// series and secondary text ~5:1, all comfortably above the 4.5:1 floor at
+// the 10–11px sizes this chart draws.
+const CARD_BG = "#F2F1EA"; // paper — stroked between hexbins so they read apart
+const INK = "#2431C4";     // ink — primary labels (axis names, player names)
+const SUBINK = "#4A52B8";  // muted ink — secondary / caption text
+const BLUE = "#3F4EE0";    // ink-glow — prospect series
+const ORANGE = "#9E4A30";  // terracotta-dim — comp series
+const GRID = "rgba(36,49,196,0.22)"; // ink @22% — rings, spokes, court lines
+const TRACK = "rgba(36,49,196,0.12)"; // percentile bar track
 
 const clamp01 = (x) => Math.max(0, Math.min(1, x));
 
@@ -27,9 +34,9 @@ const RADAR_AXES = [
 
 function CardShell({ title, subtitle, children }) {
   return (
-    <div className="card p-5" style={{ color: INK }}>
+    <div className="hoop-card-outline p-5" style={{ color: INK }}>
       <div className="text-center">
-        <h3 className="text-2xl font-bold tracking-tight text-slate-100" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+        <h3 className="text-2xl font-bold tracking-tight text-ink" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
           {title}
         </h3>
         <p className="text-xs uppercase tracking-widest" style={{ color: SUBINK }}>{subtitle}</p>
@@ -285,38 +292,38 @@ export default function DraftComps() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Draft Prospect Comps</h1>
-        <p className="mt-1 text-slate-400">
+        <h1 className="text-3xl font-bold text-ink">Draft Prospect Comps</h1>
+        <p className="mt-1 text-ink/70">
           Grounded comparisons for the 2026 draft class — real college stats, shot locations, and combine
           measurements matched to NBA players. No projections, just data.
         </p>
       </header>
 
       {list.length > 0 && (
-        <div className="card p-3">
+        <div className="hoop-card-outline p-3">
           <input value={query} onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${list.length} prospects by name or school…`}
-            className="mb-2 w-full rounded-lg border border-white/10 bg-surface px-3 py-2 text-sm text-white placeholder:text-slate-600 focus:border-brand focus:outline-none" />
+            className="mb-2 w-full rounded-lg border border-ink/10 bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink/50 focus:border-terracotta focus:outline-none" />
           <div className="flex max-h-52 flex-wrap gap-2 overflow-y-auto pr-1">
             {filtered.map((p) => (
               <button key={p.slug} onClick={() => setSlug(p.slug)}
                 className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-sm transition ${
-                  slug === p.slug ? "border-brand/60 bg-brand/10 text-brand-glow" : "border-white/10 bg-surface text-white hover:border-white/25"
+                  slug === p.slug ? "border-terracotta/60 bg-terracotta/10 text-terracotta" : "border-ink/10 bg-paper text-ink hover:border-ink/25"
                 }`}>
-                {p.pick && <span className="font-mono text-xs text-slate-500">#{p.pick}</span>}
+                {p.pick && <span className="font-mono text-xs text-ink/60">#{p.pick}</span>}
                 <span className="truncate">{p.name}</span>
                 <span className="flex gap-0.5" title="available cards">
                   <Dot on={p.has_radar} /><Dot on={p.has_shot_chart} /><Dot on={p.has_combine} />
                 </span>
               </button>
             ))}
-            {filtered.length === 0 && <p className="p-2 text-sm text-slate-500">No prospects match “{query}”.</p>}
+            {filtered.length === 0 && <p className="p-2 text-sm text-ink/60">No prospects match “{query}”.</p>}
           </div>
         </div>
       )}
 
-      {error && <div className="card border border-amber-500/30 p-3 text-sm text-amber-300">{error}</div>}
-      {loading && <div className="card p-6 text-center text-slate-400">Loading comparison…</div>}
+      {error && <div className="hoop-card-outline border border-basketball/30 p-3 text-sm text-basketball">{error}</div>}
+      {loading && <div className="hoop-card-outline p-6 text-center text-ink/70">Loading comparison…</div>}
 
       {cards && !loading && (
         <div className="grid gap-6 lg:grid-cols-2">
@@ -332,14 +339,14 @@ export default function DraftComps() {
 }
 
 function Dot({ on }) {
-  return <span className={`inline-block h-1.5 w-1.5 rounded-full ${on ? "bg-brand-glow" : "bg-white/15"}`} />;
+  return <span className={`inline-block h-1.5 w-1.5 rounded-full ${on ? "bg-terracotta" : "bg-ink/15"}`} />;
 }
 
 function Unavailable({ title, reason }) {
   return (
-    <div className="card flex flex-col items-center justify-center p-6 text-center">
-      <p className="text-sm font-semibold text-slate-300">{title}</p>
-      <p className="mt-1 max-w-xs text-xs text-slate-500">{reason}</p>
+    <div className="hoop-card-outline flex flex-col items-center justify-center p-6 text-center">
+      <p className="text-sm font-semibold text-ink">{title}</p>
+      <p className="mt-1 max-w-xs text-xs text-ink/60">{reason}</p>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { TEAM_FULL_NAMES, POSITION_NAMES } from "../../utils/fiveHintsGenerator.js";
 
 const TIER_STYLES = {
-  Elite: "border-amber-400/50 bg-amber-400/10 text-amber-300",
-  Star: "border-court/50 bg-court/10 text-court-glow",
-  "Role Player": "border-slate-500/50 bg-slate-500/10 text-slate-300",
-  "Deep Bench": "border-slate-700 bg-slate-800/60 text-slate-400",
+  Elite: "border-basketball/50 bg-basketball/10 text-basketball",
+  Star: "border-terracotta/50 bg-terracotta/10 text-terracotta",
+  "Role Player": "border-ink/20 bg-ink/30 text-ink",
+  "Deep Bench": "border-ink/20 bg-ink/5 text-ink/70",
 };
 
 function TierBadge({ tier }) {
@@ -42,32 +42,32 @@ export default function HintAuctionMysteryCard({ round, players }) {
     const winnerName = round.winnerSocketId ? players.find((p) => p.socketId === round.winnerSocketId)?.name : null;
 
     return (
-      <div className="card animate-fade-in mx-auto max-w-lg space-y-4 p-8 text-center">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-court/20 text-3xl font-bold text-court-glow">
+      <div className="hoop-card-outline animate-fade-in mx-auto max-w-lg space-y-4 p-8 text-center">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-terracotta/20 text-3xl font-bold text-terracotta">
           {player?.name
             ?.split(" ")
             .map((w) => w[0])
             .join("")}
         </div>
-        <h2 className="text-3xl font-bold text-white">{player?.name}</h2>
-        <p className="text-slate-400">
+        <h2 className="text-3xl font-bold text-ink">{player?.name}</h2>
+        <p className="text-ink/70">
           {positionName} — {teamName}
         </p>
         <div className="flex justify-center">
           <TierBadge tier={round.tier} />
         </div>
-        {statLine && <p className="stat-value text-lg">{statLine}</p>}
+        {statLine && <p className="hoop-stat-value text-lg">{statLine}</p>}
 
         {round.unsold ? (
-          <div className="rounded-xl border border-slate-700 bg-slate-950 p-4">
-            <p className="text-sm text-amber-300">Nobody bid — this player went unsold.</p>
+          <div className="rounded-xl border border-ink/20 bg-paper p-4">
+            <p className="text-sm text-basketball">Nobody bid — this player went unsold.</p>
           </div>
         ) : (
-          <div className="animate-slide-up space-y-1 rounded-xl border border-court/40 bg-slate-950 p-4">
-            <p className="text-sm font-semibold text-court-glow">
+          <div className="animate-slide-up space-y-1 rounded-xl border border-terracotta/40 bg-paper p-4">
+            <p className="text-sm font-semibold text-terracotta">
               Sold to {winnerName || "someone"} for {round.winningBid}
             </p>
-            <p className="text-xs text-slate-400">Assigned to {round.assignedSlot}</p>
+            <p className="text-xs text-ink/70">Assigned to {round.assignedSlot}</p>
           </div>
         )}
       </div>
@@ -75,14 +75,14 @@ export default function HintAuctionMysteryCard({ round, players }) {
   }
 
   return (
-    <div className="card mx-auto max-w-lg space-y-5 p-8 text-center">
-      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-slate-800 text-4xl font-bold text-slate-500">
+    <div className="hoop-card-outline mx-auto max-w-lg space-y-5 p-8 text-center">
+      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-ink/5 text-4xl font-bold text-ink/60">
         ?
       </div>
       <div className="flex justify-center">
         <TierBadge tier={round.tier} />
       </div>
-      <p className="stat-label">
+      <p className="hoop-stat-label">
         {round.subPhase === "auction" ? "Bidding is open" : `Hint ${round.hintNumber} of ${round.hints.length}`}
       </p>
       <ul className="space-y-2 text-left">
@@ -90,7 +90,7 @@ export default function HintAuctionMysteryCard({ round, players }) {
           <li
             key={i}
             className={`rounded-lg border p-3 text-sm leading-relaxed ${
-              i === round.hints.length - 1 ? "animate-fade-in border-court/40 bg-court/5 text-white" : "border-slate-800 text-slate-400"
+              i === round.hints.length - 1 ? "animate-fade-in border-terracotta/40 bg-terracotta/5 text-ink" : "border-ink/15 text-ink/70"
             }`}
           >
             {hint}

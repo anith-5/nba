@@ -3,36 +3,36 @@ const POSITION_ORDER = ["PG", "SG", "SF", "PF", "C"];
 function LineupCard({ entry, target }) {
   return (
     <div
-      className={`card space-y-3 p-5 ${entry.overTarget ? "border border-red-500/40" : entry.perfect ? "border border-yellow-400/50" : ""}`}
+      className={`hoop-card-outline space-y-3 p-5 ${entry.overTarget ? "border border-stat-down/40" : entry.perfect ? "border border-basketball/50" : ""}`}
     >
       <div className="flex items-center justify-between">
-        <p className="text-lg font-bold text-white">{entry.name}</p>
+        <p className="text-lg font-bold text-ink">{entry.name}</p>
         {entry.overTarget ? (
-          <span className="text-xs font-semibold text-red-400">Over Target</span>
+          <span className="text-xs font-semibold text-stat-down">Over Target</span>
         ) : entry.perfect ? (
-          <span className="text-xs font-semibold text-yellow-400">Perfect</span>
+          <span className="text-xs font-semibold text-basketball">Perfect</span>
         ) : null}
       </div>
       <div className="grid grid-cols-5 gap-2 text-center">
         {POSITION_ORDER.map((pos) => (
-          <div key={pos} className="rounded-lg border border-slate-700 bg-slate-950 p-2">
-            <p className="stat-label text-xs">{pos}</p>
-            <p className="mt-1 truncate text-xs font-semibold text-white">{entry.lineup[pos]?.name}</p>
-            <p className="text-xs text-slate-500">
+          <div key={pos} className="rounded-lg border border-ink/20 bg-paper p-2">
+            <p className="hoop-stat-label text-xs">{pos}</p>
+            <p className="mt-1 truncate text-xs font-semibold text-ink">{entry.lineup[pos]?.name}</p>
+            <p className="text-xs text-ink/60">
               {entry.lineup[pos]?.season} · {entry.lineup[pos]?.ppg}
             </p>
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between rounded-lg border border-slate-700 px-4 py-2">
-        <span className="stat-label">
-          Total <span className="text-slate-500">/ {target}</span>
+      <div className="flex items-center justify-between rounded-lg border border-ink/20 px-4 py-2">
+        <span className="hoop-stat-label">
+          Total <span className="text-ink/60">/ {target}</span>
         </span>
-        <span className="stat-value">{entry.total}</span>
+        <span className="hoop-stat-value">{entry.total}</span>
       </div>
-      <div className="flex items-center justify-between text-sm text-slate-400">
+      <div className="flex items-center justify-between text-sm text-ink/70">
         <span>Distance: {entry.distance}</span>
-        <span className="font-semibold text-court">{entry.points} pts</span>
+        <span className="font-semibold text-terracotta">{entry.points} pts</span>
       </div>
     </div>
   );
@@ -45,10 +45,10 @@ export function ClosestToRoundResults({ gameState, isHost, onNextRound }) {
   return (
     <div className="animate-fade-in mx-auto max-w-3xl space-y-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-ink">
           Round {gameState.roundNumber} of {gameState.totalRounds} — Results
         </h1>
-        <p className="text-slate-400">Target: {gameState.target} PPG</p>
+        <p className="text-ink/70">Target: {gameState.target} PPG</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -59,12 +59,12 @@ export function ClosestToRoundResults({ gameState, isHost, onNextRound }) {
 
       {isHost && (
         <div className="text-center">
-          <button onClick={onNextRound} className="btn-primary">
+          <button onClick={onNextRound} className="hoop-btn-primary">
             {isLastRound ? "See Final Results" : "Next Round"}
           </button>
         </div>
       )}
-      {!isHost && <p className="text-center text-sm text-slate-500">Waiting for the host to continue…</p>}
+      {!isHost && <p className="text-center text-sm text-ink/60">Waiting for the host to continue…</p>}
     </div>
   );
 }
@@ -96,22 +96,22 @@ export function ClosestToFinalResults({ gameState, players }) {
 
   return (
     <div className="animate-fade-in mx-auto max-w-3xl space-y-6 text-center">
-      <h1 className="text-3xl font-bold text-white">Final Results</h1>
+      <h1 className="text-3xl font-bold text-ink">Final Results</h1>
 
       <ol className="mx-auto max-w-sm space-y-2 text-left">
         {standings.map((p, i) => (
-          <li key={p.socketId} className="card flex items-center justify-between px-4 py-2">
-            <span className="text-white">
-              <span className="stat-label mr-2">#{i + 1}</span>
+          <li key={p.socketId} className="hoop-card-outline flex items-center justify-between px-4 py-2">
+            <span className="text-ink">
+              <span className="hoop-stat-label mr-2">#{i + 1}</span>
               {p.name}
             </span>
-            <span className="stat-value">{gameState.scores[p.socketId] || 0}</span>
+            <span className="hoop-stat-value">{gameState.scores[p.socketId] || 0}</span>
           </li>
         ))}
       </ol>
 
       <div className="space-y-4 text-left">
-        <p className="stat-label text-center">Best Lineup</p>
+        <p className="hoop-stat-label text-center">Best Lineup</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {standings.map((p) => {
             const entry = bestRoundFor(gameState, p.socketId);
@@ -122,7 +122,7 @@ export function ClosestToFinalResults({ gameState, players }) {
 
       <button
         onClick={() => navigator.clipboard?.writeText(buildShareText(gameState, players))}
-        className="btn-primary"
+        className="hoop-btn-primary"
       >
         Share Results
       </button>

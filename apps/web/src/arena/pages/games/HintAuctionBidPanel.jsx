@@ -32,18 +32,18 @@ export default function HintAuctionBidPanel({ round, myId, players, myBudget, my
   if (myRosterFull) {
     return (
       <div className="mx-auto max-w-lg text-center">
-        <p className="text-sm text-slate-500">Your roster is full — spectating the rest of the draft.</p>
+        <p className="text-sm text-ink/60">Your roster is full — spectating the rest of the draft.</p>
       </div>
     );
   }
 
   return (
-    <div className="card mx-auto max-w-lg space-y-4 p-6 text-center">
+    <div className="hoop-card-outline mx-auto max-w-lg space-y-4 p-6 text-center">
       <div className="flex items-center justify-center gap-4">
         <div>
-          <p className="stat-label">High Bid</p>
-          <p className="stat-value text-2xl">{round.highBid > 0 ? round.highBid : "—"}</p>
-          {highBidderName && <p className="text-xs text-slate-400">{amHighBidder ? "You" : highBidderName}</p>}
+          <p className="hoop-stat-label">High Bid</p>
+          <p className="hoop-stat-value text-2xl">{round.highBid > 0 ? round.highBid : "—"}</p>
+          {highBidderName && <p className="text-xs text-ink/70">{amHighBidder ? "You" : highBidderName}</p>}
         </div>
         <Timer startedAt={round.auctionDeadlineAt - auctionTimerSeconds * 1000} durationSeconds={auctionTimerSeconds} />
       </div>
@@ -57,13 +57,13 @@ export default function HintAuctionBidPanel({ round, myId, players, myBudget, my
           onChange={(e) => setAmount(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder={`${minValid}+`}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-court"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink outline-none focus:border-terracotta"
         />
-        <button className="btn-primary" onClick={submit} disabled={!amount || Number(amount) < minValid || Number(amount) > myBudget}>
+        <button className="hoop-btn-primary" onClick={submit} disabled={!amount || Number(amount) < minValid || Number(amount) > myBudget}>
           Bid
         </button>
       </div>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-ink/60">
         Budget remaining: {myBudget} · Minimum bid: {minValid}
       </p>
     </div>

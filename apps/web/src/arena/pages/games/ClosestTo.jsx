@@ -97,8 +97,8 @@ export default function ClosestTo() {
 
   if (!room || !room.gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -130,7 +130,7 @@ export default function ClosestTo() {
       <div className="space-y-6">
         <ClosestToFinalResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -151,10 +151,10 @@ export default function ClosestTo() {
   return (
     <div className="animate-fade-in mx-auto max-w-lg space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-ink">
           Round {gameState.roundNumber} of {gameState.totalRounds}
         </h1>
-        <p className="text-slate-400">Target: {gameState.target} PPG</p>
+        <p className="text-ink/70">Target: {gameState.target} PPG</p>
       </header>
 
       {myState.done ? (

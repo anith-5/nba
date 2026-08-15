@@ -6,12 +6,12 @@ import ShareButton from "../components/ShareCard.jsx";
 
 function StatTile({ label, value, suffix = "", accent }) {
   return (
-    <div className="rounded-xl bg-surface/60 px-3 py-3 text-center ring-1 ring-white/5">
-      <p className={`font-display text-xl font-bold tabular-nums ${accent ? "text-brand-glow" : "text-white"}`}>
+    <div className="rounded-xl border-2 border-ink/15 bg-paper-raised px-3 py-3 text-center">
+      <p className={`font-hoop text-xl font-bold tabular-nums ${accent ? "text-terracotta" : "text-ink"}`}>
         {value}
         {suffix}
       </p>
-      <p className="stat-label mt-0.5">{label}</p>
+      <p className="hoop-stat-label mt-0.5">{label}</p>
     </div>
   );
 }
@@ -25,18 +25,18 @@ function QuickAction({ to, title, sub, icon }) {
     doc: <><path d="M6 2h9l5 5v15H6z" /><path d="M15 2v5h5M9 13h6M9 17h6" /></>,
   };
   return (
-    <Link to={to} className="card-hover group flex items-center gap-3 p-3.5">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand/15 text-brand-glow ring-1 ring-brand/20">
+    <Link to={to} className="hoop-card-outline-hover group flex items-center gap-3 p-3.5">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-terracotta/15 text-terracotta ring-1 ring-terracotta/20">
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
           {paths[icon]}
         </svg>
       </span>
       <div className="min-w-0">
-        <p className="flex items-center gap-1 font-display text-sm font-semibold text-white">
+        <p className="flex items-center gap-1 font-hoop text-sm font-semibold text-ink">
           {title}
-          <span className="text-brand-glow transition-transform group-hover:translate-x-0.5">→</span>
+          <span className="text-terracotta transition-transform group-hover:translate-x-0.5">→</span>
         </p>
-        <p className="truncate text-xs text-slate-500">{sub}</p>
+        <p className="truncate text-xs text-ink/60">{sub}</p>
       </div>
     </Link>
   );
@@ -53,20 +53,20 @@ function PlayerProfile({ profile }) {
   return (
     <div className="space-y-5 animate-slide-up">
       {/* Header */}
-      <div className="card flex flex-wrap items-center gap-4 p-5">
+      <div className="hoop-card-outline flex flex-wrap items-center gap-4 p-5">
         <InitialsTile name={name} size="lg" />
         <div className="min-w-0 flex-1">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight text-white">{name}</h2>
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-400">
+          <h2 className="font-hoop text-2xl font-extrabold tracking-tight text-ink">{name}</h2>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-ink/70">
             {tri && <TeamTile tricode={tri} size="sm" className="!h-6 !w-6 !text-[10px]" />}
             <span>{info.TEAM_NAME || "Free Agent"}</span>
-            <span className="text-slate-600">·</span>
+            <span className="text-ink/50">·</span>
             <span>{info.POSITION || "—"}</span>
-            <span className="text-slate-600">·</span>
+            <span className="text-ink/50">·</span>
             <span>{info.HEIGHT || "—"}</span>
             {info.WEIGHT && (
               <>
-                <span className="text-slate-600">·</span>
+                <span className="text-ink/50">·</span>
                 <span>{info.WEIGHT} lbs</span>
               </>
             )}
@@ -90,7 +90,7 @@ function PlayerProfile({ profile }) {
 
       {/* AI quick-actions */}
       <div>
-        <p className="stat-label mb-2">AI tools · pre-loaded for {name.split(" ").slice(-1)[0]}</p>
+        <p className="hoop-stat-label mb-2">AI tools · pre-loaded for {name.split(" ").slice(-1)[0]}</p>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <QuickAction to={`/shot-quality${q}`} icon="target" title="Shot Quality" sub="Hot-zone xFG% map" />
           <QuickAction to={`/clutch${q}`} icon="bolt" title="Clutch DNA" sub="Elevation score + tier" />
@@ -101,10 +101,10 @@ function PlayerProfile({ profile }) {
 
       {/* Career averages */}
       {c && (
-        <div className="card p-5">
+        <div className="hoop-card-outline p-5">
           <div className="mb-3 flex items-center justify-between">
-            <p className="stat-label">Career Averages</p>
-            <span className="text-xs text-slate-500">{c.gp} games played</span>
+            <p className="hoop-stat-label">Career Averages</p>
+            <span className="text-xs text-ink/60">{c.gp} games played</span>
           </div>
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
             <StatTile label="PPG" value={c.ppg} />
@@ -121,14 +121,14 @@ function PlayerProfile({ profile }) {
 
       {/* Season-by-season */}
       {profile.seasons?.length > 0 && (
-        <div className="card p-5">
-          <p className="stat-label mb-3">
+        <div className="hoop-card-outline p-5">
+          <p className="hoop-stat-label mb-3">
             Season-by-Season ({profile.seasons.length} season{profile.seasons.length !== 1 ? "s" : ""})
           </p>
           <div className="max-h-[520px] overflow-auto rounded-lg">
             <table className="w-full text-left text-xs">
-              <thead className="sticky top-0 bg-surface-raised">
-                <tr className="text-slate-500">
+              <thead className="sticky top-0 bg-paper-raised shadow-[0_2px_0_0_rgba(36,49,196,0.15)]">
+                <tr className="text-terracotta">
                   {["Season", "Team", "Age", "GP", "MIN", "PPG", "RPG", "APG", "SPG", "BPG", "FG%", "3P%", "FT%", "TS%"].map((h) => (
                     <th key={h} className="py-1.5 pr-3 font-medium">{h}</th>
                   ))}
@@ -136,13 +136,13 @@ function PlayerProfile({ profile }) {
               </thead>
               <tbody>
                 {profile.seasons.map((s, i) => (
-                  <tr key={`${s.season}-${i}`} className="border-t border-white/5 text-slate-300 hover:bg-white/5">
+                  <tr key={`${s.season}-${i}`} className="border-t border-ink/5 text-ink hover:bg-ink/5">
                     <td className="py-1.5 pr-3 font-mono">{s.season}</td>
                     <td className="py-1.5 pr-3">{s.team}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.age}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.gp}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.min_pg}</td>
-                    <td className="py-1.5 pr-3 font-mono font-semibold text-white">{s.ppg}</td>
+                    <td className="py-1.5 pr-3 font-mono font-semibold text-ink">{s.ppg}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.rpg}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.apg}</td>
                     <td className="py-1.5 pr-3 font-mono">{s.spg}</td>
@@ -216,15 +216,15 @@ export default function Players() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Player Search</h1>
-        <p className="mt-1 text-slate-400">Search any player, then jump straight into the AI tools.</p>
+        <h1 className="text-3xl font-bold text-ink">Player Search</h1>
+        <p className="mt-1 text-ink/70">Search any player, then jump straight into the AI tools.</p>
       </header>
 
       {/* Prominent search with live autocomplete */}
       <div ref={boxRef} className="relative max-w-2xl">
         <svg
           viewBox="0 0 24 24"
-          className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500"
+          className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink/60"
           fill="none" stroke="currentColor" strokeWidth="2"
         >
           <circle cx="11" cy="11" r="7" />
@@ -237,20 +237,20 @@ export default function Players() {
           onFocus={() => results.length && setOpen(true)}
           placeholder="Search a player… (e.g. Nikola Jokić)"
           aria-label="Search player"
-          className="w-full rounded-card border border-white/10 bg-surface-raised/70 py-3.5 pl-12 pr-4 text-white placeholder:text-slate-500 focus:border-brand focus:outline-none"
+          className="w-full rounded-card border border-ink/10 bg-paper-raised/70 py-3.5 pl-12 pr-4 text-ink placeholder:text-ink/60 focus:border-terracotta focus:outline-none"
         />
         {open && results.length > 0 && (
-          <ul className="absolute z-20 mt-2 w-full overflow-hidden rounded-card border border-white/10 bg-surface-raised/95 shadow-card backdrop-blur-xl">
+          <ul className="absolute z-20 mt-2 w-full overflow-hidden rounded-card border border-ink/10 bg-paper-raised/95 shadow-card ">
             {results.map((p) => (
               <li key={p.id}>
                 <button
                   type="button"
                   onClick={() => loadProfile(p)}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-white/5"
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-ink/5"
                 >
                   <InitialsTile name={p.full_name} size="sm" />
-                  <span className="text-sm text-white">{p.full_name}</span>
-                  {!p.is_active && <span className="ml-auto text-xs text-slate-500">retired</span>}
+                  <span className="text-sm text-ink">{p.full_name}</span>
+                  {!p.is_active && <span className="ml-auto text-xs text-ink/60">retired</span>}
                 </button>
               </li>
             ))}
@@ -259,15 +259,15 @@ export default function Players() {
       </div>
 
       {error && (
-        <p className="rounded-xl border border-brand/50 bg-brand/30 px-4 py-3 text-sm text-brand-glow">{error}</p>
+        <p className="rounded-xl border border-terracotta/50 bg-terracotta/30 px-4 py-3 text-sm text-stat-down">{error}</p>
       )}
 
       {loading && (
-        <div className="card h-40 animate-pulse bg-surface-raised/40" />
+        <div className="hoop-card-outline h-40 animate-pulse bg-paper-raised/40" />
       )}
 
       {!loading && !profile && !error && (
-        <div className="card p-10 text-center text-slate-500">
+        <div className="hoop-card-outline p-10 text-center text-ink/60">
           Search for a player to view their profile and AI breakdowns.
         </div>
       )}

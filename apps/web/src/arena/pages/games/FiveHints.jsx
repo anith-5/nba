@@ -16,8 +16,8 @@ export default function FiveHints() {
 
   if (!room || !gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -34,7 +34,7 @@ export default function FiveHints() {
       <div className="space-y-6">
         <FiveHintsFinalResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -43,7 +43,7 @@ export default function FiveHints() {
   }
 
   if (gameState.phase === "awaiting_configure" || !gameState.currentRound) {
-    return <p className="text-center text-slate-400">Setting up the round…</p>;
+    return <p className="text-center text-ink/70">Setting up the round…</p>;
   }
 
   const round = gameState.currentRound;
@@ -60,7 +60,7 @@ export default function FiveHints() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-ink">
           Round {gameState.roundNumber} of {gameState.totalRounds}
         </h1>
       </header>
@@ -90,23 +90,23 @@ export default function FiveHints() {
 
           <div className="flex justify-center gap-3">
             {canRevealNextHint && (
-              <button onClick={() => sendGameAction("reveal_hint")} className="btn-ghost">
+              <button onClick={() => sendGameAction("reveal_hint")} className="hoop-btn-ghost">
                 Reveal Next Hint
               </button>
             )}
             {round.resolved &&
               (isHost ? (
-                <button onClick={() => sendGameAction("next_round")} className="btn-primary">
+                <button onClick={() => sendGameAction("next_round")} className="hoop-btn-primary">
                   Next Round
                 </button>
               ) : (
-                <p className="text-sm text-slate-500">Waiting for the host to continue…</p>
+                <p className="text-sm text-ink/60">Waiting for the host to continue…</p>
               ))}
           </div>
         </div>
 
         <div>
-          <p className="stat-label mb-2 text-center lg:text-left">Leaderboard</p>
+          <p className="hoop-stat-label mb-2 text-center lg:text-left">Leaderboard</p>
           <OverUnderLeaderboard players={room.players} scores={gameState.scores} />
         </div>
       </div>

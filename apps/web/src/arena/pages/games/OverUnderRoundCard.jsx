@@ -5,19 +5,19 @@ export default function OverUnderRoundCard({ round, players, myId, onVote, timer
   const hasVoted = round.votedSocketIds?.includes(myId);
 
   return (
-    <div className="card mx-auto max-w-lg space-y-5 p-6 text-center">
-      <div className="flex h-24 w-24 mx-auto items-center justify-center rounded-full bg-slate-800 text-3xl font-bold text-slate-500">
+    <div className="hoop-card-outline mx-auto max-w-lg space-y-5 p-6 text-center">
+      <div className="flex h-24 w-24 mx-auto items-center justify-center rounded-full bg-ink/5 text-3xl font-bold text-ink/60">
         {round.player.name
           .split(" ")
           .map((w) => w[0])
           .join("")}
       </div>
-      <h2 className="text-2xl font-bold text-white">{round.player.name}</h2>
-      <p className="text-slate-400">{round.player.position}</p>
+      <h2 className="text-2xl font-bold text-ink">{round.player.name}</h2>
+      <p className="text-ink/70">{round.player.position}</p>
 
       <div>
-        <p className="stat-label">{round.statLabel}</p>
-        <p className="stat-value text-4xl">{formatStatValue(round.line, round.statFormat)}</p>
+        <p className="hoop-stat-label">{round.statLabel}</p>
+        <p className="hoop-stat-value text-4xl">{formatStatValue(round.line, round.statFormat)}</p>
       </div>
 
       {!round.revealed && <Timer startedAt={round.startedAt} durationSeconds={timerSeconds} />}
@@ -27,27 +27,27 @@ export default function OverUnderRoundCard({ round, players, myId, onVote, timer
           <button
             onClick={() => onVote("over")}
             disabled={hasVoted}
-            className="btn-primary py-4 text-lg disabled:opacity-40"
+            className="hoop-btn-primary py-4 text-lg disabled:opacity-40"
           >
             Over
           </button>
           <button
             onClick={() => onVote("under")}
             disabled={hasVoted}
-            className="btn-ghost py-4 text-lg disabled:opacity-40"
+            className="hoop-btn-ghost py-4 text-lg disabled:opacity-40"
           >
             Under
           </button>
         </div>
       )}
 
-      {hasVoted && !round.revealed && <p className="text-sm text-slate-500">Waiting for other players…</p>}
+      {hasVoted && !round.revealed && <p className="text-sm text-ink/60">Waiting for other players…</p>}
 
       {round.revealed && (
         <div className="space-y-3 text-left">
           <p className="text-center text-lg">
-            Actual: <span className="stat-value">{formatStatValue(round.actualValue, round.statFormat)}</span>{" "}
-            <span className={round.actualValue > round.line ? "text-court-glow" : "text-amber-300"}>
+            Actual: <span className="hoop-stat-value">{formatStatValue(round.actualValue, round.statFormat)}</span>{" "}
+            <span className={round.actualValue > round.line ? "text-terracotta" : "text-basketball"}>
               {round.actualValue > round.line ? "▲ Over" : "▼ Under"}
             </span>
           </p>
@@ -57,8 +57,8 @@ export default function OverUnderRoundCard({ round, players, myId, onVote, timer
               const correct = round.correctSocketIds?.includes(p.socketId);
               return (
                 <li key={p.socketId} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-300">{p.name}</span>
-                  <span className={correct ? "text-court-glow" : "text-slate-500"}>
+                  <span className="text-ink">{p.name}</span>
+                  <span className={correct ? "text-terracotta" : "text-ink/60"}>
                     {vote || "no vote"} {correct && "✓"}
                     {round.soleBonusSocketId === p.socketId && " (+1 bonus)"}
                   </span>

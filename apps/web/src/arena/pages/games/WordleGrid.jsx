@@ -1,10 +1,15 @@
 import { WORDLE_CATEGORIES, ERA_DEFINITIONS, STYLE_TAG_DEFINITIONS } from "../../utils/wordleScoring.js";
 import InfoTooltip from "../../components/InfoTooltip.jsx";
 
+// Wordle feedback tiles: these three carry game meaning (exact / close /
+// wrong), so they keep a genuine three-way colour split rather than
+// collapsing into the UI accent. Fills are the darker palette steps so the
+// label can sit in paper and stay legible — ink-on-basketball was only
+// ~3:1 after the light-theme inversion.
 const TILE_COLOR = {
-  green: "bg-court text-slate-950",
-  yellow: "bg-amber-400 text-slate-950",
-  red: "bg-slate-800 text-slate-300",
+  green: "bg-stat-up text-paper",
+  yellow: "bg-basketball-dim text-paper",
+  red: "bg-ink/10 text-ink/60",
 };
 
 function Arrow({ direction }) {
@@ -14,7 +19,7 @@ function Arrow({ direction }) {
 
 function CategoryHeader({ category }) {
   return (
-    <div className="flex items-center justify-center text-center text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+    <div className="flex items-center justify-center text-center text-[11px] font-semibold uppercase tracking-wide text-ink/70">
       {category.label}
       {category.key === "era" && <InfoTooltip title="Era" items={ERA_DEFINITIONS} />}
       {category.key === "styleTag" && <InfoTooltip title="Style Tag" items={STYLE_TAG_DEFINITIONS} />}
@@ -46,7 +51,7 @@ export default function WordleGrid({ guesses, maxGuesses }) {
       </div>
       {guesses.map((g, i) => (
         <div key={i} className="space-y-1" style={{ minWidth: "640px" }}>
-          <p className="text-sm font-medium text-white">{g.player.name}</p>
+          <p className="text-sm font-medium text-ink">{g.player.name}</p>
           <div className="grid grid-cols-8 gap-2">
             {WORDLE_CATEGORIES.map((c) => (
               <Tile key={c.key} tile={g.feedback[c.key]} />
@@ -57,7 +62,7 @@ export default function WordleGrid({ guesses, maxGuesses }) {
       {Array.from({ length: emptyRows }).map((_, i) => (
         <div key={`empty-${i}`} className="grid grid-cols-8 gap-2" style={{ minWidth: "640px" }}>
           {WORDLE_CATEGORIES.map((c) => (
-            <div key={c.key} className="h-20 rounded-md border border-slate-800 bg-slate-900/40" />
+            <div key={c.key} className="h-20 rounded-md border border-ink/15 bg-paper" />
           ))}
         </div>
       ))}

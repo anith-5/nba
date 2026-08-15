@@ -32,8 +32,8 @@ export default function ClosestToReveal({ entries, target, onRevealComplete }) {
   return (
     <div className="animate-fade-in mx-auto max-w-4xl space-y-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-white">Revealing Lineups…</h1>
-        <p className="text-slate-400">Target: {target} PPG</p>
+        <h1 className="text-2xl font-bold text-ink">Revealing Lineups…</h1>
+        <p className="text-ink/70">Target: {target} PPG</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -43,18 +43,18 @@ export default function ClosestToReveal({ entries, target, onRevealComplete }) {
           );
 
           return (
-            <div key={entry.socketId} className="card space-y-3 p-5">
-              <p className="text-lg font-bold text-white">{entry.name}</p>
+            <div key={entry.socketId} className="hoop-card-outline space-y-3 p-5">
+              <p className="text-lg font-bold text-ink">{entry.name}</p>
               <div className="grid grid-cols-5 gap-2 text-center">
                 {POSITION_ORDER.map((pos, i) => {
                   const shown = i < revealCount;
                   const p = entry.lineup[pos];
                   return (
-                    <div key={pos} className="rounded-lg border border-slate-700 bg-slate-950 p-2">
-                      <p className="stat-label text-xs">{pos}</p>
-                      <p className="mt-1 truncate text-xs font-semibold text-white">{p?.name}</p>
-                      <p className="text-xs text-slate-500">{p?.season}</p>
-                      <p className={`mt-1 text-sm font-bold ${shown ? "animate-fade-in text-court" : "text-transparent"}`}>
+                    <div key={pos} className="rounded-lg border border-ink/20 bg-paper p-2">
+                      <p className="hoop-stat-label text-xs">{pos}</p>
+                      <p className="mt-1 truncate text-xs font-semibold text-ink">{p?.name}</p>
+                      <p className="text-xs text-ink/60">{p?.season}</p>
+                      <p className={`mt-1 text-sm font-bold ${shown ? "animate-fade-in text-terracotta" : "text-transparent"}`}>
                         {shown ? p?.ppg : "0"}
                       </p>
                     </div>
@@ -62,26 +62,26 @@ export default function ClosestToReveal({ entries, target, onRevealComplete }) {
                 })}
               </div>
 
-              <div className="flex items-center justify-between rounded-lg border border-slate-700 px-4 py-2">
-                <span className="stat-label">Running Total</span>
-                <span className="stat-value">{runningTotal}</span>
+              <div className="flex items-center justify-between rounded-lg border border-ink/20 px-4 py-2">
+                <span className="hoop-stat-label">Running Total</span>
+                <span className="hoop-stat-value">{runningTotal}</span>
               </div>
 
               {fullyRevealed && (
                 <div
                   className={`animate-fade-in rounded-lg border px-4 py-3 text-center ${
-                    entry.overTarget ? "border-red-500/50" : "border-court/50"
+                    entry.overTarget ? "border-stat-down/50" : "border-terracotta/50"
                   }`}
                 >
-                  <p className={`text-3xl font-bold ${entry.overTarget ? "text-red-400" : "text-court"}`}>
+                  <p className={`text-3xl font-bold ${entry.overTarget ? "text-stat-down" : "text-stat-up"}`}>
                     {entry.total}
                   </p>
                   {entry.overTarget ? (
-                    <p className="text-sm font-semibold text-red-400">Busted</p>
+                    <p className="text-sm font-semibold text-stat-down">Busted</p>
                   ) : entry.perfect ? (
-                    <p className="text-sm font-semibold text-yellow-400">Perfect</p>
+                    <p className="text-sm font-semibold text-basketball">Perfect</p>
                   ) : (
-                    <p className="text-sm text-court">{entry.distance} from target</p>
+                    <p className="text-sm text-terracotta">{entry.distance} from target</p>
                   )}
                 </div>
               )}

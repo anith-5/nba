@@ -23,8 +23,8 @@ export default function ThemedDraft() {
 
   if (!room || !gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -41,7 +41,7 @@ export default function ThemedDraft() {
       <div className="space-y-6">
         <ThemedDraftResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -63,10 +63,10 @@ export default function ThemedDraft() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-ink">
           Round {gameState.round} of {gameState.config.rosterSize}
         </h1>
-        <p className="mt-1 text-xs text-slate-500">{CATEGORY_LABELS[gameState.config.category] || "Themed"} draft</p>
+        <p className="mt-1 text-xs text-ink/60">{CATEGORY_LABELS[gameState.config.category] || "Themed"} draft</p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -79,7 +79,7 @@ export default function ThemedDraft() {
           />
         </div>
         <div>
-          <p className="stat-label mb-2 text-center lg:text-left">Rosters</p>
+          <p className="hoop-stat-label mb-2 text-center lg:text-left">Rosters</p>
           <ThemedDraftRosterPanel gameState={gameState} players={room.players} myId={myId} />
         </div>
       </div>

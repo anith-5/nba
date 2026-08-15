@@ -14,24 +14,24 @@ export default function BuildAPlayerRevealCard({ gameState, myId, iAmDone, onPic
 
   if (iAmDone) {
     return (
-      <div className="card mx-auto max-w-lg space-y-2 p-6 text-center">
-        <p className="stat-label">Build Complete</p>
-        <p className="text-sm text-slate-400">Your custom player is full — waiting for everyone else to finish.</p>
+      <div className="hoop-card-outline mx-auto max-w-lg space-y-2 p-6 text-center">
+        <p className="hoop-stat-label">Build Complete</p>
+        <p className="text-sm text-ink/70">Your custom player is full — waiting for everyone else to finish.</p>
       </div>
     );
   }
 
   if (!player) {
-    return <p className="text-center text-slate-500">Waiting for the next player…</p>;
+    return <p className="text-center text-ink/60">Waiting for the next player…</p>;
   }
 
   return (
     <div className="space-y-4">
-      <div className="card space-y-1 p-5 text-center">
+      <div className="hoop-card-outline space-y-1 p-5 text-center">
         <div className="flex items-center justify-center gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-white">{player.name}</h2>
-            <p className="text-sm text-slate-400">
+            <h2 className="text-2xl font-bold text-ink">{player.name}</h2>
+            <p className="text-sm text-ink/70">
               {player.position} — {player.team_full_name}
             </p>
           </div>
@@ -41,7 +41,7 @@ export default function BuildAPlayerRevealCard({ gameState, myId, iAmDone, onPic
         </div>
       </div>
 
-      <p className="text-center text-sm text-slate-500">
+      <p className="text-center text-sm text-ink/60">
         {iActed
           ? `${gameState.actedSocketIds.length} acted this round — waiting on the rest…`
           : "Pick one trait for your build, or pass on this player."}
@@ -63,10 +63,10 @@ export default function BuildAPlayerRevealCard({ gameState, myId, iAmDone, onPic
                 clickable ? "hover:brightness-125" : "opacity-60"
               }`}
             >
-              <span className="text-sm text-white">
+              <span className="text-sm text-ink">
                 {label}
                 {alreadyMine && <span className="ml-1 text-xs">(locked)</span>}
-                <span className="block text-[10px] text-slate-400">{trait.percentile}th percentile</span>
+                <span className="block text-[10px] text-ink/70">{trait.percentile}th percentile</span>
               </span>
               <span className="text-lg font-bold">{trait.grade}</span>
             </button>
@@ -75,7 +75,7 @@ export default function BuildAPlayerRevealCard({ gameState, myId, iAmDone, onPic
       </div>
 
       {!iActed && (
-        <button type="button" onClick={onPass} className="btn-ghost mx-auto block">
+        <button type="button" onClick={onPass} className="hoop-btn-ghost mx-auto block">
           Pass on This Player
         </button>
       )}

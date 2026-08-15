@@ -21,11 +21,11 @@ export default function Games() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Games</h1>
-        <p className="mt-1 text-slate-400">Live scoreboard from NBA.com via nba_api</p>
+        <h1 className="text-3xl font-bold text-ink">Games</h1>
+        <p className="mt-1 text-ink/70">Live scoreboard from NBA.com via nba_api</p>
       </header>
-      {loading && <p className="text-slate-500">Loading…</p>}
-      {error && <p className="text-brand-glow">{error}</p>}
+      {loading && <p className="text-ink/60">Loading…</p>}
+      {error && <p className="text-stat-down">{error}</p>}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {games.map((g) => (
           <GameCard key={g.game_id} game={g} />

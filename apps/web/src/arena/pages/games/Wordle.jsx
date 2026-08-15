@@ -32,10 +32,10 @@ export default function Wordle() {
     <div className="animate-fade-in mx-auto max-w-2xl space-y-6">
       <header className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">NBA Wordle</h1>
-          <p className="text-sm text-slate-400">Solo mode</p>
+          <h1 className="text-2xl font-bold text-ink">NBA Wordle</h1>
+          <p className="text-sm text-ink/70">Solo mode</p>
         </div>
-        <p className="stat-label">
+        <p className="hoop-stat-label">
           Guess {guesses.length} of {MAX_GUESSES}
         </p>
       </header>
@@ -46,15 +46,15 @@ export default function Wordle() {
 
       <WordleGrid guesses={guesses} maxGuesses={MAX_GUESSES} />
 
-      <div className="grid grid-cols-3 gap-3 text-xs text-slate-400">
+      <div className="grid grid-cols-3 gap-3 text-xs text-ink/70">
         <div className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded bg-court" /> Green — exact match
+          <span className="h-4 w-4 rounded bg-terracotta" /> Green — exact match
         </div>
         <div className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded bg-amber-400" /> Yellow — close
+          <span className="h-4 w-4 rounded bg-basketball" /> Yellow — close
         </div>
         <div className="flex items-center gap-2">
-          <span className="h-4 w-4 rounded bg-slate-800" /> Red — wrong
+          <span className="h-4 w-4 rounded bg-ink/5" /> Red — wrong
         </div>
       </div>
 
@@ -62,10 +62,10 @@ export default function Wordle() {
         <WordleResults won={won} answer={answer} guessCount={guesses.length} onPlayAgain={handlePlayAgain} />
       )}
 
-      <p className="text-center text-xs text-slate-600">
+      <p className="text-center text-xs text-ink/50">
         Rosters last updated {freshness.dateLabel}
         {freshness.isStale && (
-          <span className="ml-1 text-amber-400">— roster data may be outdated, check for updates</span>
+          <span className="ml-1 text-basketball">— roster data may be outdated, check for updates</span>
         )}
       </p>
     </div>

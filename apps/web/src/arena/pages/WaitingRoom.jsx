@@ -20,15 +20,15 @@ const OVER_UNDER_POOL_OPTIONS = [
 
 function OverUnderConfigForm({ config, setConfig }) {
   return (
-    <div className="card space-y-4 p-5 text-left">
-      <p className="stat-label">Over/Under Settings</p>
+    <div className="hoop-card-outline space-y-4 p-5 text-left">
+      <p className="hoop-stat-label">Over/Under Settings</p>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="stat-label mb-1 block">Rounds</label>
+          <label className="hoop-stat-label mb-1 block">Rounds</label>
           <select
             value={config.rounds}
             onChange={(e) => setConfig({ ...config, rounds: Number(e.target.value) })}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {[5, 10, 20].map((n) => (
               <option key={n} value={n}>
@@ -38,11 +38,11 @@ function OverUnderConfigForm({ config, setConfig }) {
           </select>
         </div>
         <div>
-          <label className="stat-label mb-1 block">Timer</label>
+          <label className="hoop-stat-label mb-1 block">Timer</label>
           <select
             value={config.timerSeconds}
             onChange={(e) => setConfig({ ...config, timerSeconds: Number(e.target.value) })}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {[10, 20, 30].map((n) => (
               <option key={n} value={n}>
@@ -52,11 +52,11 @@ function OverUnderConfigForm({ config, setConfig }) {
           </select>
         </div>
         <div>
-          <label className="stat-label mb-1 block">Stat Category</label>
+          <label className="hoop-stat-label mb-1 block">Stat Category</label>
           <select
             value={config.statCategory}
             onChange={(e) => setConfig({ ...config, statCategory: e.target.value })}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {STAT_GROUP_ORDER.map((group) => (
               <optgroup key={group} label={STAT_GROUP_LABELS[group]}>
@@ -72,11 +72,11 @@ function OverUnderConfigForm({ config, setConfig }) {
           </select>
         </div>
         <div>
-          <label className="stat-label mb-1 block">Difficulty</label>
+          <label className="hoop-stat-label mb-1 block">Difficulty</label>
           <select
             value={config.difficulty}
             onChange={(e) => setConfig({ ...config, difficulty: e.target.value })}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -84,11 +84,11 @@ function OverUnderConfigForm({ config, setConfig }) {
           </select>
         </div>
         <div className="col-span-2">
-          <label className="stat-label mb-1 block">Player Pool</label>
+          <label className="hoop-stat-label mb-1 block">Player Pool</label>
           <select
             value={config.poolFilter}
             onChange={(e) => setConfig({ ...config, poolFilter: e.target.value })}
-            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {OVER_UNDER_POOL_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -104,15 +104,15 @@ function OverUnderConfigForm({ config, setConfig }) {
 
 function FiveHintsConfigForm({ config, setConfig }) {
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">Five Hints Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">Five Hints Settings</p>
 
       <div>
-        <label className="stat-label mb-1 block">Number of Rounds</label>
+        <label className="hoop-stat-label mb-1 block">Number of Rounds</label>
         <select
           value={config.rounds}
           onChange={(e) => setConfig({ ...config, rounds: Number(e.target.value) })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           {Array.from({ length: 16 }, (_, i) => i + 5).map((n) => (
             <option key={n} value={n}>
@@ -123,45 +123,45 @@ function FiveHintsConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Buzz In Style</label>
+        <label className="hoop-stat-label mb-2 block">Buzz In Style</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, buzzStyle: "competitive" })}
-            className={`card-hover rounded-xl border p-4 text-left ${
-              config.buzzStyle === "competitive" ? "border-court bg-court/10" : "border-slate-800"
+            className={`hoop-card-outline-hover rounded-xl border p-4 text-left ${
+              config.buzzStyle === "competitive" ? "border-terracotta bg-terracotta/10" : "border-ink/15"
             }`}
           >
-            <p className="font-semibold text-white">Competitive</p>
-            <p className="mt-1 text-xs text-slate-400">First to buzz gets 10 seconds to answer. Wrong guesses lock you out.</p>
+            <p className="font-semibold text-ink">Competitive</p>
+            <p className="mt-1 text-xs text-ink/70">First to buzz gets 10 seconds to answer. Wrong guesses lock you out.</p>
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, buzzStyle: "casual" })}
-            className={`card-hover rounded-xl border p-4 text-left ${
-              config.buzzStyle === "casual" ? "border-court bg-court/10" : "border-slate-800"
+            className={`hoop-card-outline-hover rounded-xl border p-4 text-left ${
+              config.buzzStyle === "casual" ? "border-terracotta bg-terracotta/10" : "border-ink/15"
             }`}
           >
-            <p className="font-semibold text-white">Casual</p>
-            <p className="mt-1 text-xs text-slate-400">Everyone submits a guess or passes after each hint, revealed together.</p>
+            <p className="font-semibold text-ink">Casual</p>
+            <p className="mt-1 text-xs text-ink/70">Everyone submits a guess or passes after each hint, revealed together.</p>
           </button>
         </div>
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Hint Reveal Timing</label>
+        <label className="hoop-stat-label mb-2 block">Hint Reveal Timing</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, hintTiming: "auto" })}
-            className={config.hintTiming === "auto" ? "btn-primary" : "btn-ghost"}
+            className={config.hintTiming === "auto" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Auto (20s)
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, hintTiming: "host" })}
-            className={config.hintTiming === "host" ? "btn-primary" : "btn-ghost"}
+            className={config.hintTiming === "host" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Host Controlled
           </button>
@@ -169,11 +169,11 @@ function FiveHintsConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-1 block">Player Pool</label>
+        <label className="hoop-stat-label mb-1 block">Player Pool</label>
         <select
           value={config.poolFilter}
           onChange={(e) => setConfig({ ...config, poolFilter: e.target.value, position: null })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           <option value="all">All Players Ever</option>
           <option value="legends">Legends Only (Hall of Famers)</option>
@@ -185,7 +185,7 @@ function FiveHintsConfigForm({ config, setConfig }) {
           <select
             value={config.position || "PG"}
             onChange={(e) => setConfig({ ...config, position: e.target.value })}
-            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             <option value="PG">Point Guard</option>
             <option value="SG">Shooting Guard</option>
@@ -197,14 +197,14 @@ function FiveHintsConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Hints Before Answer Reveals</label>
+        <label className="hoop-stat-label mb-2 block">Hints Before Answer Reveals</label>
         <div className="grid grid-cols-3 gap-3">
           {[3, 4, 5].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setConfig({ ...config, maxHints: n })}
-              className={config.maxHints === n ? "btn-primary" : "btn-ghost"}
+              className={config.maxHints === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n}
             </button>
@@ -217,11 +217,11 @@ function FiveHintsConfigForm({ config, setConfig }) {
 
 function HintAuctionConfigForm({ config, setConfig }) {
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">Hint Auction Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">Hint Auction Settings</p>
 
       <div>
-        <label className="stat-label mb-1 block">Starting Budget</label>
+        <label className="hoop-stat-label mb-1 block">Starting Budget</label>
         <input
           type="number"
           min={10}
@@ -229,49 +229,49 @@ function HintAuctionConfigForm({ config, setConfig }) {
           step={10}
           value={config.budget}
           onChange={(e) => setConfig({ ...config, budget: Math.max(10, Math.min(1000, Number(e.target.value) || 100)) })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         />
-        <p className="mt-1 text-xs text-slate-500">Every player starts with this much to spend across the whole draft.</p>
+        <p className="mt-1 text-xs text-ink/60">Every player starts with this much to spend across the whole draft.</p>
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Roster Spots</label>
+        <label className="hoop-stat-label mb-2 block">Roster Spots</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, benchEnabled: false })}
-            className={config.benchEnabled === false ? "btn-primary" : "btn-ghost"}
+            className={config.benchEnabled === false ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             PG / SG / SF / PF / C
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, benchEnabled: true })}
-            className={config.benchEnabled === true ? "btn-primary" : "btn-ghost"}
+            className={config.benchEnabled === true ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             + Bench Spot
           </button>
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-ink/60">
           One mystery player is auctioned per round, so the draft runs until every player's roster is full
           — total rounds scale with lobby size.
         </p>
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Hint Mode</label>
+        <label className="hoop-stat-label mb-2 block">Hint Mode</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, hintMode: "standard", hintCount: 7 })}
-            className={config.hintMode === "standard" ? "btn-primary" : "btn-ghost"}
+            className={config.hintMode === "standard" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Standard (7 hints)
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, hintMode: "obscure", hintCount: config.hintCount === 7 ? 4 : config.hintCount })}
-            className={config.hintMode === "obscure" ? "btn-primary" : "btn-ghost"}
+            className={config.hintMode === "obscure" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Obscure (fewer hints)
           </button>
@@ -283,7 +283,7 @@ function HintAuctionConfigForm({ config, setConfig }) {
                 key={n}
                 type="button"
                 onClick={() => setConfig({ ...config, hintCount: n })}
-                className={config.hintCount === n ? "btn-primary" : "btn-ghost"}
+                className={config.hintCount === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
               >
                 {n} hints
               </button>
@@ -293,11 +293,11 @@ function HintAuctionConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-1 block">Auction Timer</label>
+        <label className="hoop-stat-label mb-1 block">Auction Timer</label>
         <select
           value={config.auctionTimerSeconds}
           onChange={(e) => setConfig({ ...config, auctionTimerSeconds: Number(e.target.value) })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           {[10, 15, 20, 30].map((n) => (
             <option key={n} value={n}>
@@ -308,19 +308,19 @@ function HintAuctionConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Timer Extensions</label>
+        <label className="hoop-stat-label mb-2 block">Timer Extensions</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, extensionsEnabled: true })}
-            className={config.extensionsEnabled ? "btn-primary" : "btn-ghost"}
+            className={config.extensionsEnabled ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Extend on New Bids
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, extensionsEnabled: false })}
-            className={!config.extensionsEnabled ? "btn-primary" : "btn-ghost"}
+            className={!config.extensionsEnabled ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Hard Countdown
           </button>
@@ -328,11 +328,11 @@ function HintAuctionConfigForm({ config, setConfig }) {
         {config.extensionsEnabled && (
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div>
-              <label className="stat-label mb-1 block text-xs">Extend By</label>
+              <label className="hoop-stat-label mb-1 block text-xs">Extend By</label>
               <select
                 value={config.extensionSeconds}
                 onChange={(e) => setConfig({ ...config, extensionSeconds: Number(e.target.value) })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
               >
                 {[3, 5, 10].map((n) => (
                   <option key={n} value={n}>
@@ -342,11 +342,11 @@ function HintAuctionConfigForm({ config, setConfig }) {
               </select>
             </div>
             <div>
-              <label className="stat-label mb-1 block text-xs">Max Extensions</label>
+              <label className="hoop-stat-label mb-1 block text-xs">Max Extensions</label>
               <select
                 value={config.maxExtensions}
                 onChange={(e) => setConfig({ ...config, maxExtensions: Number(e.target.value) })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
               >
                 {[3, 5, 10, 20].map((n) => (
                   <option key={n} value={n}>
@@ -360,19 +360,19 @@ function HintAuctionConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Player Era</label>
+        <label className="hoop-stat-label mb-2 block">Player Era</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, era: "all-time" })}
-            className={config.era === "all-time" ? "btn-primary" : "btn-ghost"}
+            className={config.era === "all-time" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             All-Time
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, era: "current" })}
-            className={config.era === "current" ? "btn-primary" : "btn-ghost"}
+            className={config.era === "current" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             Current Rosters
           </button>
@@ -380,11 +380,11 @@ function HintAuctionConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-1 block">Player Pool</label>
+        <label className="hoop-stat-label mb-1 block">Player Pool</label>
         <select
           value={config.poolFilter}
           onChange={(e) => setConfig({ ...config, poolFilter: e.target.value, position: null })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           <option value="all">All Players</option>
           <option value="legends">Elite Tier Only</option>
@@ -394,7 +394,7 @@ function HintAuctionConfigForm({ config, setConfig }) {
           <select
             value={config.position || "PG"}
             onChange={(e) => setConfig({ ...config, position: e.target.value })}
-            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             <option value="PG">Point Guard</option>
             <option value="SG">Shooting Guard</option>
@@ -414,11 +414,11 @@ function ClosestToConfigForm({ config, setConfig }) {
   const avgPerPlayer = (config.targetNumber / 5).toFixed(1);
 
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">Closest To Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">Closest To Settings</p>
 
       <div>
-        <label className="stat-label mb-1 block">Points Target</label>
+        <label className="hoop-stat-label mb-1 block">Points Target</label>
         <input
           type="number"
           min={50}
@@ -428,23 +428,23 @@ function ClosestToConfigForm({ config, setConfig }) {
           onChange={(e) =>
             setConfig({ ...config, targetNumber: Math.max(50, Math.min(200, Number(e.target.value) || 50)) })
           }
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         />
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-ink/60">
           Build a 5-player starting lineup whose combined PPG gets as close to this number as possible without
           going over — an average of {avgPerPlayer} PPG per player.
         </p>
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Number of Rounds</label>
+        <label className="hoop-stat-label mb-2 block">Number of Rounds</label>
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setConfig({ ...config, rounds: n })}
-              className={config.rounds === n ? "btn-primary" : "btn-ghost"}
+              className={config.rounds === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n} {n === 1 ? "Round" : "Rounds"}
             </button>
@@ -453,11 +453,11 @@ function ClosestToConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-1 block">Player Era</label>
+        <label className="hoop-stat-label mb-1 block">Player Era</label>
         <select
           value={config.era}
           onChange={(e) => setConfig({ ...config, era: e.target.value })}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           <option value="all-time">All Time</option>
           <option value="modern">Modern Only (2015-16 to present)</option>
@@ -467,25 +467,25 @@ function ClosestToConfigForm({ config, setConfig }) {
         {config.era === "custom" && (
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div>
-              <label className="stat-label mb-1 block text-xs">Start Year</label>
+              <label className="hoop-stat-label mb-1 block text-xs">Start Year</label>
               <input
                 type="number"
                 min={1946}
                 max={CURRENT_YEAR}
                 value={config.eraStart ?? 1946}
                 onChange={(e) => setConfig({ ...config, eraStart: Number(e.target.value) })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
               />
             </div>
             <div>
-              <label className="stat-label mb-1 block text-xs">End Year</label>
+              <label className="hoop-stat-label mb-1 block text-xs">End Year</label>
               <input
                 type="number"
                 min={1946}
                 max={CURRENT_YEAR}
                 value={config.eraEnd ?? CURRENT_YEAR}
                 onChange={(e) => setConfig({ ...config, eraEnd: Number(e.target.value) })}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
               />
             </div>
           </div>
@@ -493,19 +493,19 @@ function ClosestToConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Skip Rule</label>
+        <label className="hoop-stat-label mb-2 block">Skip Rule</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, skipRule: "one-skip" })}
-            className={config.skipRule === "one-skip" ? "btn-primary" : "btn-ghost"}
+            className={config.skipRule === "one-skip" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             One Skip Per Round
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, skipRule: "no-skips" })}
-            className={config.skipRule === "no-skips" ? "btn-primary" : "btn-ghost"}
+            className={config.skipRule === "no-skips" ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             No Skips
           </button>
@@ -569,15 +569,15 @@ function ThemedDraftConfigForm({ config, setConfig }) {
   }
 
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">Themed Player Draft Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">Themed Player Draft Settings</p>
 
       <div>
-        <label className="stat-label mb-1 block">Theme</label>
+        <label className="hoop-stat-label mb-1 block">Theme</label>
         <select
           value={config.category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+          className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
         >
           {THEMED_DRAFT_CATEGORY_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -590,7 +590,7 @@ function ThemedDraftConfigForm({ config, setConfig }) {
           <select
             value={secondary.team || "LAL"}
             onChange={(e) => setSecondary({ team: e.target.value })}
-            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {THEMED_DRAFT_TEAM_OPTIONS.map(([abbr, name]) => (
               <option key={abbr} value={abbr}>
@@ -605,7 +605,7 @@ function ThemedDraftConfigForm({ config, setConfig }) {
             <select
               value={secondary.era || "modern"}
               onChange={(e) => setSecondary({ era: e.target.value })}
-              className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
             >
               <option value="modern">Modern Only (2015-16 to present)</option>
               <option value="classic">Classic Only (before 2000)</option>
@@ -614,25 +614,25 @@ function ThemedDraftConfigForm({ config, setConfig }) {
             {secondary.era === "custom" && (
               <div className="mt-2 grid grid-cols-2 gap-3">
                 <div>
-                  <label className="stat-label mb-1 block text-xs">Start Year</label>
+                  <label className="hoop-stat-label mb-1 block text-xs">Start Year</label>
                   <input
                     type="number"
                     min={1946}
                     max={CURRENT_YEAR}
                     value={secondary.eraStart ?? 1946}
                     onChange={(e) => setSecondary({ eraStart: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                    className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
                   />
                 </div>
                 <div>
-                  <label className="stat-label mb-1 block text-xs">End Year</label>
+                  <label className="hoop-stat-label mb-1 block text-xs">End Year</label>
                   <input
                     type="number"
                     min={1946}
                     max={CURRENT_YEAR}
                     value={secondary.eraEnd ?? CURRENT_YEAR}
                     onChange={(e) => setSecondary({ eraEnd: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+                    className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
                   />
                 </div>
               </div>
@@ -644,7 +644,7 @@ function ThemedDraftConfigForm({ config, setConfig }) {
           <select
             value={secondary.award || "all-star"}
             onChange={(e) => setSecondary({ award: e.target.value })}
-            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {THEMED_DRAFT_AWARD_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -658,7 +658,7 @@ function ThemedDraftConfigForm({ config, setConfig }) {
           <select
             value={secondary.archetype || "guard-scorer"}
             onChange={(e) => setSecondary({ archetype: e.target.value })}
-            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-2 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
           >
             {THEMED_DRAFT_ARCHETYPE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -673,7 +673,7 @@ function ThemedDraftConfigForm({ config, setConfig }) {
             <select
               value={secondary.statKey || "career_ppg"}
               onChange={(e) => setSecondary({ statKey: e.target.value })}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
             >
               {STAT_GROUP_ORDER.map((group) => (
                 <optgroup key={group} label={STAT_GROUP_LABELS[group]}>
@@ -692,25 +692,25 @@ function ThemedDraftConfigForm({ config, setConfig }) {
               value={secondary.threshold ?? 25}
               onChange={(e) => setSecondary({ threshold: Number(e.target.value) })}
               placeholder="Minimum value"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+              className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink"
             />
           </div>
         )}
 
         {config.category === "current-season" && (
-          <p className="mt-2 text-xs text-slate-500">Draws from this season's live rosters, synced automatically.</p>
+          <p className="mt-2 text-xs text-ink/60">Draws from this season's live rosters, synced automatically.</p>
         )}
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Roster Size</label>
+        <label className="hoop-stat-label mb-2 block">Roster Size</label>
         <div className="grid grid-cols-5 gap-2">
           {[3, 4, 5, 6, 7].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setConfig({ ...config, rosterSize: n })}
-              className={config.rosterSize === n ? "btn-primary" : "btn-ghost"}
+              className={config.rosterSize === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n}
             </button>
@@ -719,20 +719,20 @@ function ThemedDraftConfigForm({ config, setConfig }) {
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Turn Timer</label>
+        <label className="hoop-stat-label mb-2 block">Turn Timer</label>
         <div className="grid grid-cols-4 gap-2">
           {[15, 30, 60, null].map((n) => (
             <button
               key={n ?? "none"}
               type="button"
               onClick={() => setConfig({ ...config, turnTimerSeconds: n })}
-              className={config.turnTimerSeconds === n ? "btn-primary" : "btn-ghost"}
+              className={config.turnTimerSeconds === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n ? `${n}s` : "No Timer"}
             </button>
           ))}
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-ink/60">
           If a pick isn't made in time, a random available player is auto-picked so the draft never stalls.
         </p>
       </div>
@@ -742,41 +742,41 @@ function ThemedDraftConfigForm({ config, setConfig }) {
 
 function BuildAPlayerConfigForm({ config, setConfig }) {
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">Build a Player Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">Build a Player Settings</p>
 
       <div>
-        <label className="stat-label mb-2 block">Trait Slots to Fill</label>
+        <label className="hoop-stat-label mb-2 block">Trait Slots to Fill</label>
         <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
           {[6, 7, 8, 9, 10, 11, 12].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setConfig({ ...config, traitSlotCount: n })}
-              className={config.traitSlotCount === n ? "btn-primary" : "btn-ghost"}
+              className={config.traitSlotCount === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n}
             </button>
           ))}
         </div>
-        <p className="mt-1 text-xs text-slate-500">Fewer slots means a shorter game — everyone builds toward the same count.</p>
+        <p className="mt-1 text-xs text-ink/60">Fewer slots means a shorter game — everyone builds toward the same count.</p>
       </div>
 
       <div>
-        <label className="stat-label mb-2 block">Pick Timer</label>
+        <label className="hoop-stat-label mb-2 block">Pick Timer</label>
         <div className="grid grid-cols-4 gap-2">
           {[15, 30, 60, null].map((n) => (
             <button
               key={n ?? "none"}
               type="button"
               onClick={() => setConfig({ ...config, pickTimerSeconds: n })}
-              className={config.pickTimerSeconds === n ? "btn-primary" : "btn-ghost"}
+              className={config.pickTimerSeconds === n ? "hoop-btn-primary" : "hoop-btn-ghost"}
             >
               {n ? `${n}s` : "No Timer"}
             </button>
           ))}
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-ink/60">
           If you haven't picked or passed in time, a random eligible trait is auto-picked so the round never stalls.
         </p>
       </div>
@@ -786,28 +786,28 @@ function BuildAPlayerConfigForm({ config, setConfig }) {
 
 function EightyTwoOhConfigForm({ config, setConfig }) {
   return (
-    <div className="card space-y-5 p-5 text-left">
-      <p className="stat-label">NBA 82-0 Settings</p>
+    <div className="hoop-card-outline space-y-5 p-5 text-left">
+      <p className="hoop-stat-label">NBA 82-0 Settings</p>
 
       <div>
-        <label className="stat-label mb-2 block">Roster Slots</label>
+        <label className="hoop-stat-label mb-2 block">Roster Slots</label>
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => setConfig({ ...config, benchEnabled: false })}
-            className={config.benchEnabled === false ? "btn-primary" : "btn-ghost"}
+            className={config.benchEnabled === false ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             PG / SG / SF / PF / C
           </button>
           <button
             type="button"
             onClick={() => setConfig({ ...config, benchEnabled: true })}
-            className={config.benchEnabled === true ? "btn-primary" : "btn-ghost"}
+            className={config.benchEnabled === true ? "hoop-btn-primary" : "hoop-btn-ghost"}
           >
             + Bench Spot
           </button>
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-ink/60">
           Spin a team + decade each round, draft the best available player, then reassign freely before finalizing.
         </p>
       </div>
@@ -883,10 +883,10 @@ export default function WaitingRoom() {
   if (!room) {
     return (
       <div className="animate-fade-in space-y-4">
-        <p className="text-slate-400">
-          No active room found for <span className="font-mono text-white">{code}</span>. If you refreshed the
+        <p className="text-ink/70">
+          No active room found for <span className="font-mono text-ink">{code}</span>. If you refreshed the
           page, head back to{" "}
-          <a href="/arena" className="text-court underline">
+          <a href="/arena" className="text-terracotta underline">
             the Arena hub
           </a>{" "}
           and rejoin with the code.
@@ -899,14 +899,14 @@ export default function WaitingRoom() {
     <div className="animate-fade-in space-y-6">
       <header className="flex flex-col items-center gap-4 text-center">
         <RoomCodeBadge code={room.code} />
-        <p className="text-slate-400">{gameMode?.name || room.gameMode}</p>
+        <p className="text-ink/70">{gameMode?.name || room.gameMode}</p>
       </header>
 
       <div className="mx-auto max-w-md space-y-4">
-        <p className="stat-label">Players ({room.players.length})</p>
+        <p className="hoop-stat-label">Players ({room.players.length})</p>
         <PlayerList players={room.players} hostSocketId={room.hostSocketId} />
 
-        {error && <p className="text-sm text-amber-300">{error}</p>}
+        {error && <p className="text-sm text-basketball">{error}</p>}
 
         {isHost && room.gameMode === "over-under" && (
           <OverUnderConfigForm config={overUnderConfig} setConfig={setOverUnderConfig} />
@@ -952,7 +952,7 @@ export default function WaitingRoom() {
               )
             }
             disabled={!canStart}
-            className="btn-primary w-full disabled:opacity-50"
+            className="hoop-btn-primary w-full disabled:opacity-50"
           >
             {canStart ? "Start Game" : "Waiting for at least 2 players…"}
           </button>
@@ -962,9 +962,9 @@ export default function WaitingRoom() {
           room.gameMode === "draft" ||
           room.gameMode === "build-a-player" ||
           room.gameMode === "82-0" ? (
-          <p className="text-center text-sm text-slate-500">Host is setting up the game…</p>
+          <p className="text-center text-sm text-ink/60">Host is setting up the game…</p>
         ) : (
-          <p className="text-center text-sm text-slate-500">Waiting for the host to start the game…</p>
+          <p className="text-center text-sm text-ink/60">Waiting for the host to start the game…</p>
         )}
       </div>
     </div>

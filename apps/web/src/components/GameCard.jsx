@@ -14,15 +14,15 @@ function Row({ team, live, leading }) {
       <div className="flex min-w-0 items-center gap-3">
         <TeamTile tricode={team.tricode} size="sm" />
         <div className="min-w-0">
-          <p className="truncate font-display font-semibold text-white">{team.tricode}</p>
-          <p className="text-xs text-slate-500">
+          <p className="truncate font-hoop font-semibold text-ink">{team.tricode}</p>
+          <p className="text-xs text-ink/50">
             {team.wins}-{team.losses}
           </p>
         </div>
       </div>
       <span
-        className={`stat-value tabular-nums ${
-          live ? "text-live-glow" : leading ? "text-white" : "text-slate-300"
+        className={`hoop-stat-value tabular-nums ${
+          live ? "text-terracotta" : leading ? "text-ink" : "text-ink/50"
         }`}
       >
         {team.score ?? "—"}
@@ -37,22 +37,22 @@ export default function GameCard({ game }) {
   const homeLead = Number(home.score) > Number(away.score);
 
   return (
-    <article className="card-hover animate-slide-up p-4">
+    <article className="hoop-card-outline-hover animate-slide-up p-4">
       <div className="mb-3 flex items-center justify-between">
         {state === "live" ? (
-          <span className="live-badge">
-            <span className="live-dot" />
+          <span className="hoop-badge bg-terracotta text-paper">
+            <span className="inline-block h-2 w-2 rounded-full bg-paper motion-safe:animate-pulse-live" />
             Live
           </span>
         ) : state === "final" ? (
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wide text-ink/60">
             Final
           </span>
         ) : (
-          <span className="text-xs font-medium text-slate-500">{status || "Scheduled"}</span>
+          <span className="text-xs font-medium text-ink/50">{status || "Scheduled"}</span>
         )}
         {state === "live" && (period || clock) && (
-          <span className="font-mono text-xs text-live-glow">
+          <span className="font-mono text-xs font-semibold text-terracotta">
             Q{period} · {clock}
           </span>
         )}

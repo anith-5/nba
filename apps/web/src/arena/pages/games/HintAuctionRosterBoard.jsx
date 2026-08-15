@@ -14,14 +14,14 @@ export default function HintAuctionRosterBoard({ players, rosters, budgets, myId
         const filledCount = slots.filter((slot) => roster[slot]).length;
 
         return (
-          <div key={player.socketId} className={`card space-y-2 p-4 ${player.socketId === myId ? "border-court/50" : ""}`}>
+          <div key={player.socketId} className={`hoop-card-outline space-y-2 p-4 ${player.socketId === myId ? "border-terracotta/50" : ""}`}>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-ink">
                 {player.name}
-                {player.socketId === myId && <span className="ml-1 text-xs text-court-glow">(you)</span>}
-                {player.connected === false && <span className="ml-2 text-xs text-slate-600">(disconnected)</span>}
+                {player.socketId === myId && <span className="ml-1 text-xs text-terracotta">(you)</span>}
+                {player.connected === false && <span className="ml-2 text-xs text-ink/50">(disconnected)</span>}
               </span>
-              <span className="stat-value text-sm">${budgets[player.socketId] ?? 0}</span>
+              <span className="hoop-stat-value text-sm">${budgets[player.socketId] ?? 0}</span>
             </div>
             <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-6">
               {slots.map((slot) => {
@@ -30,16 +30,16 @@ export default function HintAuctionRosterBoard({ players, rosters, budgets, myId
                   <div
                     key={slot}
                     className={`rounded-md border px-1.5 py-1 text-center ${
-                      entry ? "border-court/40 bg-court/10" : "border-slate-800 bg-slate-950"
+                      entry ? "border-terracotta/40 bg-terracotta/10" : "border-ink/15 bg-paper"
                     }`}
                   >
-                    <p className="text-[10px] uppercase text-slate-500">{slot}</p>
-                    <p className="truncate text-xs text-white">{entry ? entry.playerName.split(" ").pop() : "—"}</p>
+                    <p className="text-[10px] uppercase text-ink/60">{slot}</p>
+                    <p className="truncate text-xs text-ink">{entry ? entry.playerName.split(" ").pop() : "—"}</p>
                   </div>
                 );
               })}
             </div>
-            <p className="text-right text-xs text-slate-500">
+            <p className="text-right text-xs text-ink/60">
               {filledCount} of {slots.length} filled
             </p>
           </div>

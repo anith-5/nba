@@ -4,13 +4,13 @@ export default function OverUnderLeaderboard({ players, scores }) {
   return (
     <ol className="space-y-2">
       {ranked.map((player, i) => (
-        <li key={player.socketId} className="card flex items-center justify-between px-4 py-2">
-          <span className="text-white">
-            <span className="stat-label mr-2">#{i + 1}</span>
+        <li key={player.socketId} className="hoop-card-outline flex items-center justify-between px-4 py-2">
+          <span className="text-ink">
+            <span className="hoop-stat-label mr-2">#{i + 1}</span>
             {player.name}
-            {player.connected === false && <span className="ml-2 text-xs text-slate-600">(disconnected)</span>}
+            {player.connected === false && <span className="ml-2 text-xs text-ink/50">(disconnected)</span>}
           </span>
-          <span className="stat-value">{scores[player.socketId] || 0}</span>
+          <span className="hoop-stat-value">{scores[player.socketId] || 0}</span>
         </li>
       ))}
     </ol>

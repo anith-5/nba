@@ -32,46 +32,46 @@ function shareText(gameState, players) {
 export function FiveHintsFinalResults({ gameState, players }) {
   return (
     <div className="animate-fade-in mx-auto max-w-2xl space-y-6 text-center">
-      <h1 className="text-3xl font-bold text-white">Final Results</h1>
+      <h1 className="text-3xl font-bold text-ink">Final Results</h1>
 
       <div className="mx-auto max-w-sm text-left">
         <OverUnderLeaderboard players={players} scores={gameState.scores} />
       </div>
 
       <div className="space-y-2 text-left">
-        <p className="stat-label">Average hint number when correct (lower is better)</p>
+        <p className="hoop-stat-label">Average hint number when correct (lower is better)</p>
         {players.map((p) => {
           const avg = averageHintNumber(p.socketId, gameState.roundHistory);
           return (
-            <div key={p.socketId} className="card flex items-center justify-between px-4 py-2 text-sm">
-              <span className="text-slate-300">{p.name}</span>
-              <span className="stat-value text-base">{avg === null ? "—" : avg.toFixed(1)}</span>
+            <div key={p.socketId} className="hoop-card-outline flex items-center justify-between px-4 py-2 text-sm">
+              <span className="text-ink">{p.name}</span>
+              <span className="hoop-stat-value text-base">{avg === null ? "—" : avg.toFixed(1)}</span>
             </div>
           );
         })}
       </div>
 
       <div className="space-y-2 text-left">
-        <p className="stat-label">Round by round</p>
+        <p className="hoop-stat-label">Round by round</p>
         {gameState.roundHistory.map((r, i) => {
           const winner = r.winners[0];
           const winnerName = winner ? players.find((p) => p.socketId === winner.socketId)?.name : null;
           return (
-            <div key={i} className="card px-4 py-2 text-sm text-slate-300">
+            <div key={i} className="hoop-card-outline px-4 py-2 text-sm text-ink">
               Round {i + 1}: {r.playerName} —{" "}
               {winner ? (
-                <span className="text-court-glow">
+                <span className="text-terracotta">
                   {winnerName} got it on hint {winner.hintNumber} (+{winner.points})
                 </span>
               ) : (
-                <span className="text-amber-300">nobody guessed it</span>
+                <span className="text-basketball">nobody guessed it</span>
               )}
             </div>
           );
         })}
       </div>
 
-      <button onClick={() => shareText(gameState, players)} className="btn-primary">
+      <button onClick={() => shareText(gameState, players)} className="hoop-btn-primary">
         Share Results
       </button>
     </div>

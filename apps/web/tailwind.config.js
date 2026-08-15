@@ -77,6 +77,15 @@ export default {
           dim: "#C6672E",
           glow: "#F0985F",
         },
+        // Data-semantic pair for stat deltas (better/worse, over/under,
+        // gained/lost). Deliberately NOT terracotta: terracotta is a neutral
+        // UI accent used for labels and card fills all over the redesign, so
+        // reusing it for "this number is bad" would make every ordinary label
+        // read as a negative signal. These two are scoped to figures only.
+        stat: {
+          up: "#2F7D5B",
+          down: "#C0392B",
+        },
       },
       borderRadius: {
         card: "16px",

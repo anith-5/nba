@@ -51,16 +51,16 @@ export default function TeamWheel({ spinToken, landedTeam, onLandComplete }) {
   }, [spinToken]);
 
   return (
-    <div className="card flex flex-col items-center gap-3 p-8">
-      <p className="stat-label">Team Wheel</p>
+    <div className="hoop-card-outline flex flex-col items-center gap-3 p-8">
+      <p className="hoop-stat-label">Team Wheel</p>
       <div
-        className={`flex h-28 w-full items-center justify-center rounded-xl border-2 border-court/40 bg-slate-950 text-4xl font-bold tracking-wide text-white transition-transform duration-150 ${
+        className={`flex h-28 w-full items-center justify-center rounded-xl border-2 border-terracotta/40 bg-paper text-4xl font-bold tracking-wide text-ink transition-transform duration-150 ${
           spinning ? "animate-pulse scale-105" : ""
         }`}
       >
         {displayAbbr}
       </div>
-      {!spinning && landedTeam && <p className="text-sm text-slate-400">{landedTeam.teamName}</p>}
+      {!spinning && landedTeam && <p className="text-sm text-ink/70">{landedTeam.teamName}</p>}
     </div>
   );
 }

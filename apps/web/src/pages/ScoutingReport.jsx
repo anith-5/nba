@@ -8,8 +8,8 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 function StatBadge({ label, value }) {
   return (
     <div className="text-center">
-      <p className="stat-label">{label}</p>
-      <p className="font-mono font-semibold text-white">{value}</p>
+      <p className="hoop-stat-label">{label}</p>
+      <p className="font-mono font-semibold text-ink">{value}</p>
     </div>
   );
 }
@@ -21,12 +21,12 @@ function ReportText({ text }) {
       {text.split("\n").map((line, i) => {
         if (!line.trim()) return <div key={i} className="h-2" />;
         if (line.startsWith("**") && line.endsWith("**"))
-          return <p key={i} className="font-bold text-white mt-3">{line.replace(/\*\*/g, "")}</p>;
+          return <p key={i} className="font-bold text-ink mt-3">{line.replace(/\*\*/g, "")}</p>;
         if (/^\d+\.\s\*\*/.test(line))
-          return <p key={i} className="text-slate-200 font-medium mt-2">{line.replace(/\*\*/g, "")}</p>;
+          return <p key={i} className="text-ink font-medium mt-2">{line.replace(/\*\*/g, "")}</p>;
         if (line.startsWith("• ") || line.startsWith("- "))
-          return <p key={i} className="text-slate-300 pl-3">• {line.slice(2)}</p>;
-        return <p key={i} className="text-slate-300">{line}</p>;
+          return <p key={i} className="text-ink pl-3">• {line.slice(2)}</p>;
+        return <p key={i} className="text-ink">{line}</p>;
       })}
     </div>
   );
@@ -118,30 +118,30 @@ export default function ScoutingReport() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">AI Scouting Report</h1>
-        <p className="mt-1 text-slate-400">
+        <h1 className="text-3xl font-bold text-ink">AI Scouting Report</h1>
+        <p className="mt-1 text-ink/70">
           Generate a front-office-style scouting report from a player's live season stats. Powered by Claude.
         </p>
       </header>
 
       {/* ── Stats input ── */}
-      <div className="card max-w-2xl p-6 space-y-4">
+      <div className="hoop-card-outline max-w-2xl p-6 space-y-4">
         <label className="block text-sm">
-          <span className="stat-label">Player</span>
+          <span className="hoop-stat-label">Player</span>
           <input
             type="text"
             value={search}
             onChange={e => searchPlayers(e.target.value)}
             placeholder="Search player name…"
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-1 w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 text-ink"
           />
           {searchResults.length > 0 && (
-            <div className="mt-1 rounded border border-slate-700 bg-slate-900 divide-y divide-slate-800">
+            <div className="mt-1 rounded-xl border-2 border-ink bg-paper shadow-hoop-sm divide-y divide-ink/15">
               {searchResults.map(p => (
                 <button
                   key={p.id}
                   onClick={() => { setSelectedPlayer(p); setSearch(p.full_name); setSearchResults([]); }}
-                  className="w-full px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-800"
+                  className="w-full px-3 py-2 text-left text-sm text-ink hover:bg-ink/5"
                 >
                   {p.full_name}
                 </button>
@@ -150,19 +150,19 @@ export default function ScoutingReport() {
           )}
         </label>
         <label className="block text-sm">
-          <span className="stat-label">Evaluating fit for (optional)</span>
+          <span className="hoop-stat-label">Evaluating fit for (optional)</span>
           <input
             type="text"
             value={statsTeamCtx}
             onChange={e => setStatsTeamCtx(e.target.value)}
             placeholder="e.g. Boston Celtics — pace-and-space"
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-white"
+            className="mt-1 w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 text-ink"
           />
         </label>
         <button
           onClick={runStats}
           disabled={!selectedPlayer || loading}
-          className="btn-primary"
+          className="hoop-btn-primary"
         >
           {loading ? (
             <span className="flex items-center gap-2">
@@ -174,16 +174,16 @@ export default function ScoutingReport() {
             </span>
           ) : "Generate Report"}
         </button>
-        <p className="text-xs text-slate-600">Requires ANTHROPIC_API_KEY in services/api/.env</p>
+        <p className="text-xs text-ink/50">Requires ANTHROPIC_API_KEY in services/api/.env</p>
       </div>
 
       {error && (
-        <div className="card max-w-2xl p-4 border-brand/30 space-y-1">
-          <p className="text-brand-glow text-sm">{error}</p>
+        <div className="hoop-card-outline max-w-2xl p-4 border-terracotta/30 space-y-1">
+          <p className="text-stat-down text-sm">{error}</p>
           {error.includes("ANTHROPIC_API_KEY") && (
-            <p className="text-slate-500 text-xs">
-              Add <code className="bg-slate-800 px-1 rounded">ANTHROPIC_API_KEY=sk-ant-...</code> to{" "}
-              <code className="bg-slate-800 px-1 rounded">services/api/.env</code> and restart the server.
+            <p className="text-ink/60 text-xs">
+              Add <code className="bg-ink/5 px-1 rounded">ANTHROPIC_API_KEY=sk-ant-...</code> to{" "}
+              <code className="bg-ink/5 px-1 rounded">services/api/.env</code> and restart the server.
             </p>
           )}
         </div>
@@ -194,20 +194,20 @@ export default function ScoutingReport() {
         <div className="max-w-2xl space-y-5 animate-slide-up">
 
           {/* Header card */}
-          <div className="card p-5 space-y-3">
+          <div className="hoop-card-outline p-5 space-y-3">
             <div className="flex items-start justify-between flex-wrap gap-3">
               <div>
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-ink">
                   {result.player_name}
-                  {result.team && <span className="ml-2 text-slate-500 text-sm font-normal">({result.team})</span>}
+                  {result.team && <span className="ml-2 text-ink/60 text-sm font-normal">({result.team})</span>}
                 </h2>
-                <p className="text-slate-500 text-xs">Stats-Based Report · {result.season}</p>
+                <p className="text-ink/60 text-xs">Stats-Based Report · {result.season}</p>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={handlePdf}
                   disabled={pdfLoading}
-                  className="btn-ghost text-sm flex items-center gap-1.5"
+                  className="hoop-btn-ghost text-sm flex items-center gap-1.5"
                 >
                   {pdfLoading ? "Generating…" : "⬇ Export PDF"}
                 </button>
@@ -216,7 +216,7 @@ export default function ScoutingReport() {
 
             {/* Stats row */}
             {result.stats_used && Object.keys(result.stats_used).length > 0 && (
-              <div className="grid grid-cols-4 gap-3 border-t border-slate-800 pt-3">
+              <div className="grid grid-cols-4 gap-3 border-t border-ink/15 pt-3">
                 {[
                   ["PPG", result.stats_used.pts],
                   ["RPG", result.stats_used.reb],
@@ -228,15 +228,15 @@ export default function ScoutingReport() {
           </div>
 
           {/* AI Report */}
-          <div className="card p-5 space-y-3">
+          <div className="hoop-card-outline p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <p className="stat-label">Scouting Report</p>
-              <span className="text-xs text-slate-600">{result.model}</span>
+              <p className="hoop-stat-label">Scouting Report</p>
+              <span className="text-xs text-ink/50">{result.model}</span>
             </div>
             <ReportText text={result.report} />
           </div>
 
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-ink/50">
             {result.tokens_used} tokens · {result.model} · Data: NBA API
           </p>
         </div>

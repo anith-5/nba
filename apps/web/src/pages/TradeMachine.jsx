@@ -1,20 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { api } from "../api.js";
 
+// Five-step scales, kept genuinely five-step. On the legacy dark theme the
+// top two bands were white vs light-grey and the bottom two were bright-red
+// vs red — distinctions that survive on black but not on paper, where they
+// flatten into one colour. Anchoring the ends to the stat pair keeps an A
+// visibly different from a B and a D from an F.
 const GRADE_COLOR = {
-  "A+": "text-white", "A": "text-white", "A-": "text-white",
-  "B+": "text-zinc-200", "B": "text-zinc-200", "B-": "text-zinc-200",
-  "C+": "text-zinc-400", "C": "text-zinc-400", "C-": "text-zinc-400",
-  "D+": "text-brand-glow", "D": "text-brand-glow",
-  "F": "text-brand",
+  "A+": "text-stat-up", "A": "text-stat-up", "A-": "text-stat-up",
+  "B+": "text-ink", "B": "text-ink", "B-": "text-ink",
+  "C+": "text-ink/70", "C": "text-ink/70", "C-": "text-ink/70",
+  "D+": "text-basketball-dim", "D": "text-basketball-dim",
+  "F": "text-stat-down",
 };
 
 const LIKELIHOOD_COLOR = {
-  "Very Likely": "text-white",
-  "Likely": "text-zinc-200",
-  "Possible": "text-zinc-400",
-  "Unlikely": "text-brand-glow",
-  "Very Unlikely": "text-brand",
+  "Very Likely": "text-stat-up",
+  "Likely": "text-ink",
+  "Possible": "text-ink/70",
+  "Unlikely": "text-basketball-dim",
+  "Very Unlikely": "text-stat-down",
 };
 
 // Team roster picker: shows this team's players (with salaries), filtered by a
@@ -46,12 +51,12 @@ function RosterPicker({ teamAbbr, selectedNames, onAdd }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={`Search ${teamAbbr} roster…`}
-        className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white placeholder-slate-500"
+        className="w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 text-sm text-ink placeholder-slate-500"
       />
-      {loading && <p className="text-xs text-slate-500">Loading roster…</p>}
-      {error && <p className="text-xs text-brand-glow">{error}</p>}
+      {loading && <p className="text-xs text-ink/60">Loading roster…</p>}
+      {error && <p className="text-xs text-stat-down">{error}</p>}
       {!loading && !error && (
-        <div className="max-h-64 overflow-y-auto rounded border border-slate-800 divide-y divide-slate-800/70">
+        <div className="max-h-64 overflow-y-auto rounded border border-ink/15 divide-y divide-ink/15">
           {filtered.map((p) => {
             const picked = selectedNames.includes(p.name);
             return (
@@ -60,24 +65,24 @@ function RosterPicker({ teamAbbr, selectedNames, onAdd }) {
                 onClick={() => onAdd(p)}
                 disabled={picked}
                 className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left transition ${
-                  picked ? "opacity-40 cursor-default" : "hover:bg-slate-800"
+                  picked ? "opacity-40 cursor-default" : "hover:bg-ink/5"
                 }`}
               >
                 <span className="min-w-0">
-                  <span className="block truncate text-sm text-white">{p.name}</span>
-                  <span className="text-[11px] text-slate-500">{p.pts} PPG · {p.reb} RPG · {p.ast} APG</span>
+                  <span className="block truncate text-sm text-ink">{p.name}</span>
+                  <span className="text-[11px] text-ink/60">{p.pts} PPG · {p.reb} RPG · {p.ast} APG</span>
                 </span>
                 <span className="shrink-0 text-right">
-                  <span className="block font-mono text-sm text-court-glow">
+                  <span className="block font-mono text-sm text-terracotta">
                     {p.salary_millions != null ? `$${p.salary_millions.toFixed(1)}M` : "—"}
                   </span>
-                  {picked && <span className="text-[10px] text-slate-500">added</span>}
+                  {picked && <span className="text-[10px] text-ink/60">added</span>}
                 </span>
               </button>
             );
           })}
           {filtered.length === 0 && (
-            <p className="px-3 py-3 text-xs text-slate-600">No players match.</p>
+            <p className="px-3 py-3 text-xs text-ink/50">No players match.</p>
           )}
         </div>
       )}
@@ -109,13 +114,13 @@ function TeamPanel({ label, teams, side, onChange }) {
   const totalSalary = side.sends.reduce((s, p) => s + p.salary_millions, 0);
 
   return (
-    <div className="card p-5 space-y-4 flex-1">
-      <p className="stat-label">{label}</p>
+    <div className="hoop-card-outline p-5 space-y-4 flex-1">
+      <p className="hoop-stat-label">{label}</p>
 
       <select
         value={side.team_abbr}
         onChange={e => setTeam(e.target.value)}
-        className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white"
+        className="w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 text-sm text-ink"
       >
         <option value="">— Select team —</option>
         {teams.map(t => (
@@ -126,7 +131,7 @@ function TeamPanel({ label, teams, side, onChange }) {
       {side.team_abbr && (
         <>
           <div>
-            <p className="text-xs text-slate-500 mb-2">Tap players to send out from {side.team_abbr}</p>
+            <p className="text-xs text-ink/60 mb-2">Tap players to send out from {side.team_abbr}</p>
             <RosterPicker
               teamAbbr={side.team_abbr}
               selectedNames={side.sends.map((p) => p.name)}
@@ -138,30 +143,30 @@ function TeamPanel({ label, teams, side, onChange }) {
             <div className="space-y-2">
               {side.sends.map((p, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="text-sm text-white flex-1 truncate">{p.name}</span>
+                  <span className="text-sm text-ink flex-1 truncate">{p.name}</span>
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-slate-500">$</span>
+                    <span className="text-xs text-ink/60">$</span>
                     <input
                       type="number"
                       min="0"
                       step="0.1"
                       value={p.salary_millions}
                       onChange={e => updateSalary(i, e.target.value)}
-                      className="w-16 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs font-mono text-white"
+                      className="w-16 rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-2 py-1 text-xs font-mono text-ink"
                     />
-                    <span className="text-xs text-slate-500">M</span>
+                    <span className="text-xs text-ink/60">M</span>
                   </div>
-                  <button onClick={() => removePlayer(i)} className="text-slate-600 hover:text-red-400 text-xs">✕</button>
+                  <button onClick={() => removePlayer(i)} className="text-ink/50 hover:text-stat-down text-xs">✕</button>
                 </div>
               ))}
-              <p className="text-xs text-slate-500 text-right">
-                Total outgoing: <span className="font-mono text-white">${totalSalary.toFixed(1)}M</span>
+              <p className="text-xs text-ink/60 text-right">
+                Total outgoing: <span className="font-mono text-ink">${totalSalary.toFixed(1)}M</span>
               </p>
             </div>
           )}
 
           {side.sends.length === 0 && (
-            <p className="text-xs text-slate-600 italic">No players added yet</p>
+            <p className="text-xs text-ink/50 italic">No players added yet</p>
           )}
         </>
       )}
@@ -174,14 +179,14 @@ function SalaryBar({ label, value, max, ok }) {
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-xs">
-        <span className="text-slate-400">{label}</span>
-        <span className={`font-mono ${ok ? "text-court-glow" : "text-red-400"}`}>
+        <span className="text-ink/70">{label}</span>
+        <span className={`font-mono ${ok ? "text-stat-up" : "text-stat-down"}`}>
           ${value.toFixed(1)}M / ${max.toFixed(1)}M max
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-slate-800">
+      <div className="h-1.5 rounded-full bg-ink/5">
         <div
-          className={`h-1.5 rounded-full transition-all ${ok ? "bg-court" : "bg-red-500"}`}
+          className={`h-1.5 rounded-full transition-all ${ok ? "bg-terracotta" : "bg-stat-down"}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -191,63 +196,63 @@ function SalaryBar({ label, value, max, ok }) {
 
 function TeamResult({ data, isA }) {
   return (
-    <div className="card p-5 space-y-4 flex-1">
+    <div className="hoop-card-outline p-5 space-y-4 flex-1">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-lg font-bold text-white">{data.team}</p>
-          <p className="text-xs text-slate-500">GM: {data.gm_name}</p>
+          <p className="text-lg font-bold text-ink">{data.team}</p>
+          <p className="text-xs text-ink/60">GM: {data.gm_name}</p>
         </div>
         <div className="text-right">
-          <span className={`text-3xl font-bold ${GRADE_COLOR[data.grade] || "text-white"}`}>{data.grade}</span>
-          <p className="text-xs text-slate-500">trade grade</p>
+          <span className={`text-3xl font-bold ${GRADE_COLOR[data.grade] || "text-ink"}`}>{data.grade}</span>
+          <p className="text-xs text-ink/60">trade grade</p>
         </div>
       </div>
 
       <div className="flex gap-4 text-sm">
         <div className="flex-1">
-          <p className="stat-label mb-1">Sends</p>
+          <p className="hoop-stat-label mb-1">Sends</p>
           {data.sends.map((p, i) => (
-            <p key={i} className="text-red-400 text-xs">{p.name} <span className="text-slate-500">${p.salary.toFixed(1)}M</span></p>
+            <p key={i} className="text-stat-down text-xs">{p.name} <span className="text-ink/60">${p.salary.toFixed(1)}M</span></p>
           ))}
-          {data.sends.length === 0 && <p className="text-slate-600 text-xs italic">nothing</p>}
+          {data.sends.length === 0 && <p className="text-ink/50 text-xs italic">nothing</p>}
         </div>
         <div className="flex-1">
-          <p className="stat-label mb-1">Receives</p>
+          <p className="hoop-stat-label mb-1">Receives</p>
           {data.receives.map((p, i) => (
-            <p key={i} className="text-court text-xs">{p.name} <span className="text-slate-500">${p.salary.toFixed(1)}M</span></p>
+            <p key={i} className="text-terracotta text-xs">{p.name} <span className="text-ink/60">${p.salary.toFixed(1)}M</span></p>
           ))}
-          {data.receives.length === 0 && <p className="text-slate-600 text-xs italic">nothing</p>}
+          {data.receives.length === 0 && <p className="text-ink/50 text-xs italic">nothing</p>}
         </div>
       </div>
 
-      <div className="border-t border-slate-800 pt-3">
-        <p className="text-xs text-slate-500 mb-1 font-medium">GM Style</p>
-        <p className="text-xs text-slate-300">{data.gm_style}</p>
+      <div className="border-t border-ink/15 pt-3">
+        <p className="text-xs text-ink/60 mb-1 font-medium">GM Style</p>
+        <p className="text-xs text-ink">{data.gm_style}</p>
       </div>
 
       <div>
-        <p className="text-xs text-slate-500 mb-1 font-medium">Tendencies</p>
+        <p className="text-xs text-ink/60 mb-1 font-medium">Tendencies</p>
         <ul className="space-y-1">
           {data.gm_tendencies.map((t, i) => (
-            <li key={i} className="text-xs text-slate-400 flex gap-1.5">
-              <span className="text-slate-600 mt-0.5">•</span>{t}
+            <li key={i} className="text-xs text-ink/70 flex gap-1.5">
+              <span className="text-ink/50 mt-0.5">•</span>{t}
             </li>
           ))}
         </ul>
       </div>
 
       <div>
-        <p className="text-xs text-slate-500 mb-1 font-medium">Fit Analysis</p>
-        <div className="mb-2 h-1.5 rounded-full bg-slate-800">
+        <p className="text-xs text-ink/60 mb-1 font-medium">Fit Analysis</p>
+        <div className="mb-2 h-1.5 rounded-full bg-ink/5">
           <div
-            className="h-1.5 rounded-full bg-court transition-all"
+            className="h-1.5 rounded-full bg-terracotta transition-all"
             style={{ width: `${data.fit_score * 100}%` }}
           />
         </div>
         <ul className="space-y-1">
           {data.fit_reasons.map((r, i) => (
-            <li key={i} className="text-xs text-slate-400 flex gap-1.5">
-              <span className="text-slate-600 mt-0.5">•</span>{r}
+            <li key={i} className="text-xs text-ink/70 flex gap-1.5">
+              <span className="text-ink/50 mt-0.5">•</span>{r}
             </li>
           ))}
         </ul>
@@ -298,8 +303,8 @@ export default function TradeMachine() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Trade Machine</h1>
-        <p className="mt-1 text-slate-400">
+        <h1 className="text-3xl font-bold text-ink">Trade Machine</h1>
+        <p className="mt-1 text-ink/70">
           Realistic NBA trade analysis — GM personalities, CBA salary rules, player fit, and AI grading.
         </p>
       </header>
@@ -309,14 +314,14 @@ export default function TradeMachine() {
           <TeamPanel label="Team 1" teams={teams} side={sideA} onChange={setSideA} />
 
           <div className="flex items-center justify-center">
-            <span className="text-slate-600 text-2xl font-light">⇌</span>
+            <span className="text-ink/50 text-2xl font-light">⇌</span>
           </div>
 
           <TeamPanel label="Team 2" teams={teams} side={sideB} onChange={setSideB} />
         </div>
 
         <div className="flex justify-center">
-          <button type="submit" disabled={loading} className="btn-primary px-8">
+          <button type="submit" disabled={loading} className="hoop-btn-primary px-8">
             {loading ? (
               <span className="flex items-center gap-2">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -330,32 +335,32 @@ export default function TradeMachine() {
         </div>
       </form>
 
-      {error && <p className="text-brand-glow text-center">{error}</p>}
+      {error && <p className="text-stat-down text-center">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up">
           {/* Header verdict */}
-          <div className="card p-5 text-center space-y-2">
-            <p className="text-slate-400 text-sm">
+          <div className="hoop-card-outline p-5 text-center space-y-2">
+            <p className="text-ink/70 text-sm">
               {result.team_a.abbr} ⇌ {result.team_b.abbr}
             </p>
-            <p className={`text-3xl font-bold ${LIKELIHOOD_COLOR[result.likelihood_label] || "text-white"}`}>
+            <p className={`text-3xl font-bold ${LIKELIHOOD_COLOR[result.likelihood_label] || "text-ink"}`}>
               {result.likelihood_label}
             </p>
-            <p className="text-slate-400 text-sm">Trade likelihood</p>
-            <div className="max-w-xs mx-auto mt-2 h-2 rounded-full bg-slate-800">
+            <p className="text-ink/70 text-sm">Trade likelihood</p>
+            <div className="max-w-xs mx-auto mt-2 h-2 rounded-full bg-ink/5">
               <div
-                className="h-2 rounded-full bg-court transition-all"
+                className="h-2 rounded-full bg-terracotta transition-all"
                 style={{ width: `${result.trade_likelihood * 100}%` }}
               />
             </div>
           </div>
 
           {/* CBA check */}
-          <div className="card p-5 space-y-3">
+          <div className="hoop-card-outline p-5 space-y-3">
             <div className="flex items-center gap-2">
-              <span className={`inline-block h-2 w-2 rounded-full ${result.salary_valid ? "bg-court" : "bg-red-500"}`} />
-              <p className="font-semibold text-white text-sm">
+              <span className={`inline-block h-2 w-2 rounded-full ${result.salary_valid ? "bg-terracotta" : "bg-stat-down"}`} />
+              <p className="font-semibold text-ink text-sm">
                 CBA Salary Matching — {result.salary_valid ? "Valid" : "Invalid"}
               </p>
             </div>
@@ -374,7 +379,7 @@ export default function TradeMachine() {
               />
             </div>
             {!result.salary_valid && (
-              <p className="text-xs text-red-400">
+              <p className="text-xs text-stat-down">
                 Salary doesn't match CBA rules (125% + $100K rule). Trade cannot happen as structured.
               </p>
             )}
@@ -388,9 +393,9 @@ export default function TradeMachine() {
 
           {/* AI analysis */}
           {result.ai_summary && (
-            <div className="card p-5 space-y-2">
-              <p className="stat-label">AI Front Office Analysis</p>
-              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{result.ai_summary}</p>
+            <div className="hoop-card-outline p-5 space-y-2">
+              <p className="hoop-stat-label">AI Front Office Analysis</p>
+              <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{result.ai_summary}</p>
             </div>
           )}
         </div>

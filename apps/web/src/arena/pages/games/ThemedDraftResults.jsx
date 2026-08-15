@@ -12,17 +12,17 @@ export default function ThemedDraftResults({ gameState, players }) {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-white">Draft Results</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-2xl font-bold text-ink">Draft Results</h1>
+        <p className="mt-1 text-sm text-ink/70">
           {totalVotes} vote{totalVotes === 1 ? "" : "s"} cast
         </p>
       </header>
 
       {winner && (
-        <div className="card mx-auto max-w-lg space-y-1 p-5 text-center">
-          <p className="stat-label">Winner</p>
-          <p className="text-2xl font-bold text-court-glow">{winner.name}</p>
-          <p className="text-xs text-slate-500">
+        <div className="hoop-card-outline mx-auto max-w-lg space-y-1 p-5 text-center">
+          <p className="hoop-stat-label">Winner</p>
+          <p className="text-2xl font-bold text-terracotta">{winner.name}</p>
+          <p className="text-xs text-ink/60">
             {voteCounts[winnerSocketId] || 0} vote{(voteCounts[winnerSocketId] || 0) === 1 ? "" : "s"}
             {tied &&
               ` — tied with ${tiedSocketIds.length - 1} other team${tiedSocketIds.length - 1 === 1 ? "" : "s"}, winner picked at random`}
@@ -35,20 +35,20 @@ export default function ThemedDraftResults({ gameState, players }) {
           const roster = rosters[player.socketId] || [];
           const isWinner = player.socketId === winnerSocketId;
           return (
-            <div key={player.socketId} className={`card space-y-3 p-5 ${isWinner ? "border-court/50" : ""}`}>
+            <div key={player.socketId} className={`hoop-card-outline space-y-3 p-5 ${isWinner ? "border-terracotta/50" : ""}`}>
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-white">
-                  <span className="stat-label mr-2">#{i + 1}</span>
+                <span className="text-lg font-semibold text-ink">
+                  <span className="hoop-stat-label mr-2">#{i + 1}</span>
                   {player.name}
-                  {isWinner && <span className="ml-2 text-xs text-court-glow">Winner</span>}
+                  {isWinner && <span className="ml-2 text-xs text-terracotta">Winner</span>}
                 </span>
-                <span className="stat-value">
+                <span className="hoop-stat-value">
                   {voteCounts[player.socketId] || 0} vote{(voteCounts[player.socketId] || 0) === 1 ? "" : "s"}
                 </span>
               </div>
               <ul className="flex flex-wrap gap-1.5">
                 {roster.map((p, j) => (
-                  <li key={j} className="rounded-md border border-slate-800 bg-slate-950 px-2 py-1 text-xs text-white">
+                  <li key={j} className="rounded-md border border-ink/15 bg-paper px-2 py-1 text-xs text-ink">
                     {p.name}
                   </li>
                 ))}

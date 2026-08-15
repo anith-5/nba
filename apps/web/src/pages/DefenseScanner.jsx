@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { api } from "../api.js";
 
+// Severity is a warning ladder, so the two levels get different hues rather
+// than two opacities of the same one — legacy separated them only by red-vs-
+// lighter-red, which all but disappears against paper.
 const SEVERITY_STYLE = {
-  Critical:    "text-brand bg-brand/15 border-brand/30",
-  Exploitable: "text-brand-glow bg-brand/10 border-brand/20",
+  Critical:    "text-stat-down bg-stat-down/10 border-stat-down/30",
+  Exploitable: "text-basketball-dim bg-basketball/10 border-basketball/30",
 };
-const STRENGTH_STYLE = "text-zinc-200 bg-white/5 border-white/15";
+const STRENGTH_STYLE = "text-ink bg-ink/5 border-ink/15";
 const RANK_COLOR = (r) =>
-  r <= 5 ? "text-brand-glow" : r <= 15 ? "text-zinc-200" : r <= 25 ? "text-zinc-400" : "text-zinc-500";
+  r <= 5 ? "text-terracotta" : r <= 15 ? "text-ink" : r <= 25 ? "text-ink/70" : "text-ink/60";
 
 // ── Shared: vulnerability card with exploitation tactics ──────────────────────
 
@@ -26,7 +29,7 @@ function VulnCard({ item }) {
           </p>
         </div>
         <div className="text-right flex-shrink-0">
-          <span className="text-xs px-1.5 py-0.5 rounded bg-black/20">{item.severity}</span>
+          <span className="text-xs px-1.5 py-0.5 rounded bg-ink/20">{item.severity}</span>
           <p className="text-xs mt-1 font-mono">{item.pct_above_avg > 0 ? "+" : ""}{item.pct_above_avg}%</p>
         </div>
       </div>
@@ -58,30 +61,30 @@ function VulnCard({ item }) {
 function OffensivePlan({ plan, aiPlan }) {
   if (!plan) return null;
   return (
-    <div className="card p-4 space-y-3 border-court/20">
-      <p className="stat-label text-court-glow">Offensive Game Plan</p>
+    <div className="hoop-card-outline p-4 space-y-3 border-terracotta/20">
+      <p className="hoop-stat-label text-terracotta">Offensive Game Plan</p>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
-          <p className="text-xs font-semibold text-slate-400 mb-1">⏱ Tempo</p>
-          <p className="text-sm text-slate-200 leading-snug">{plan.tempo}</p>
+        <div className="rounded-lg bg-paper border border-ink/15 p-3">
+          <p className="text-xs font-semibold text-ink/70 mb-1">⏱ Tempo</p>
+          <p className="text-sm text-ink leading-snug">{plan.tempo}</p>
         </div>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
-          <p className="text-xs font-semibold text-slate-400 mb-1">🎯 Shot Profile</p>
-          <p className="text-sm text-slate-200 leading-snug">{plan.shot_profile}</p>
+        <div className="rounded-lg bg-paper border border-ink/15 p-3">
+          <p className="text-xs font-semibold text-ink/70 mb-1">🎯 Shot Profile</p>
+          <p className="text-sm text-ink leading-snug">{plan.shot_profile}</p>
         </div>
       </div>
 
       {plan.primary_attack && (
-        <div className="rounded-lg bg-court/5 border border-court/20 p-3">
-          <p className="text-xs font-semibold text-court-glow mb-1">
+        <div className="rounded-lg bg-terracotta/5 border border-terracotta/20 p-3">
+          <p className="text-xs font-semibold text-terracotta mb-1">
             Primary Attack — {plan.primary_attack.target}
           </p>
-          <p className="text-sm text-slate-300 leading-snug mb-1.5">{plan.primary_attack.why}</p>
+          <p className="text-sm text-ink leading-snug mb-1.5">{plan.primary_attack.why}</p>
           <ul className="space-y-0.5">
             {plan.primary_attack.actions.map((a, i) => (
-              <li key={i} className="text-xs text-slate-400 flex items-start gap-1.5">
-                <span className="text-court mt-0.5">→</span>{a}
+              <li key={i} className="text-xs text-ink/70 flex items-start gap-1.5">
+                <span className="text-terracotta mt-0.5">→</span>{a}
               </li>
             ))}
           </ul>
@@ -89,30 +92,30 @@ function OffensivePlan({ plan, aiPlan }) {
       )}
 
       {plan.secondary_attack && (
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
-          <p className="text-xs font-semibold text-slate-300 mb-1">
+        <div className="rounded-lg bg-paper border border-ink/15 p-3">
+          <p className="text-xs font-semibold text-ink mb-1">
             Secondary Attack — {plan.secondary_attack.target}
           </p>
-          <p className="text-sm text-slate-400 leading-snug mb-1.5">{plan.secondary_attack.why}</p>
+          <p className="text-sm text-ink/70 leading-snug mb-1.5">{plan.secondary_attack.why}</p>
           <ul className="space-y-0.5">
             {plan.secondary_attack.actions.map((a, i) => (
-              <li key={i} className="text-xs text-slate-500 flex items-start gap-1.5">
-                <span className="text-slate-500 mt-0.5">→</span>{a}
+              <li key={i} className="text-xs text-ink/60 flex items-start gap-1.5">
+                <span className="text-ink/60 mt-0.5">→</span>{a}
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      <div className="rounded-lg bg-red-500/5 border border-red-500/20 p-3">
-        <p className="text-xs font-semibold text-red-400 mb-1">⛔ Avoid</p>
-        <p className="text-sm text-slate-300 leading-snug">{plan.avoid}</p>
+      <div className="rounded-lg bg-stat-down/5 border border-stat-down/20 p-3">
+        <p className="text-xs font-semibold text-stat-down mb-1">⛔ Avoid</p>
+        <p className="text-sm text-ink leading-snug">{plan.avoid}</p>
       </div>
 
       {aiPlan && (
-        <div className="rounded-lg border border-white/10 bg-white/[0.03] p-3">
-          <p className="mb-1.5 text-xs font-semibold text-brand-glow">AI Coach&apos;s Plan</p>
-          <p className="text-sm text-slate-200 leading-relaxed whitespace-pre-wrap">{aiPlan}</p>
+        <div className="rounded-lg border border-ink/10 bg-ink/[0.04] p-3">
+          <p className="mb-1.5 text-xs font-semibold text-terracotta">AI Coach&apos;s Plan</p>
+          <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{aiPlan}</p>
         </div>
       )}
     </div>
@@ -124,11 +127,11 @@ function StrengthCard({ item }) {
     <div className={`rounded-lg border p-3 space-y-1 ${STRENGTH_STYLE}`}>
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">{item.metric}</p>
-        <span className="text-xs px-1.5 py-0.5 rounded bg-black/20">{item.advantage}</span>
+        <span className="text-xs px-1.5 py-0.5 rounded bg-ink/20">{item.advantage}</span>
       </div>
       <p className="text-xs font-mono">
         {(item.value * (item.metric.includes("%") ? 100 : 1)).toFixed(1)}{item.metric.includes("%") ? "%" : ""}
-        <span className="text-slate-500 ml-1">({item.pct_above_avg > 0 ? "+" : ""}{item.pct_above_avg}% vs avg)</span>
+        <span className="text-ink/60 ml-1">({item.pct_above_avg > 0 ? "+" : ""}{item.pct_above_avg}% vs avg)</span>
       </p>
       {item.warning && (
         <p className="text-xs opacity-80 leading-snug border-t border-current/20 pt-1 mt-1">
@@ -158,47 +161,47 @@ function TeamScanner({ teams }) {
 
   return (
     <div className="space-y-5">
-      <div className="card max-w-lg p-5 flex gap-4 items-end">
+      <div className="hoop-card-outline max-w-lg p-5 flex gap-4 items-end">
         <label className="flex-1 block text-sm">
-          <span className="stat-label">Select team to scout</span>
+          <span className="hoop-stat-label">Select team to scout</span>
           <select value={teamId} onChange={e => setTeamId(e.target.value)}
-            className="mt-1 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-white">
+            className="mt-1 w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 text-ink">
             <option value="">Choose a team…</option>
             {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
         </label>
-        <button onClick={scan} disabled={!teamId || loading} className="btn-primary">
+        <button onClick={scan} disabled={!teamId || loading} className="hoop-btn-primary">
           {loading ? "Scanning…" : "Scan Defense"}
         </button>
       </div>
 
-      {error && <p className="text-brand-glow">{error}</p>}
+      {error && <p className="text-stat-down">{error}</p>}
 
       {result && (
         <div className="space-y-5 animate-slide-up">
           {/* Header */}
           <div className="flex items-center gap-4 flex-wrap">
-            <h2 className="text-xl font-bold text-white">{result.team_name}</h2>
+            <h2 className="text-xl font-bold text-ink">{result.team_name}</h2>
             <div className="flex gap-3 flex-wrap">
-              <div className="card px-3 py-1.5 text-sm">
+              <div className="hoop-card-outline px-3 py-1.5 text-sm">
                 Def Rank: <span className={`font-mono font-bold ${RANK_COLOR(result.defensive_rank)}`}>
                   #{result.defensive_rank}
                 </span>
-                <span className="text-slate-600 text-xs ml-1">/ 30</span>
+                <span className="text-ink/50 text-xs ml-1">/ 30</span>
               </div>
               {result.def_rating != null && (
-                <div className="card px-3 py-1.5 text-sm">
-                  Def Rating: <span className="font-mono font-bold text-white">{result.def_rating}</span>
-                  <span className="text-slate-600 text-xs ml-1">pts/100</span>
+                <div className="hoop-card-outline px-3 py-1.5 text-sm">
+                  Def Rating: <span className="font-mono font-bold text-ink">{result.def_rating}</span>
+                  <span className="text-ink/50 text-xs ml-1">pts/100</span>
                 </div>
               )}
               {result.pace != null && (
-                <div className="card px-3 py-1.5 text-sm">
-                  Pace: <span className="font-mono font-bold text-white">{result.pace}</span>
+                <div className="hoop-card-outline px-3 py-1.5 text-sm">
+                  Pace: <span className="font-mono font-bold text-ink">{result.pace}</span>
                 </div>
               )}
-              <div className="card px-3 py-1.5 text-sm">
-                Opp PPG: <span className="font-mono font-bold text-white">{result.opp_pts_per_game}</span>
+              <div className="hoop-card-outline px-3 py-1.5 text-sm">
+                Opp PPG: <span className="font-mono font-bold text-ink">{result.opp_pts_per_game}</span>
               </div>
             </div>
           </div>
@@ -209,7 +212,7 @@ function TeamScanner({ teams }) {
           {/* Vulnerabilities */}
           {result.vulnerabilities.length > 0 && (
             <div>
-              <p className="stat-label mb-3">Vulnerabilities — Expand for Tactics</p>
+              <p className="hoop-stat-label mb-3">Vulnerabilities — Expand for Tactics</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {result.vulnerabilities.map((v, i) => <VulnCard key={i} item={v} />)}
               </div>
@@ -219,7 +222,7 @@ function TeamScanner({ teams }) {
           {/* Strengths */}
           {result.strengths.length > 0 && (
             <div>
-              <p className="stat-label mb-3">Defensive Strengths — Avoid These</p>
+              <p className="hoop-stat-label mb-3">Defensive Strengths — Avoid These</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {result.strengths.map((s, i) => <StrengthCard key={i} item={s} />)}
               </div>
@@ -227,12 +230,12 @@ function TeamScanner({ teams }) {
           )}
 
           {result.vulnerabilities.length === 0 && result.strengths.length === 0 && (
-            <div className="card p-5 text-slate-400">
+            <div className="hoop-card-outline p-5 text-ink/70">
               This team is close to league average across all defensive metrics — no standout vulnerabilities or strengths.
             </div>
           )}
 
-          <p className="text-xs text-slate-600">Season: {result.season} · Rank = position by opp PPG allowed (1 = fewest points allowed)</p>
+          <p className="text-xs text-ink/50">Season: {result.season} · Rank = position by opp PPG allowed (1 = fewest points allowed)</p>
         </div>
       )}
     </div>
@@ -247,7 +250,7 @@ function LeagueRow({ team, onClick }) {
   return (
     <tr
       onClick={() => onClick(team)}
-      className="border-t border-slate-800 hover:bg-slate-800/40 cursor-pointer transition-colors"
+      className="border-t border-ink/15 hover:bg-ink/5 cursor-pointer transition-colors"
     >
       <td className="py-2 px-3">
         <span className={`font-mono font-bold text-sm ${RANK_COLOR(team.defensive_rank)}`}>
@@ -255,10 +258,10 @@ function LeagueRow({ team, onClick }) {
         </span>
       </td>
       <td className="py-2 px-3">
-        <p className="text-sm text-white font-medium">{team.team_name}</p>
-        <p className="text-xs text-slate-500">{team.abbreviation}</p>
+        <p className="text-sm text-ink font-medium">{team.team_name}</p>
+        <p className="text-xs text-ink/60">{team.abbreviation}</p>
       </td>
-      <td className="py-2 px-3 font-mono text-sm text-center text-white">
+      <td className="py-2 px-3 font-mono text-sm text-center text-ink">
         {team.opp_pts_per_game}
       </td>
       <td className="py-2 px-3">
@@ -267,16 +270,16 @@ function LeagueRow({ team, onClick }) {
             {topVuln.metric} ({topVuln.pct_above_avg > 0 ? "+" : ""}{topVuln.pct_above_avg}%)
           </span>
         ) : (
-          <span className="text-xs text-slate-600">No major vulnerability</span>
+          <span className="text-xs text-ink/50">No major vulnerability</span>
         )}
       </td>
       <td className="py-2 px-3 text-center">
-        <span className={`text-xs font-mono ${vulnCount > 2 ? "text-brand" : vulnCount > 0 ? "text-zinc-400" : "text-zinc-200"}`}>
+        <span className={`text-xs font-mono ${vulnCount > 2 ? "text-terracotta" : vulnCount > 0 ? "text-ink/70" : "text-ink"}`}>
           {vulnCount}
         </span>
       </td>
       <td className="py-2 px-3 text-right">
-        <span className="text-xs text-slate-600">→</span>
+        <span className="text-xs text-ink/50">→</span>
       </td>
     </tr>
   );
@@ -303,7 +306,7 @@ function LeagueOverview() {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-4 flex-wrap">
-        <button onClick={load} disabled={loading} className="btn-primary">
+        <button onClick={load} disabled={loading} className="hoop-btn-primary">
           {loading ? (
             <span className="flex items-center gap-2">
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -315,40 +318,40 @@ function LeagueOverview() {
           ) : data ? "↻ Refresh" : "Load League Rankings"}
         </button>
         {data && (
-          <label className="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+          <label className="flex items-center gap-2 text-sm text-ink/70 cursor-pointer">
             <input type="checkbox" checked={filterVulnOnly} onChange={e => setFilterVulnOnly(e.target.checked)}
-              className="accent-court" />
+              className="accent-terracotta" />
             Show only teams with vulnerabilities
           </label>
         )}
       </div>
 
-      {error && <p className="text-brand-glow">{error}</p>}
+      {error && <p className="text-stat-down">{error}</p>}
 
       {/* Detail modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70  p-4"
           onClick={() => setSelected(null)}>
-          <div className="card w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5"
+          <div className="hoop-card-outline w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-5"
             onClick={e => e.stopPropagation()}>
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white">{selected.team_name}</h2>
-                <p className="text-slate-500 text-sm">
+                <h2 className="text-xl font-bold text-ink">{selected.team_name}</h2>
+                <p className="text-ink/60 text-sm">
                   Defensive Rank #{selected.defensive_rank}
                   {selected.def_rating != null && ` · ${selected.def_rating} DEF RTG`}
                   {selected.pace != null && ` · ${selected.pace} pace`}
                   {` · ${selected.opp_pts_per_game} OPP PPG`}
                 </p>
               </div>
-              <button onClick={() => setSelected(null)} className="text-slate-500 hover:text-white text-2xl">×</button>
+              <button onClick={() => setSelected(null)} className="text-ink/60 hover:text-ink text-2xl">×</button>
             </div>
 
             <OffensivePlan plan={selected.offensive_plan} aiPlan={selected.ai_game_plan} />
 
             {selected.vulnerabilities.length > 0 && (
               <div>
-                <p className="stat-label mb-3">Vulnerabilities</p>
+                <p className="hoop-stat-label mb-3">Vulnerabilities</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {selected.vulnerabilities.map((v, i) => <VulnCard key={i} item={v} />)}
                 </div>
@@ -357,7 +360,7 @@ function LeagueOverview() {
 
             {selected.strengths.length > 0 && (
               <div>
-                <p className="stat-label mb-3">Strengths — Avoid These</p>
+                <p className="hoop-stat-label mb-3">Strengths — Avoid These</p>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {selected.strengths.map((s, i) => <StrengthCard key={i} item={s} />)}
                 </div>
@@ -365,27 +368,27 @@ function LeagueOverview() {
             )}
 
             {selected.vulnerabilities.length === 0 && selected.strengths.length === 0 && (
-              <p className="text-slate-400">Close to league average — no standout vulnerabilities or strengths.</p>
+              <p className="text-ink/70">Close to league average — no standout vulnerabilities or strengths.</p>
             )}
           </div>
         </div>
       )}
 
       {data && (
-        <div className="card overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-            <p className="text-sm font-semibold text-white">All 30 Teams — Defensive Rankings</p>
-            <p className="text-xs text-slate-600">{data.season} · Click any row for full breakdown</p>
+        <div className="hoop-card-outline overflow-hidden">
+          <div className="px-4 py-3 border-b border-ink/15 flex items-center justify-between">
+            <p className="text-sm font-semibold text-ink">All 30 Teams — Defensive Rankings</p>
+            <p className="text-xs text-ink/50">{data.season} · Click any row for full breakdown</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left border-b border-slate-800">
-                  <th className="px-3 py-2 text-slate-600 font-normal text-xs">Rank</th>
-                  <th className="px-3 py-2 text-slate-600 font-normal text-xs">Team</th>
-                  <th className="px-3 py-2 text-slate-600 font-normal text-xs text-center">Opp PPG</th>
-                  <th className="px-3 py-2 text-slate-600 font-normal text-xs">Top Vulnerability</th>
-                  <th className="px-3 py-2 text-slate-600 font-normal text-xs text-center">Vulns</th>
+                <tr className="text-left border-b border-ink/15">
+                  <th className="px-3 py-2 text-ink/50 font-normal text-xs">Rank</th>
+                  <th className="px-3 py-2 text-ink/50 font-normal text-xs">Team</th>
+                  <th className="px-3 py-2 text-ink/50 font-normal text-xs text-center">Opp PPG</th>
+                  <th className="px-3 py-2 text-ink/50 font-normal text-xs">Top Vulnerability</th>
+                  <th className="px-3 py-2 text-ink/50 font-normal text-xs text-center">Vulns</th>
                   <th className="px-3 py-2"></th>
                 </tr>
               </thead>
@@ -413,17 +416,17 @@ export default function DefenseScanner() {
   return (
     <div className="animate-fade-in space-y-6">
       <header>
-        <h1 className="text-3xl font-bold text-white">Defensive Scheme Scanner</h1>
-        <p className="mt-1 text-slate-400">
+        <h1 className="text-3xl font-bold text-ink">Defensive Scheme Scanner</h1>
+        <p className="mt-1 text-ink/70">
           Exploitable weaknesses with tactical game plans — single team or all 30 at once.
         </p>
       </header>
 
-      <div className="flex gap-1 p-1 rounded-lg bg-slate-900 w-fit">
+      <div className="flex gap-1 p-1 rounded-xl border-2 border-ink bg-ink/5 w-fit">
         {[["team", "🔍 Single Team"], ["league", "🏆 All 30 Teams"]].map(([v, label]) => (
           <button key={v} onClick={() => setTab(v)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              tab === v ? "bg-court text-slate-950" : "text-slate-400 hover:text-white"
+            className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
+              tab === v ? "bg-ink text-paper" : "text-ink/70 hover:text-ink"
             }`}>
             {label}
           </button>

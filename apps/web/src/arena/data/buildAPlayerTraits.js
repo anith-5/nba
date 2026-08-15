@@ -21,9 +21,9 @@ export const TRAIT_DEFS = [
 export const GRADE_ORDER = ["D-", "D", "D+", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"];
 
 export function gradeColorClass(grade) {
-  if (!grade) return "border-slate-800 bg-slate-950 text-slate-500";
-  if (grade.startsWith("A")) return "border-amber-400/50 bg-amber-400/10 text-amber-300";
-  if (grade.startsWith("B")) return "border-court/50 bg-court/10 text-court-glow";
-  if (grade.startsWith("C")) return "border-slate-500/50 bg-slate-500/10 text-slate-300";
-  return "border-slate-700 bg-slate-800/60 text-slate-400"; // D+ / D / D-
+  if (!grade) return "border-ink/15 bg-ink/[0.04] text-ink/50";
+  if (grade.startsWith("A")) return "border-stat-up/50 bg-stat-up/10 text-stat-up";
+  if (grade.startsWith("B")) return "border-terracotta/50 bg-terracotta/10 text-terracotta";
+  if (grade.startsWith("C")) return "border-ink/25 bg-ink/5 text-ink/70";
+  return "border-basketball/40 bg-basketball/10 text-basketball-dim"; // D+ / D / D-
 }

@@ -4,14 +4,14 @@ export default function PlayerList({ players, hostSocketId }) {
       {players.map((player) => (
         <li
           key={player.socketId}
-          className="card flex items-center justify-between px-4 py-2 text-sm"
+          className="hoop-card-outline flex items-center justify-between px-4 py-2 text-sm"
         >
-          <span className={player.connected === false ? "text-slate-600 line-through" : "text-white"}>
+          <span className={player.connected === false ? "text-ink/50 line-through" : "text-ink"}>
             {player.name}
             {player.connected === false && " (disconnected)"}
           </span>
           {player.socketId === hostSocketId && (
-            <span className="stat-label text-court">Host</span>
+            <span className="hoop-stat-label text-terracotta">Host</span>
           )}
         </li>
       ))}

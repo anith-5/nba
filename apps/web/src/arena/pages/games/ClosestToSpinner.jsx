@@ -41,10 +41,10 @@ export default function ClosestToSpinner({
   return (
     <div className="space-y-6">
       {step === "not-started" && (
-        <div className="card flex flex-col items-center gap-4 p-8 text-center">
-          <p className="stat-label">Position {filledCount + 1} of 5</p>
-          <p className="text-slate-400">Spin the wheel to land on a team.</p>
-          <button className="btn-primary" onClick={onSpin}>
+        <div className="hoop-card-outline flex flex-col items-center gap-4 p-8 text-center">
+          <p className="hoop-stat-label">Position {filledCount + 1} of 5</p>
+          <p className="text-ink/70">Spin the wheel to land on a team.</p>
+          <button className="hoop-btn-primary" onClick={onSpin}>
             Spin the Wheel
           </button>
         </div>
@@ -57,7 +57,7 @@ export default function ClosestToSpinner({
       {step === "landed" && pendingTeam && (
         <div className="flex justify-center gap-3">
           <button
-            className="btn-primary"
+            className="hoop-btn-primary"
             onClick={() => {
               onRequestPlayers();
               setStep("selecting");
@@ -66,7 +66,7 @@ export default function ClosestToSpinner({
             Accept
           </button>
           {skipRule !== "no-skips" && (
-            <button className="btn-ghost disabled:opacity-50" onClick={onUseSkip} disabled={myState.skipUsed}>
+            <button className="hoop-btn-ghost disabled:opacity-50" onClick={onUseSkip} disabled={myState.skipUsed}>
               {myState.skipUsed ? "Skip Used" : "Use Skip 1 of 1 remaining"}
             </button>
           )}
@@ -89,26 +89,26 @@ export default function ClosestToSpinner({
         />
       )}
 
-      <div className="card space-y-3 p-5">
-        <p className="stat-label">Your Lineup</p>
+      <div className="hoop-card-outline space-y-3 p-5">
+        <p className="hoop-stat-label">Your Lineup</p>
         <div className="grid grid-cols-5 gap-2 text-center">
           {POSITION_ORDER.map((pos) => (
-            <div key={pos} className="rounded-lg border border-slate-700 bg-slate-950 p-2">
-              <p className="stat-label text-xs">{pos}</p>
+            <div key={pos} className="rounded-lg border border-ink/20 bg-paper p-2">
+              <p className="hoop-stat-label text-xs">{pos}</p>
               {lineup[pos] ? (
                 <>
-                  <p className="mt-1 truncate text-xs font-semibold text-white">{lineup[pos].name}</p>
-                  <p className="text-xs text-slate-500">{lineup[pos].season}</p>
+                  <p className="mt-1 truncate text-xs font-semibold text-ink">{lineup[pos].name}</p>
+                  <p className="text-xs text-ink/60">{lineup[pos].season}</p>
                 </>
               ) : (
-                <p className="mt-2 text-xs text-slate-600">—</p>
+                <p className="mt-2 text-xs text-ink/50">—</p>
               )}
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-between rounded-lg border border-slate-700 px-4 py-2">
-          <span className="stat-label">Positions Filled</span>
-          <span className="stat-value">{filledCount} of 5</span>
+        <div className="flex items-center justify-between rounded-lg border border-ink/20 px-4 py-2">
+          <span className="hoop-stat-label">Positions Filled</span>
+          <span className="hoop-stat-value">{filledCount} of 5</span>
         </div>
       </div>
     </div>

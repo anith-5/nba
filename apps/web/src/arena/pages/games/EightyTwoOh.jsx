@@ -52,8 +52,8 @@ export default function EightyTwoOh() {
 
   if (!room || !room.gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -70,7 +70,7 @@ export default function EightyTwoOh() {
       <div className="space-y-6">
         <EightyTwoOhResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -79,7 +79,7 @@ export default function EightyTwoOh() {
   }
 
   const myBuild = gameState.playerBuilds[myId];
-  if (!myBuild) return <p className="text-center text-slate-500">Setting up your lineup…</p>;
+  if (!myBuild) return <p className="text-center text-ink/60">Setting up your lineup…</p>;
 
   const slots = SLOT_ORDER.filter((s) => s !== "BENCH" || gameState.benchEnabled);
   const filledCount = slots.filter((s) => myBuild.lineup[s]).length;
@@ -88,8 +88,8 @@ export default function EightyTwoOh() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">NBA 82-0</h1>
-        <p className="mt-1 text-xs text-slate-500">
+        <h1 className="text-xl font-bold text-ink">NBA 82-0</h1>
+        <p className="mt-1 text-xs text-ink/60">
           {filledCount} of {requiredCount} slots filled
         </p>
       </header>
@@ -140,19 +140,19 @@ export default function EightyTwoOh() {
           />
 
           {!myBuild.done && filledCount >= requiredCount && (
-            <button type="button" className="btn-primary w-full" onClick={() => sendGameAction("finalize_build")}>
+            <button type="button" className="hoop-btn-primary w-full" onClick={() => sendGameAction("finalize_build")}>
               Finalize Lineup
             </button>
           )}
           {myBuild.done && (
-            <p className="text-center text-sm text-slate-500">
+            <p className="text-center text-sm text-ink/60">
               Your lineup is locked in — waiting for everyone else to finish.
             </p>
           )}
         </div>
 
         <div>
-          <p className="stat-label mb-2 text-center lg:text-left">Other Builds</p>
+          <p className="hoop-stat-label mb-2 text-center lg:text-left">Other Builds</p>
           <div className="space-y-3">
             {room.players
               .filter((p) => p.socketId !== myId)
@@ -160,13 +160,13 @@ export default function EightyTwoOh() {
                 const build = gameState.playerBuilds[p.socketId];
                 const otherFilled = build ? slots.filter((s) => build.lineup[s]).length : 0;
                 return (
-                  <div key={p.socketId} className="card space-y-1 p-3">
+                  <div key={p.socketId} className="hoop-card-outline space-y-1 p-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-white">
+                      <span className="text-sm font-semibold text-ink">
                         {p.name}
-                        {p.connected === false && <span className="ml-2 text-xs text-slate-600">(disconnected)</span>}
+                        {p.connected === false && <span className="ml-2 text-xs text-ink/50">(disconnected)</span>}
                       </span>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-ink/60">
                         {build?.done ? "Done" : `${otherFilled} of ${requiredCount}`}
                       </span>
                     </div>
@@ -175,7 +175,7 @@ export default function EightyTwoOh() {
                         <span
                           key={slot}
                           className={`rounded px-1.5 py-0.5 text-[10px] ${
-                            build?.lineup[slot] ? "bg-court/20 text-court-glow" : "bg-slate-800 text-slate-600"
+                            build?.lineup[slot] ? "bg-terracotta/20 text-terracotta" : "bg-ink/5 text-ink/50"
                           }`}
                         >
                           {slot}

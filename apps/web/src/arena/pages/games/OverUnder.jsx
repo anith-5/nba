@@ -24,8 +24,8 @@ export default function OverUnder() {
 
   if (!room || !room.gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -36,18 +36,18 @@ export default function OverUnder() {
   if (status === "finished") {
     return (
       <div className="animate-fade-in mx-auto max-w-lg space-y-6 text-center">
-        <h1 className="text-3xl font-bold text-white">Final Results</h1>
+        <h1 className="text-3xl font-bold text-ink">Final Results</h1>
         <OverUnderLeaderboard players={room.players} scores={gameState.scores} />
         <div className="space-y-2 text-left">
-          <p className="stat-label">Round by round</p>
+          <p className="hoop-stat-label">Round by round</p>
           {gameState.rounds.map((r, i) => (
-            <div key={i} className="card px-4 py-2 text-sm text-slate-300">
+            <div key={i} className="hoop-card-outline px-4 py-2 text-sm text-ink">
               Round {i + 1}: {r.player.name} — {r.statLabel} line {formatStatValue(r.line, r.statFormat)}, actual{" "}
               {formatStatValue(r.actualValue, r.statFormat)}
             </div>
           ))}
         </div>
-        <button onClick={() => copyResultsToClipboard(room)} className="btn-primary">
+        <button onClick={() => copyResultsToClipboard(room)} className="hoop-btn-primary">
           Share Results
         </button>
       </div>
@@ -57,7 +57,7 @@ export default function OverUnder() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-ink">
           Round {gameState.roundIndex + 1} of {gameState.config.rounds}
         </h1>
       </header>
@@ -72,14 +72,14 @@ export default function OverUnder() {
 
       {isHost && gameState.currentRound?.revealed && (
         <div className="text-center">
-          <button onClick={() => sendGameAction("request_next_round")} className="btn-ghost">
+          <button onClick={() => sendGameAction("request_next_round")} className="hoop-btn-ghost">
             Next Round
           </button>
         </div>
       )}
 
       <div className="mx-auto max-w-sm">
-        <p className="stat-label mb-2 text-center">Leaderboard</p>
+        <p className="hoop-stat-label mb-2 text-center">Leaderboard</p>
         <OverUnderLeaderboard players={room.players} scores={gameState.scores} />
       </div>
     </div>

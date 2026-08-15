@@ -39,17 +39,17 @@ export default function HintAuctionResults({ gameState, players }) {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-white">Draft Results</h1>
-        <p className="mt-1 text-sm text-slate-400">Ranked by combined roster {statLabel}</p>
+        <h1 className="text-2xl font-bold text-ink">Draft Results</h1>
+        <p className="mt-1 text-sm text-ink/70">Ranked by combined roster {statLabel}</p>
       </header>
 
       {steal && (
-        <div className="card mx-auto max-w-lg space-y-1 p-5 text-center">
-          <p className="stat-label">Steal of the Draft</p>
-          <p className="text-lg text-white">
-            {stealOwnerName} got <span className="font-semibold text-court-glow">{steal.playerName}</span> for just {steal.winningBid}
+        <div className="hoop-card-outline mx-auto max-w-lg space-y-1 p-5 text-center">
+          <p className="hoop-stat-label">Steal of the Draft</p>
+          <p className="text-lg text-ink">
+            {stealOwnerName} got <span className="font-semibold text-terracotta">{steal.playerName}</span> for just {steal.winningBid}
           </p>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-ink/60">
             {steal.statLine.toFixed(1)} {statLabel} at {(steal.winningBid / steal.statLine).toFixed(2)} per point
           </p>
         </div>
@@ -57,17 +57,17 @@ export default function HintAuctionResults({ gameState, players }) {
 
       <div className="mx-auto max-w-2xl space-y-4">
         {ranked.map(({ player, picks, totalSpent, statTotal, unspent, costPerPoint }, i) => (
-          <div key={player.socketId} className="card space-y-3 p-5">
+          <div key={player.socketId} className="hoop-card-outline space-y-3 p-5">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold text-white">
-                <span className="stat-label mr-2">#{i + 1}</span>
+              <span className="text-lg font-semibold text-ink">
+                <span className="hoop-stat-label mr-2">#{i + 1}</span>
                 {player.name}
               </span>
-              <span className="stat-value">
+              <span className="hoop-stat-value">
                 {statTotal.toFixed(1)} {statLabel}
               </span>
             </div>
-            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-400">
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-ink/70">
               <span>Spent: {totalSpent}</span>
               <span>Unspent: {unspent}</span>
               {costPerPoint !== null && <span>Cost/point: {costPerPoint.toFixed(2)}</span>}
@@ -76,15 +76,15 @@ export default function HintAuctionResults({ gameState, players }) {
               {picks.map((pick) => (
                 <li
                   key={pick.round}
-                  className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-3 py-1.5 text-sm"
+                  className="flex items-center justify-between rounded-lg border border-ink/15 bg-paper px-3 py-1.5 text-sm"
                 >
-                  <span className="text-white">
-                    {pick.playerName} <span className="text-slate-500">({pick.assignedSlot})</span>
+                  <span className="text-ink">
+                    {pick.playerName} <span className="text-ink/60">({pick.assignedSlot})</span>
                   </span>
-                  <span className="text-slate-400">${pick.winningBid}</span>
+                  <span className="text-ink/70">${pick.winningBid}</span>
                 </li>
               ))}
-              {picks.length === 0 && <li className="text-xs text-slate-600">No players won.</li>}
+              {picks.length === 0 && <li className="text-xs text-ink/50">No players won.</li>}
             </ul>
           </div>
         ))}

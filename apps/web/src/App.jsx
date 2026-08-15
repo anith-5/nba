@@ -37,7 +37,7 @@ import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 
 export default function App() {
   return (
-    <div className="min-h-dvh bg-black">
+    <div className="min-h-dvh bg-paper">
       <Routes>
         <Route element={<Shell />}>
           <Route index element={<Home />} />

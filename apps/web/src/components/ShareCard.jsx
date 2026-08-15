@@ -15,24 +15,28 @@ import { toPng } from "html-to-image";
  *  - Logo is an inline SVG (same-origin, no CORS) so it never comes back blank.
  */
 
-const NAVY = "#000000";
-const CARD = "#121214";
-const BRAND = "#EF4444";
-const BRAND_GLOW = "#F87171";
-const TEXT = "#F8FAFC";
-const MUTED = "#94A3B8";
+// Inline hex (not Tailwind classes) because html-to-image captures computed
+// inline styles most reliably. These mirror the hoop-* tokens in
+// tailwind.config.js — keep the two in step.
+const PAPER = "#F2F1EA";
+const CARD = "#FAFAF6";
+const BASKETBALL = "#E67E3C";
+const TERRACOTTA = "#C15B3C";
+const TEXT = "#2431C4";
+const MUTED = "#6B72D8";
+const RULE = "rgba(36,49,196,0.18)";
 
 function LogoMark({ size = 64 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
       <div
         style={{
-          width: size, height: size, borderRadius: 18, background: BRAND,
+          width: size, height: size, borderRadius: 18, background: BASKETBALL,
           display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 0 0 2px rgba(255,255,255,0.12)",
+          border: `2px solid ${TEXT}`, boxShadow: `4px 4px 0 0 #131313`,
         }}
       >
-        <svg viewBox="0 0 24 24" width={size * 0.56} height={size * 0.56} fill="none" stroke="#fff" strokeWidth="2">
+        <svg viewBox="0 0 24 24" width={size * 0.56} height={size * 0.56} fill="none" stroke={PAPER} strokeWidth="2">
           <circle cx="12" cy="12" r="9" />
           <path d="M12 3v18M3 12h18M5.6 5.6c3 2.4 3 10.4 0 12.8M18.4 5.6c-3 2.4-3 10.4 0 12.8" />
         </svg>
@@ -50,14 +54,14 @@ function LogoMark({ size = 64 }) {
 }
 
 /** The visual card. Rendered off-screen; captured to PNG. */
-export function ShareCard({ cardRef, eyebrow, title, subtitle, bigValue, bigLabel, accent = BRAND_GLOW, rows = [] }) {
+export function ShareCard({ cardRef, eyebrow, title, subtitle, bigValue, bigLabel, accent = TERRACOTTA, rows = [] }) {
   return (
     <div
       ref={cardRef}
       style={{
         position: "absolute", left: "-9999px", top: 0,
         width: 1080, height: 1350,
-        background: `radial-gradient(1200px 700px at 50% -10%, #17233f 0%, ${NAVY} 55%)`,
+        background: `radial-gradient(1200px 700px at 50% -10%, ${CARD} 0%, ${PAPER} 55%)`,
         color: TEXT, padding: 72, boxSizing: "border-box",
         display: "flex", flexDirection: "column",
         fontFamily: "Inter, system-ui, sans-serif",
@@ -106,7 +110,7 @@ export function ShareCard({ cardRef, eyebrow, title, subtitle, bigValue, bigLabe
             }}
           >
             {rows.slice(0, 6).map((r, i) => (
-              <div key={i} style={{ background: CARD, borderRadius: 20, padding: "28px 24px", border: "1px solid rgba(255,255,255,0.06)" }}>
+              <div key={i} style={{ background: CARD, borderRadius: 20, padding: "28px 24px", border: `2px solid ${RULE}` }}>
                 <div style={{ fontFamily: "Fredoka, system-ui, sans-serif", fontWeight: 700, fontSize: 52, color: TEXT }}>
                   {r.value}
                 </div>
@@ -120,9 +124,9 @@ export function ShareCard({ cardRef, eyebrow, title, subtitle, bigValue, bigLabe
       </div>
 
       {/* Footer */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 30 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `2px solid ${RULE}`, paddingTop: 30 }}>
         <div style={{ fontSize: 30, color: MUTED }}>Generated on HoopIQ</div>
-        <div style={{ fontFamily: "Fredoka, system-ui, sans-serif", fontWeight: 600, fontSize: 32, color: BRAND_GLOW }}>
+        <div style={{ fontFamily: "Fredoka, system-ui, sans-serif", fontWeight: 600, fontSize: 32, color: TERRACOTTA }}>
           hoopiq.com
         </div>
       </div>
@@ -136,7 +140,7 @@ export function ShareCard({ cardRef, eyebrow, title, subtitle, bigValue, bigLabe
  *
  * Usage:
  *   <ShareButton eyebrow="Shot Grade" title="L. Doncic vs R. Gobert"
- *     bigValue="A-" bigLabel="Contested pull-up 3" accent="#22c55e"
+ *     bigValue="A-" bigLabel="Contested pull-up 3" accent="#2F7D5B"
  *     rows={[{label:"PPP", value:"1.18"}, {label:"FG%", value:"39%"}]} />
  */
 export default function ShareButton({ className = "", label = "Share", ...cardProps }) {
@@ -176,7 +180,7 @@ export default function ShareButton({ className = "", label = "Share", ...cardPr
         type="button"
         onClick={onShare}
         disabled={busy}
-        className={className || "inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-50"}
+        className={className || "inline-flex items-center gap-2 rounded-lg border border-ink/10 bg-ink/5 px-3 py-1.5 text-sm font-medium text-ink transition hover:bg-ink/10 disabled:opacity-50"}
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13" />

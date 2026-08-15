@@ -31,7 +31,7 @@ export function TeamTile({ tricode, size = "md", className = "" }) {
   return (
     <span
       aria-hidden="true"
-      className={`flex items-center justify-center font-display font-extrabold tracking-tight ring-1 ring-white/10 ${SIZES[size]} ${className}`}
+      className={`flex items-center justify-center font-hoop font-extrabold tracking-tight ring-2 ring-ink ${SIZES[size]} ${className}`}
       style={{ backgroundColor: bg, color: textOn(bg) }}
     >
       {code}
@@ -39,7 +39,7 @@ export function TeamTile({ tricode, size = "md", className = "" }) {
   );
 }
 
-// Player headshot placeholder — initials on a deterministic navy/blue tile
+// Player headshot placeholder — initials on a terracotta/basketball tile
 export function InitialsTile({ name = "", size = "lg", className = "" }) {
   const initials = name
     .split(" ")
@@ -50,7 +50,7 @@ export function InitialsTile({ name = "", size = "lg", className = "" }) {
   return (
     <span
       aria-hidden="true"
-      className={`flex items-center justify-center bg-gradient-to-br from-brand-dim to-surface-raised font-display font-bold text-white ring-1 ring-white/10 ${SIZES[size]} ${className}`}
+      className={`flex items-center justify-center bg-gradient-to-br from-basketball to-terracotta-dim font-hoop font-bold text-paper ring-2 ring-ink ${SIZES[size]} ${className}`}
     >
       {initials || "?"}
     </span>

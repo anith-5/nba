@@ -13,5 +13,5 @@ export default function Timer({ startedAt, durationSeconds }) {
     return () => clearInterval(interval);
   }, [startedAt, durationSeconds]);
 
-  return <span className="font-mono text-2xl font-bold text-court-glow">{remaining}s</span>;
+  return <span className="font-mono text-2xl font-bold text-terracotta">{remaining}s</span>;
 }

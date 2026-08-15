@@ -14,8 +14,8 @@ export default function HintAuction() {
 
   if (!room || !gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -32,7 +32,7 @@ export default function HintAuction() {
       <div className="space-y-6">
         <HintAuctionResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -41,7 +41,7 @@ export default function HintAuction() {
   }
 
   if (gameState.phase === "awaiting_configure" || !gameState.currentRound) {
-    return <p className="text-center text-slate-400">Setting up the draft…</p>;
+    return <p className="text-center text-ink/70">Setting up the draft…</p>;
   }
 
   const round = gameState.currentRound;
@@ -53,10 +53,10 @@ export default function HintAuction() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-ink">
           Round {gameState.roundNumber} of {gameState.totalRounds}
         </h1>
-        <p className="mt-1 text-xs text-slate-500">{config.era === "current" ? "Current Rosters" : "All-Time"} draft</p>
+        <p className="mt-1 text-xs text-ink/60">{config.era === "current" ? "Current Rosters" : "All-Time"} draft</p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -75,12 +75,12 @@ export default function HintAuction() {
                 onPlaceBid={(amount) => sendGameAction("place_bid", { amount })}
               />
             ) : (
-              <p className="text-center text-sm text-slate-500">Bidding opens once every hint has been revealed…</p>
+              <p className="text-center text-sm text-ink/60">Bidding opens once every hint has been revealed…</p>
             ))}
         </div>
 
         <div>
-          <p className="stat-label mb-2 text-center lg:text-left">Rosters</p>
+          <p className="hoop-stat-label mb-2 text-center lg:text-left">Rosters</p>
           <HintAuctionRosterBoard players={room.players} rosters={gameState.rosters} budgets={gameState.budgets} myId={myId} />
         </div>
       </div>

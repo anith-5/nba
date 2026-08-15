@@ -22,10 +22,10 @@ export default function ThemedDraftBoard({ gameState, players, myId, onMakePick 
 
   return (
     <div className="space-y-4">
-      <div className="card flex items-center justify-between p-4">
+      <div className="hoop-card-outline flex items-center justify-between p-4">
         <div>
-          <p className="stat-label">On the Clock</p>
-          <p className="text-lg font-semibold text-white">{isMyTurn ? "Your pick" : `${currentPlayerName}'s pick`}</p>
+          <p className="hoop-stat-label">On the Clock</p>
+          <p className="text-lg font-semibold text-ink">{isMyTurn ? "Your pick" : `${currentPlayerName}'s pick`}</p>
         </div>
         {turnTimerSeconds && gameState.pickDeadlineAt && (
           <Timer startedAt={gameState.pickDeadlineAt - turnTimerSeconds * 1000} durationSeconds={turnTimerSeconds} />
@@ -36,7 +36,7 @@ export default function ThemedDraftBoard({ gameState, players, myId, onMakePick 
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search available players…"
-        className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-court"
+        className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink outline-none focus:border-terracotta"
       />
 
       <div className="max-h-[28rem] space-y-1.5 overflow-y-auto pr-1">
@@ -46,13 +46,13 @@ export default function ThemedDraftBoard({ gameState, players, myId, onMakePick 
             type="button"
             disabled={!isMyTurn}
             onClick={() => onMakePick(p.player_id)}
-            className="flex w-full items-center justify-between rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-left text-sm text-white transition hover:border-court/50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex w-full items-center justify-between rounded-lg border border-ink/15 bg-paper px-3 py-2 text-left text-sm text-ink transition hover:border-terracotta/50 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <span>{p.name}</span>
-            <span className="text-xs text-slate-500">{p.position || p.team_abbreviation || ""}</span>
+            <span className="text-xs text-ink/60">{p.position || p.team_abbreviation || ""}</span>
           </button>
         ))}
-        {filtered.length === 0 && <p className="py-4 text-center text-sm text-slate-600">No players match your search.</p>}
+        {filtered.length === 0 && <p className="py-4 text-center text-sm text-ink/50">No players match your search.</p>}
       </div>
     </div>
   );

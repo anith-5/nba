@@ -16,8 +16,8 @@ export default function BuildAPlayerResults({ gameState, players }) {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-2xl font-bold text-white">Build a Player Results</h1>
-        <p className="mt-1 text-sm text-slate-400">Ranked by overall composite grade</p>
+        <h1 className="text-2xl font-bold text-ink">Build a Player Results</h1>
+        <p className="mt-1 text-sm text-ink/70">Ranked by overall composite grade</p>
       </header>
 
       <div className="mx-auto max-w-2xl space-y-4">
@@ -25,10 +25,10 @@ export default function BuildAPlayerResults({ gameState, players }) {
           const build = builds[player.socketId] || {};
           const composite = compositeGrades[player.socketId];
           return (
-            <div key={player.socketId} className="card space-y-3 p-5">
+            <div key={player.socketId} className="hoop-card-outline space-y-3 p-5">
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-white">
-                  <span className="stat-label mr-2">#{i + 1}</span>
+                <span className="text-lg font-semibold text-ink">
+                  <span className="hoop-stat-label mr-2">#{i + 1}</span>
                   {player.name}
                 </span>
                 <span className={`rounded-lg border px-3 py-1 text-xl font-bold ${gradeColorClass(composite)}`}>
@@ -40,10 +40,10 @@ export default function BuildAPlayerResults({ gameState, players }) {
                   const entry = build[key];
                   return (
                     <div key={key} className={`rounded-md border px-2 py-1.5 ${gradeColorClass(entry?.grade)}`}>
-                      <p className="text-[10px] uppercase text-slate-500">{label}</p>
+                      <p className="text-[10px] uppercase text-ink/60">{label}</p>
                       <div className="flex items-center justify-between gap-1">
-                        <span className="truncate text-xs text-white">{entry ? entry.sourcePlayerName : "—"}</span>
-                        <span className="text-sm font-bold text-white">{entry ? entry.grade : ""}</span>
+                        <span className="truncate text-xs text-ink">{entry ? entry.sourcePlayerName : "—"}</span>
+                        <span className="text-sm font-bold text-ink">{entry ? entry.grade : ""}</span>
                       </div>
                     </div>
                   );

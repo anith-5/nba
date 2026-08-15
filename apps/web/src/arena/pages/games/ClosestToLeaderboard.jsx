@@ -12,27 +12,27 @@ export default function ClosestToLeaderboard({ myState, players, playerLineups }
 
   return (
     <div className="animate-fade-in mx-auto max-w-lg space-y-6 text-center">
-      <h1 className="text-2xl font-bold text-white">Lineup Complete</h1>
-      <p className="text-slate-400">Waiting for everyone else to finish their lineup…</p>
+      <h1 className="text-2xl font-bold text-ink">Lineup Complete</h1>
+      <p className="text-ink/70">Waiting for everyone else to finish their lineup…</p>
 
-      <div className="card space-y-3 p-5 text-left">
-        <p className="stat-label">Your Lineup</p>
+      <div className="hoop-card-outline space-y-3 p-5 text-left">
+        <p className="hoop-stat-label">Your Lineup</p>
         <div className="grid grid-cols-5 gap-2 text-center">
           {POSITION_ORDER.map((pos) => (
-            <div key={pos} className="rounded-lg border border-slate-700 bg-slate-950 p-2">
-              <p className="stat-label text-xs">{pos}</p>
-              <p className="mt-1 truncate text-xs font-semibold text-white">{myState.lineup[pos]?.name}</p>
-              <p className="text-xs text-slate-500">{myState.lineup[pos]?.season}</p>
+            <div key={pos} className="rounded-lg border border-ink/20 bg-paper p-2">
+              <p className="hoop-stat-label text-xs">{pos}</p>
+              <p className="mt-1 truncate text-xs font-semibold text-ink">{myState.lineup[pos]?.name}</p>
+              <p className="text-xs text-ink/60">{myState.lineup[pos]?.season}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="card p-5">
-        <p className="stat-label">
+      <div className="hoop-card-outline p-5">
+        <p className="hoop-stat-label">
           {doneCount} of {connected.length} players done
         </p>
-        <ul className="mt-3 space-y-1 text-left text-sm text-slate-400">
+        <ul className="mt-3 space-y-1 text-left text-sm text-ink/70">
           {connected.map((p) => (
             <li key={p.socketId} className="flex items-center justify-between">
               <span>{p.name}</span>

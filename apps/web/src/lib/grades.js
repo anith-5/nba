@@ -1,12 +1,15 @@
-// Shared letter-grade color scale (A+ → F), monochrome black/red/white:
-// good = bright white, fading to gray, bad = red.
+// Shared letter-grade color scale (A+ → F) on the paper/ink system: good runs
+// green, the middle stays neutral ink, bad runs red. The legacy version ran
+// white → grey → red, which worked on black but flattens on paper (white text
+// vanishes, and the D/F reds were only a shade apart), so the ends are
+// anchored to the stat-up/stat-down pair instead.
 const MAP = {
-  a: { text: "text-white", ring: "ring-white/25", bg: "bg-white/10" },
-  b: { text: "text-zinc-200", ring: "ring-white/15", bg: "bg-white/5" },
-  c: { text: "text-zinc-400", ring: "ring-white/10", bg: "bg-white/5" },
-  d: { text: "text-brand-glow", ring: "ring-brand/30", bg: "bg-brand/10" },
-  f: { text: "text-brand", ring: "ring-brand/40", bg: "bg-brand/15" },
-  na: { text: "text-zinc-400", ring: "ring-white/10", bg: "bg-white/5" },
+  a: { text: "text-stat-up", ring: "ring-stat-up/40", bg: "bg-stat-up/10" },
+  b: { text: "text-ink", ring: "ring-ink/25", bg: "bg-ink/10" },
+  c: { text: "text-ink/70", ring: "ring-ink/15", bg: "bg-ink/5" },
+  d: { text: "text-basketball-dim", ring: "ring-basketball/40", bg: "bg-basketball/10" },
+  f: { text: "text-stat-down", ring: "ring-stat-down/40", bg: "bg-stat-down/10" },
+  na: { text: "text-ink/60", ring: "ring-ink/15", bg: "bg-ink/5" },
 };
 
 export function gradeTier(grade) {
@@ -20,7 +23,9 @@ export function gradeClasses(grade) {
 
 // Hex equivalents — for contexts that need a raw color (e.g. the share card,
 // which uses inline styles for reliable image capture).
-const HEX = { a: "#FAFAFA", b: "#D4D4D8", c: "#A1A1AA", d: "#F87171", f: "#EF4444", na: "#A1A1AA" };
+// Must stay in step with MAP above: stat-up green, ink, muted ink, basketball
+// dim, stat-down red.
+const HEX = { a: "#2F7D5B", b: "#2431C4", c: "#6B72D8", d: "#C6672E", f: "#C0392B", na: "#6B72D8" };
 
 export function gradeHex(grade) {
   return HEX[gradeTier(grade)];

@@ -32,18 +32,18 @@ export default function WordleSearchInput({ players, guessedIds, onSelect, disab
         onChange={(e) => setQuery(e.target.value)}
         disabled={disabled}
         placeholder="Type a player name to guess…"
-        className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-white outline-none focus:border-court disabled:opacity-50"
+        className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink outline-none focus:border-terracotta disabled:opacity-50"
       />
       {matches.length > 0 && (
-        <ul className="card absolute z-10 mt-1 w-full overflow-hidden">
+        <ul className="hoop-card-outline absolute z-10 mt-1 w-full overflow-hidden">
           {matches.map((p) => (
             <li key={p.player_id}>
               <button
                 type="button"
                 onClick={() => handleSelect(p)}
-                className="block w-full px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800"
+                className="block w-full px-3 py-2 text-left text-sm text-ink hover:bg-ink/5"
               >
-                {p.name} <span className="text-slate-500">— {p.team_abbreviation}</span>
+                {p.name} <span className="text-ink/60">— {p.team_abbreviation}</span>
               </button>
             </li>
           ))}

@@ -10,25 +10,25 @@ export default function ThemedDraftRosterPanel({ gameState, players, myId }) {
       {players.map((player) => {
         const roster = rosters[player.socketId] || [];
         return (
-          <div key={player.socketId} className={`card space-y-2 p-4 ${player.socketId === myId ? "border-court/50" : ""}`}>
+          <div key={player.socketId} className={`hoop-card-outline space-y-2 p-4 ${player.socketId === myId ? "border-terracotta/50" : ""}`}>
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-white">
+              <span className="font-semibold text-ink">
                 {player.name}
-                {player.socketId === myId && <span className="ml-1 text-xs text-court-glow">(you)</span>}
-                {player.connected === false && <span className="ml-2 text-xs text-slate-600">(disconnected)</span>}
+                {player.socketId === myId && <span className="ml-1 text-xs text-terracotta">(you)</span>}
+                {player.connected === false && <span className="ml-2 text-xs text-ink/50">(disconnected)</span>}
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-ink/60">
                 {roster.length} of {config.rosterSize}
               </span>
             </div>
             <ul className="space-y-1">
               {roster.map((p, i) => (
-                <li key={i} className="rounded-md border border-court/40 bg-court/10 px-2 py-1 text-xs text-white">
+                <li key={i} className="rounded-md border border-terracotta/40 bg-terracotta/10 px-2 py-1 text-xs text-ink">
                   {p.name}
                 </li>
               ))}
               {Array.from({ length: Math.max(0, config.rosterSize - roster.length) }).map((_, i) => (
-                <li key={`empty-${i}`} className="rounded-md border border-slate-800 bg-slate-950 px-2 py-1 text-xs text-slate-600">
+                <li key={`empty-${i}`} className="rounded-md border border-ink/15 bg-paper px-2 py-1 text-xs text-ink/50">
                   —
                 </li>
               ))}

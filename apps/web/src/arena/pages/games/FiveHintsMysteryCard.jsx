@@ -20,34 +20,34 @@ export default function FiveHintsMysteryCard({ round, maxHints, winners, players
           : null;
 
     return (
-      <div className="card animate-fade-in mx-auto max-w-lg space-y-4 p-8 text-center">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-court/20 text-3xl font-bold text-court-glow">
+      <div className="hoop-card-outline animate-fade-in mx-auto max-w-lg space-y-4 p-8 text-center">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-terracotta/20 text-3xl font-bold text-terracotta">
           {player?.name
             ?.split(" ")
             .map((w) => w[0])
             .join("")}
         </div>
-        <h2 className="text-3xl font-bold text-white">{player?.name}</h2>
-        <p className="text-slate-400">
+        <h2 className="text-3xl font-bold text-ink">{player?.name}</h2>
+        <p className="text-ink/70">
           {positionName} — {teamName}
         </p>
-        {keyStat && <p className="stat-value text-lg">{keyStat}</p>}
+        {keyStat && <p className="hoop-stat-value text-lg">{keyStat}</p>}
 
         {winners.length > 0 ? (
-          <div className="animate-slide-up space-y-2 rounded-xl border border-court/40 bg-slate-950 p-4">
-            <p className="text-sm font-semibold text-court-glow">🏀 Correct!</p>
+          <div className="animate-slide-up space-y-2 rounded-xl border border-terracotta/40 bg-paper p-4">
+            <p className="text-sm font-semibold text-terracotta">🏀 Correct!</p>
             {winners.map((w) => {
               const name = players.find((p) => p.socketId === w.socketId)?.name || "Someone";
               return (
-                <p key={w.socketId} className="text-sm text-white">
+                <p key={w.socketId} className="text-sm text-ink">
                   {name} guessed it on hint {w.hintNumber} — +{w.points} points
                 </p>
               );
             })}
           </div>
         ) : (
-          <div className="rounded-xl border border-slate-700 bg-slate-950 p-4">
-            <p className="text-sm text-amber-300">Nobody guessed it in time.</p>
+          <div className="rounded-xl border border-ink/20 bg-paper p-4">
+            <p className="text-sm text-basketball">Nobody guessed it in time.</p>
           </div>
         )}
       </div>
@@ -55,14 +55,14 @@ export default function FiveHintsMysteryCard({ round, maxHints, winners, players
   }
 
   return (
-    <div className="card mx-auto max-w-lg space-y-5 p-8 text-center">
-      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-slate-800 text-4xl font-bold text-slate-500">
+    <div className="hoop-card-outline mx-auto max-w-lg space-y-5 p-8 text-center">
+      <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-ink/5 text-4xl font-bold text-ink/60">
         ?
       </div>
-      <p className="stat-label">
+      <p className="hoop-stat-label">
         Hint {round.hintNumber} of {maxHints}
       </p>
-      <p className="animate-fade-in text-xl leading-relaxed text-white">{round.hints[round.hints.length - 1]}</p>
+      <p className="animate-fade-in text-xl leading-relaxed text-ink">{round.hints[round.hints.length - 1]}</p>
     </div>
   );
 }

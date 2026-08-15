@@ -13,8 +13,8 @@ export default function BuildAPlayer() {
 
   if (!room || !gameState) {
     return (
-      <p className="text-slate-400">
-        No active game found for <span className="font-mono text-white">{code}</span>.
+      <p className="text-ink/70">
+        No active game found for <span className="font-mono text-ink">{code}</span>.
       </p>
     );
   }
@@ -31,7 +31,7 @@ export default function BuildAPlayer() {
       <div className="space-y-6">
         <BuildAPlayerResults gameState={gameState} players={room.players} />
         <div className="text-center">
-          <button onClick={handleNewGame} className="btn-ghost">
+          <button onClick={handleNewGame} className="hoop-btn-ghost">
             New Game
           </button>
         </div>
@@ -46,8 +46,8 @@ export default function BuildAPlayer() {
   return (
     <div className="animate-fade-in space-y-6">
       <header className="text-center">
-        <h1 className="text-xl font-bold text-white">Round {gameState.roundNumber}</h1>
-        <p className="mt-1 text-xs text-slate-500">
+        <h1 className="text-xl font-bold text-ink">Round {gameState.roundNumber}</h1>
+        <p className="mt-1 text-xs text-ink/60">
           {myFilledCount} of {gameState.config.traitSlotCount} traits locked
         </p>
       </header>
@@ -63,7 +63,7 @@ export default function BuildAPlayer() {
           />
         </div>
         <div>
-          <p className="stat-label mb-2 text-center lg:text-left">Builds</p>
+          <p className="hoop-stat-label mb-2 text-center lg:text-left">Builds</p>
           <BuildAPlayerBuildPanel gameState={gameState} players={room.players} myId={myId} />
         </div>
       </div>
