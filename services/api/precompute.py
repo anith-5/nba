@@ -28,6 +28,48 @@ from app.routers import defense_scanner, clutch_dna, standings, draft_simulator,
 # Draft-history snapshots cover this range (Redraft / Historical grounding)
 DRAFT_YEARS = range(1990, 2025)
 
+# A refreshed snapshot is rejected if it came back smaller than this fraction
+# of what's already on disk. 0.5 is deliberately loose: real roster churn never
+# halves a dataset, so anything under it means fetches failed, not that the
+# league shrank.
+MIN_KEEP_RATIO = 0.5
+
+
+def _write_if_sane(cache_name: str, new_data, label: str) -> bool:
+    """Write a refreshed snapshot only if it plausibly succeeded.
+
+    WHY THIS GUARD EXISTS: every NBA call in this script is wrapped in a
+    per-item try/except so one bad team doesn't abort the run. That is the
+    right behaviour for a flaky endpoint, but it means a TOTAL failure — no
+    network, a blocked IP, an API shape change — looks identical to a
+    successful run that simply collected nothing. The old code then wrote that
+    empty result straight over a good snapshot, and since these files ARE the
+    only data source on the deployed site, a single bad run could take the
+    live rosters, lineups and trade pool down to nothing.
+
+    Refusing the write leaves the previous good snapshot in place, which is
+    always the better failure mode: stale data beats no data.
+    """
+    new_count = len(new_data) if new_data is not None else 0
+    old = data_cache.read_json(cache_name)
+    old_count = len(old) if old else 0
+
+    if new_count == 0:
+        print(f"      REFUSED to write {label}: fetched 0 records "
+              f"(existing snapshot of {old_count} left untouched)")
+        return False
+
+    if old_count and new_count < old_count * MIN_KEEP_RATIO:
+        print(f"      REFUSED to write {label}: only {new_count} records vs "
+              f"{old_count} on disk — looks like a partial failure, "
+              f"existing snapshot left untouched")
+        return False
+
+    data_cache.write_json(cache_name, new_data)
+    delta = f" (was {old_count})" if old_count else ""
+    print(f"      saved {new_count} records -> data_cache/{cache_name}{delta}")
+    return True
+
 
 def precompute_defense():
     print("[1/7] Defense Scanner — pulling league team defense…")
@@ -101,17 +143,16 @@ def precompute_lineups():
             team_lineups[str(tid)] = lineup_optimizer._team_lineups_live(tid)
         except Exception as e:
             print(f"      lineups {t['abbreviation']}: {e}")
-    data_cache.write_json(lineup_optimizer.ROSTERS_CACHE, rosters)
-    data_cache.write_json(lineup_optimizer.TEAM_LINEUPS_CACHE, team_lineups)
-    print(f"      cached {len(rosters)} rosters / {len(team_lineups)} team-lineup sets")
+    _write_if_sane(lineup_optimizer.ROSTERS_CACHE, rosters, "team rosters")
+    _write_if_sane(lineup_optimizer.TEAM_LINEUPS_CACHE, team_lineups, "team lineups")
 
 
 def precompute_trades():
     print("[7/7] Trade Machine — player pool + salaries (rosters for the picker)…")
     pool = trades._fetch_pool_with_salaries_live()
-    data_cache.write_json(trades.TRADES_POOL_CACHE, pool)
-    with_sal = sum(1 for p in pool if p.get("salary_millions") is not None)
-    print(f"      saved {len(pool)} players ({with_sal} with salary)")
+    if _write_if_sane(trades.TRADES_POOL_CACHE, pool, "trade pool"):
+        with_sal = sum(1 for p in pool if p.get("salary_millions") is not None)
+        print(f"      ({with_sal} of {len(pool)} with salary)")
 
 
 def main():
