@@ -35,9 +35,11 @@ is recorded on each team so it is never ambiguous which is which.
 from __future__ import annotations
 
 import glob
+import json
 import os
 import re
 import unicodedata
+from pathlib import Path
 from typing import Any, Optional
 
 import requests
@@ -61,12 +63,22 @@ TEAM_NAME_ALIASES = {"LA Clippers": "Los Angeles Clippers"}
 _TIMEOUT = 25
 
 
-def _norm_name(s: str) -> str:
-    """Strip accents, suffixes and punctuation so 'Luka Dončić' and
-    'Jaron Pierre Jr.' compare cleanly against nba_api's spellings."""
+def _norm_strict(s: str) -> str:
+    """Accents and punctuation stripped, generational suffix KEPT.
+
+    Keeping the suffix is what separates a father from a son: nba_api carries
+    both 'Jaren Jackson' (retired) and 'Jaren Jackson Jr.' (active).
+    """
     s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
-    s = re.sub(r"\b(jr|sr|ii|iii|iv|v)\b", "", s.lower())
-    return re.sub(r"[^a-z ]", "", s).strip()
+    return re.sub(r"[^a-z ]", "", s.lower()).strip()
+
+
+def _norm_loose(s: str) -> str:
+    """Also drops the suffix, for sources that spell it differently (or omit
+    it). Ambiguous by construction — only ever used with an active-player
+    tiebreak, never on its own."""
+    s = _norm_strict(s)
+    return re.sub(r"\b(jr|sr|ii|iii|iv|v)\b", "", s).strip()
 
 
 def _slugify(name: str) -> str:
@@ -86,13 +98,40 @@ def _height_to_dashed(display_height: Optional[str]) -> Optional[str]:
     return f"{m.group(1)}-{m.group(2) or 0}"
 
 
-def _nba_player_index() -> dict[str, dict]:
-    """Name -> nba_api static player record. Bundled with the library, so this
-    works with no network even when stats.nba.com is unreachable."""
-    idx: dict[str, dict] = {}
+def _nba_player_index() -> tuple[dict[str, dict], dict[str, list]]:
+    """Two name indexes over nba_api's bundled static list (no network needed).
+
+    Returns (strict, loose). `strict` keys on the full name including any
+    generational suffix; `loose` keys on the suffix-stripped name and holds
+    EVERY candidate, because that form genuinely collides — 'Jaren Jackson'
+    matches both the retired father and the active son. Resolving a loose hit
+    requires the active-player tiebreak in _match_player.
+    """
+    strict: dict[str, dict] = {}
+    loose: dict[str, list] = {}
     for p in static_players.get_players():
-        idx.setdefault(_norm_name(p["full_name"]), p)
-    return idx
+        strict.setdefault(_norm_strict(p["full_name"]), p)
+        loose.setdefault(_norm_loose(p["full_name"]), []).append(p)
+    return strict, loose
+
+
+def _match_player(full_name: str, strict: dict, loose: dict) -> Optional[dict]:
+    """Resolve an ESPN name to an nba_api record, or None.
+
+    Exact-with-suffix wins outright. Only if that misses do we fall back to
+    the suffix-stripped form, and then only when exactly one ACTIVE player
+    fits — an ambiguous match returns None rather than guessing, because a
+    wrong-but-real player_id is worse than none at all: it silently loads
+    another player's career under this player's name.
+    """
+    hit = strict.get(_norm_strict(full_name))
+    if hit:
+        return hit
+    candidates = loose.get(_norm_loose(full_name), [])
+    if len(candidates) == 1:
+        return candidates[0]
+    active = [c for c in candidates if c.get("is_active")]
+    return active[0] if len(active) == 1 else None
 
 
 def _draft_slugs() -> set[str]:
@@ -109,10 +148,97 @@ def _get(url: str) -> dict:
     return r.json()
 
 
+def team_assignments(rosters: dict[str, Any]) -> dict[int, dict[str, str]]:
+    """player_id -> {'full_name', 'abbreviation'} from a rosters.json blob.
+
+    Only players with a real NBA id appear: the other datasets are keyed by
+    NBA id, so a rookie without one has nothing to match against.
+    """
+    by_id = {t["id"]: t for t in static_teams.get_teams()}
+    out: dict[int, dict[str, str]] = {}
+    for team in rosters.values():
+        meta = by_id.get(team.get("team_id"))
+        if not meta:
+            continue
+        for p in team.get("players", []):
+            if p.get("player_id"):
+                out[p["player_id"]] = {
+                    "full_name": meta["full_name"],
+                    "abbreviation": meta["abbreviation"],
+                }
+    return out
+
+
+def propagate_team_assignments(rosters: dict[str, Any], verbose: bool = True) -> dict[str, int]:
+    """Push refreshed team assignments into the other datasets keyed by NBA id.
+
+    WHY: rosters.json is not the only place a player's team is recorded.
+    trades_pool.json (Trade Machine) and the web bundle's
+    current_nba_players.json each carry their own copy, and refreshing only
+    rosters.json leaves the app contradicting itself — the Lineup Optimizer
+    showing a player on his new team while the Trade Machine still offers him
+    from the old one.
+
+    ONLY the team fields are touched. Per-player stats and salaries stay put:
+    those are last-season figures and are still correct for a traded player.
+    It's the team that went stale, not the production.
+    """
+    assign = team_assignments(rosters)
+    stats = {"trade_pool_updated": 0, "web_updated": 0,
+             "trade_pool_off_roster": 0, "web_off_roster": 0}
+
+    # --- Trade Machine pool -------------------------------------------------
+    pool = data_cache.read_json("trades_pool.json")
+    if pool:
+        for p in pool:
+            new = assign.get(p.get("player_id"))
+            if not new:
+                stats["trade_pool_off_roster"] += 1
+                continue
+            if p.get("team") != new["abbreviation"]:
+                p["team"] = new["abbreviation"]
+                stats["trade_pool_updated"] += 1
+        data_cache.write_json("trades_pool.json", pool)
+
+    # --- Web bundle ---------------------------------------------------------
+    # Lives outside services/api, so it's addressed relative to this file.
+    web_path = (Path(__file__).resolve().parents[3]
+                / "apps" / "web" / "src" / "data" / "current_nba_players.json")
+    if web_path.exists():
+        blob = json.loads(web_path.read_text(encoding="utf-8"))
+        # Conference/division aren't in nba_api's static team list, but they
+        # don't change — carry them over from whatever the file already knows
+        # about the destination team.
+        geo = {p["team_abbreviation"]: (p.get("conference"), p.get("division"))
+               for p in blob.get("players", []) if p.get("team_abbreviation")}
+        for p in blob.get("players", []):
+            new = assign.get(p.get("player_id"))
+            if not new:
+                stats["web_off_roster"] += 1
+                continue
+            if p.get("team_abbreviation") != new["abbreviation"]:
+                p["team_full_name"] = new["full_name"]
+                p["team_abbreviation"] = new["abbreviation"]
+                conf, div = geo.get(new["abbreviation"], (None, None))
+                if conf:
+                    p["conference"], p["division"] = conf, div
+                stats["web_updated"] += 1
+        blob["team_source"] = "espn"
+        web_path.write_text(
+            json.dumps(blob, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    if verbose:
+        print(f"      trade pool: {stats['trade_pool_updated']} team changes "
+              f"({stats['trade_pool_off_roster']} not on any current roster)")
+        print(f"      web bundle: {stats['web_updated']} team changes "
+              f"({stats['web_off_roster']} not on any current roster)")
+    return stats
+
+
 def build_rosters(verbose: bool = True) -> dict[str, Any]:
     """Fetch all 30 rosters from ESPN, keyed by NBA team id as a string so the
     result is a drop-in replacement for the existing rosters.json."""
-    name_idx = _nba_player_index()
+    strict_idx, loose_idx = _nba_player_index()
     slugs = _draft_slugs()
     nba_teams = {t["full_name"]: t for t in static_teams.get_teams()}
 
@@ -140,7 +266,7 @@ def build_rosters(verbose: bool = True) -> dict[str, Any]:
         players = []
         for a in payload.get("athletes", []):
             full_name = a.get("fullName") or a.get("displayName") or ""
-            nba_match = name_idx.get(_norm_name(full_name))
+            nba_match = _match_player(full_name, strict_idx, loose_idx)
             slug = _slugify(full_name)
             total += 1
             if nba_match:

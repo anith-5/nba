@@ -175,7 +175,13 @@ def precompute_trades():
 def precompute_espn_rosters():
     print("[8/8] Rosters via ESPN — independent of stats.nba.com…")
     rosters = espn_rosters.build_rosters()
-    _write_if_sane(lineup_optimizer.ROSTERS_CACHE, rosters, "team rosters (ESPN)", _count_players)
+    if not _write_if_sane(lineup_optimizer.ROSTERS_CACHE, rosters,
+                          "team rosters (ESPN)", _count_players):
+        return
+    # Team assignments live in three places. Propagating only on a successful
+    # write keeps them from drifting apart — a half-refreshed app that shows a
+    # player on two different teams is worse than one that's uniformly stale.
+    espn_rosters.propagate_team_assignments(rosters)
 
 
 # Steps are addressable by name so a single dataset can be refreshed on its
