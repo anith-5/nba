@@ -19,6 +19,11 @@ from app.config import settings
 router = APIRouter(prefix="/shot-quality", tags=["shot-quality"])
 SEASON = settings.current_season
 
+# Distance from the baseline to the centre of the hoop, in feet. Used to shift
+# NBA shot coords (which are measured from the hoop) onto the baseline-relative
+# axis the shared shot chart draws against.
+HOOP_FROM_BASELINE_FT = 5.25
+
 # League average FG% by zone (2024-25 approximations)
 ZONE_XFG = {
     "Restricted Area": 0.68,
@@ -92,6 +97,32 @@ def player_shot_quality(player_id: int):
     total_made = int(shots_df[made_col].sum())
     overall_fg = round(total_made / total_att, 3) if total_att else 0.0
 
+    # Shot-level coordinates for the hexbin chart, normalised into the same
+    # space the draft-comp shot charts use so one renderer serves both:
+    #   x — 0..50 feet across the court width, 0 = left sideline
+    #   y — feet out from the baseline
+    # ShotChartDetail gives LOC_X/LOC_Y in TENTHS of a foot measured from the
+    # centre of the hoop (LOC_X positive to the right), and the hoop centre
+    # sits 5.25 ft off the baseline — hence the offsets below.
+    shots = []
+    for x10, y10, made_flag, shot_type in zip(
+        shots_df["LOC_X"], shots_df["LOC_Y"],
+        shots_df[made_col], shots_df["SHOT_TYPE"],
+    ):
+        x = 25.0 + float(x10) / 10.0
+        y = HOOP_FROM_BASELINE_FT + float(y10) / 10.0
+        # Drop anything off the half court. Backcourt heaves carry real
+        # coordinates but would stretch the bin scale so far that every
+        # in-rhythm shot collapses into one indistinguishable blob.
+        if not (0.0 <= x <= 50.0) or not (0.0 <= y <= 47.0):
+            continue
+        shots.append({
+            "x": round(x, 1),
+            "y": round(y, 1),
+            "made": bool(made_flag),
+            "value": 3 if "3PT" in str(shot_type) else 2,
+        })
+
     # Weighted xFG% by shot volume
     weighted_xfg = sum(
         (v["attempts"] / total_att) * v["xfg_pct"]
@@ -114,7 +145,9 @@ def player_shot_quality(player_id: int):
         "overall_xfg_pct": round(weighted_xfg, 3),
         "overall_grade": overall_grade,
         "total_attempts": total_att,
+        "total_made": total_made,
         "shot_zones": sorted(zones.values(), key=lambda z: -z["attempts"]),
+        "shots": shots,
     }
 
 

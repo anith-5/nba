@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
+import ShotChart from "../components/ShotChart.jsx";
 
 // Matched to the site's paper/ink theme. Prospect = ink blue (solid fill),
 // comp = terracotta (dashed outline) — the app's own tokens. Identity never
@@ -12,7 +13,6 @@ import { InitialsTile } from "../components/TeamTile.jsx";
 // chosen for contrast against paper (#F2F1EA): labels land ~8:1, the two
 // series and secondary text ~5:1, all comfortably above the 4.5:1 floor at
 // the 10–11px sizes this chart draws.
-const CARD_BG = "#F2F1EA"; // paper — stroked between hexbins so they read apart
 const INK = "#2431C4";     // ink — primary labels (axis names, player names)
 const SUBINK = "#4A52B8";  // muted ink — secondary / caption text
 const BLUE = "#3F4EE0";    // ink-glow — prospect series
@@ -117,71 +117,8 @@ function RadarCard({ data }) {
 }
 
 // ── Card 2: shot chart hexbin ─────────────────────────────────────────────────
-// ESPN coords: x 0–50 (court width), y = feet from baseline (basket ~4ft).
-const COURT_W = 300, COURT_H = 282, FT = 6; // px per foot
-
-function courtToPx(s) {
-  return { px: (s.x / 50) * COURT_W, py: s.y * FT + 24 };
-}
-
-function hexbin(shots, radius) {
-  const dx = radius * Math.sqrt(3), dy = radius * 1.5;
-  const bins = new Map();
-  for (const s of shots) {
-    const { px, py } = courtToPx(s);
-    const row = Math.round(py / dy);
-    const xoff = row % 2 ? dx / 2 : 0;
-    const col = Math.round((px - xoff) / dx);
-    const key = `${col},${row}`;
-    const cx = col * dx + xoff, cy = row * dy;
-    if (!bins.has(key)) bins.set(key, { cx, cy, count: 0 });
-    bins.get(key).count += 1;
-  }
-  return [...bins.values()];
-}
-
-function octagonPoints(cx, cy, r) {
-  const p = [];
-  for (let i = 0; i < 8; i++) {
-    const a = Math.PI / 8 + i * (Math.PI / 4); // flat-top octagon
-    p.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
-  }
-  return p.map((q) => q.map((n) => n.toFixed(1)).join(",")).join(" ");
-}
-
-function HalfCourt({ shots, color, label, made, attempts }) {
-  const r = 11;
-  const bins = useMemo(() => hexbin(shots, r), [shots]);
-  const max = Math.max(1, ...bins.map((b) => b.count));
-  const hoopX = (25 / 50) * COURT_W, hoopY = 4 * FT + 24;
-  return (
-    <div className="flex-1">
-      <p className="mb-1 text-center text-xs font-semibold" style={{ color }}>
-        {label} · {made}/{attempts} ({((made / attempts) * 100).toFixed(0)}% FG)
-      </p>
-      <svg viewBox={`0 0 ${COURT_W} ${COURT_H}`} className="w-full">
-        {/* court outline */}
-        <rect x="1" y="1" width={COURT_W - 2} height={COURT_H - 2} fill="none" stroke={GRID} strokeWidth="1.5" />
-        {/* paint */}
-        <rect x={hoopX - 6 * FT} y="0" width={12 * FT} height={19 * FT} fill="none" stroke={GRID} strokeWidth="1.2" />
-        {/* 3pt arc (~22.75ft) */}
-        <path d={`M ${hoopX - 22 * FT} 0 L ${hoopX - 22 * FT} ${9 * FT} A ${22 * FT} ${22 * FT} 0 0 0 ${hoopX + 22 * FT} ${9 * FT} L ${hoopX + 22 * FT} 0`}
-          fill="none" stroke={GRID} strokeWidth="1.2" />
-        {/* hoop */}
-        <circle cx={hoopX} cy={hoopY} r="4" fill="none" stroke={GRID} strokeWidth="1.5" />
-        {/* binned octagons — size (area) scales with shot frequency */}
-        {bins.map((b, i) => {
-          const rad = 2.5 + (r * 0.95 - 2.5) * Math.sqrt(b.count / max);
-          return (
-            <polygon key={i} points={octagonPoints(b.cx, b.cy, rad)}
-              fill={color} fillOpacity={(0.28 + 0.72 * (b.count / max)).toFixed(2)}
-              stroke={CARD_BG} strokeWidth="0.5" />
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
+// The court itself now lives in components/ShotChart.jsx so the regular-player
+// chart on Shot Quality renders identically instead of drawing its own.
 
 function ShotChartCard({ data }) {
   const { prospect, comp } = data;
@@ -189,10 +126,10 @@ function ShotChartCard({ data }) {
     <CardShell title={prospect.player} subtitle="Shot Chart Comp">
       <Legend prospect={prospect.player} comp={comp?.player} />
       <div className="mt-3 flex flex-col gap-4 sm:flex-row">
-        <HalfCourt shots={prospect.shots} color={BLUE} label={prospect.player}
+        <ShotChart shots={prospect.shots} color={BLUE} label={prospect.player}
           made={prospect.made} attempts={prospect.attempts} />
         {comp && (
-          <HalfCourt shots={comp.shots} color={ORANGE} label={comp.player}
+          <ShotChart shots={comp.shots} color={ORANGE} label={comp.player}
             made={comp.made} attempts={comp.attempts} />
         )}
       </div>
