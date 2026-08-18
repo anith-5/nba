@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../api.js";
 
 // Diverging scale: elite lineups read green, poor ones red, with the middle
@@ -108,12 +109,28 @@ function RealLineups({ teams }) {
         <div className="hoop-card-outline p-4 max-w-2xl">
           <p className="hoop-stat-label mb-3">Current Roster — {roster.team_name} ({roster.season})</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {/* Rookies who have never played an NBA game have no NBA
+                player_id, so it can't be the React key — every one of them
+                would key on null and collide. Fall back to the ESPN id. */}
             {roster.players.map(p => (
-              <div key={p.player_id} className="flex items-center gap-2 text-sm">
+              <div key={p.player_id ?? p.espn_id ?? p.name} className="flex items-center gap-2 text-sm">
                 <span className="text-ink/50 font-mono w-5 text-right text-xs">{p.number}</span>
                 <div>
                   <p className="text-ink">{p.name}</p>
-                  <p className="text-xs text-ink/50">{p.position} · {p.height}</p>
+                  <p className="text-xs text-ink/50">
+                    {p.position} · {p.height}
+                    {/* No NBA history yet, but we already hold their college
+                        profile — send them there instead of nowhere. */}
+                    {!p.player_id && p.draft_slug && (
+                      <>
+                        {" · "}
+                        <Link to={`/draft-comps?p=${p.draft_slug}`} className="font-semibold text-terracotta hover:underline">
+                          draft profile
+                        </Link>
+                      </>
+                    )}
+                    {!p.player_id && !p.draft_slug && <span className="text-ink/40"> · rookie</span>}
+                  </p>
                 </div>
               </div>
             ))}

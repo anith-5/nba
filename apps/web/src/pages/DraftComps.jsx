@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
 import ShotChart from "../components/ShotChart.jsx";
@@ -197,15 +198,23 @@ export default function DraftComps() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
+  const [params] = useSearchParams();
 
   useEffect(() => {
     api.draftCompList()
       .then((r) => {
         setList(r.prospects || []);
-        if (r.prospects?.length) setSlug(r.prospects[0].slug);
+        if (!r.prospects?.length) return;
+        // ?p=<slug> deep-link: rosters send rookies here, since a player with
+        // no NBA history has a college profile and nothing else to show.
+        // Fall back to the first prospect if the slug isn't in the list.
+        const wanted = params.get("p");
+        const match = wanted && r.prospects.find((p) => p.slug === wanted);
+        setSlug(match ? match.slug : r.prospects[0].slug);
       })
       .catch((e) => setError(e.message));
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
 
   useEffect(() => {
     if (!slug) return;
