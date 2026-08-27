@@ -3,13 +3,18 @@ from app.config import settings
 
 import asyncio
 import io
+import re
 import time
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import commonplayerinfo, leaguedashplayerstats
 
 from app.claude_client import chat_completion, is_available
+from app.limits import limiter, AI_LIMIT
+from app.security import internal_error
 
 router = APIRouter(prefix="/scouting", tags=["scouting"])
 SEASON = settings.current_season
@@ -208,7 +213,14 @@ def _generate_pdf(report_data: dict) -> bytes:
 # ---------------------------------------------------------------------------
 
 @router.post("/player/{player_id}")
-async def scouting_report_stats(player_id: int, team_context: str = ""):
+@limiter.limit(AI_LIMIT)
+async def scouting_report_stats(
+    request: Request,
+    player_id: int,
+    # Free text that lands in the prompt, so it needs a ceiling like every
+    # other caller-supplied string on a billed route.
+    team_context: str = Query(default="", max_length=500),
+):
     if not is_available():
         raise HTTPException(503, "ANTHROPIC_API_KEY not set in services/api/.env")
     try:
@@ -223,7 +235,7 @@ async def scouting_report_stats(player_id: int, team_context: str = ""):
     except ValueError as e:
         raise HTTPException(503, str(e))
     except Exception as e:
-        raise HTTPException(500, str(e))
+        raise internal_error(e, "Scouting report")
 
     return {
         "mode":        "stats",
@@ -238,17 +250,61 @@ async def scouting_report_stats(player_id: int, team_context: str = ""):
     }
 
 
+class ExportStats(BaseModel):
+    """The numeric block of the report. Bounded because every value is
+    formatted straight into the PDF table."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    pts: float = 0.0
+    reb: float = 0.0
+    ast: float = 0.0
+    fg_pct: float = 0.0
+    fg3_pct: float = 0.0
+    ts_pct: float = 0.0
+    stl: float = 0.0
+    blk: float = 0.0
+
+
+class ExportRequest(BaseModel):
+    """Was a bare `dict`, i.e. whatever the caller felt like sending.
+
+    The report text is handed to reportlab's Paragraph(), which parses it as
+    mini-XML -- an unbounded or malformed body was a 500 (and a way to render
+    arbitrary markup into a document served under our name). A schema plus a
+    length cap closes both.
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    player_name: str = Field(default="Unknown Player", max_length=100)
+    season: str = Field(default=SEASON, max_length=20)
+    report: str = Field(default="", max_length=20000)
+    stats_used: Optional[ExportStats] = None
+
+
+def _safe_filename(name: str) -> str:
+    """ASCII word characters only.
+
+    The name is interpolated into the Content-Disposition header, so a value
+    containing CR/LF could append headers of the caller's choosing to the
+    response; quotes alone would break the filename out of its own parameter.
+    """
+    cleaned = re.sub(r"_+", "_", "".join(c if c.isalnum() else "_" for c in name)).strip("_")
+    return cleaned[:60] or "player"
+
+
 @router.post("/export-pdf")
-async def export_pdf(report_data: dict):
+async def export_pdf(body: ExportRequest):
+    report_data = body.model_dump()
     try:
         pdf_bytes = await asyncio.to_thread(_generate_pdf, report_data)
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(500, f"PDF generation failed: {e}")
+        raise internal_error(e, "PDF export")
 
-    player_name = report_data.get("player_name", "player").replace(" ", "_")
-    filename = f"HoopIQ_Scouting_{player_name}.pdf"
+    filename = f"HoopIQ_Scouting_{_safe_filename(body.player_name)}.pdf"
 
     return StreamingResponse(
         io.BytesIO(pdf_bytes),

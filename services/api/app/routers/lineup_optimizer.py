@@ -1,14 +1,16 @@
 """Lineup Optimizer - real 5-man lineups + XGBoost hypothetical lineup predictor."""
 
 import time
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashlineups, commonteamroster
 from nba_api.stats.static import teams as static_teams
 
 from app.config import settings
 from app import data_cache
 import app.lineup_model as lineup_model
+from app.limits import limiter, TRAIN_LIMIT
+from app.security import internal_error, require_admin
 
 router = APIRouter(prefix="/lineups", tags=["lineups"])
 SEASON = settings.current_season
@@ -161,8 +163,11 @@ def _roster_live(team_id: int):
 
 # ── XGBoost model endpoints ───────────────────────────────────────────────────
 
-@router.post("/model/train")
-def train_model():
+# Same reasoning as /predictions/setup: a minutes-long fit that no visitor
+# should be able to trigger. See app/security.py.
+@router.post("/model/train", dependencies=[Depends(require_admin)])
+@limiter.limit(TRAIN_LIMIT)
+def train_model(request: Request):
     if lineup_model._is_training:
         raise HTTPException(409, "Model is already training.")
     if lineup_model.is_trained():
@@ -174,7 +179,7 @@ def train_model():
     except RuntimeError as e:
         raise HTTPException(400, str(e))
     except Exception as e:
-        raise HTTPException(500, str(e))
+        raise internal_error(e, "Lineup model training")
 
 
 @router.get("/model/status")
@@ -183,7 +188,11 @@ def model_status():
 
 
 class PredictRequest(BaseModel):
-    player_ids: list[int]
+    model_config = ConfigDict(extra="forbid")
+
+    # The handler already requires exactly 5; stating it on the schema turns a
+    # 10,000-id body into a 422 before it reaches the model.
+    player_ids: list[int] = Field(min_length=5, max_length=5)
 
 
 @router.post("/predict")
@@ -197,7 +206,7 @@ def predict_lineup(body: PredictRequest):
     except ValueError as e:
         raise HTTPException(400, str(e))
     except Exception as e:
-        raise HTTPException(500, str(e))
+        raise internal_error(e, "Lineup prediction")
 
 
 @router.get("/players/search")

@@ -1,12 +1,13 @@
 """Defense Scanner - defensive rankings, vulnerabilities, and exploitation tactics."""
 
 import time
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from nba_api.stats.endpoints import leaguedashteamstats
 from nba_api.stats.static import teams as static_teams
 
 from app.config import settings
 from app.claude_client import chat_completion, is_available
+from app.limits import limiter, AI_LIMIT
 from app import data_cache
 
 router = APIRouter(prefix="/defense", tags=["defense"])
@@ -329,7 +330,10 @@ def _claude_offensive_plan(profile: dict) -> str | None:
 
 
 @router.get("/team/{team_id}/vulnerabilities")
-def defense_vulnerabilities(team_id: int):
+# Writes a Claude-authored game plan per call, so it is a billed route
+# even though it takes no free text.
+@limiter.limit(AI_LIMIT)
+def defense_vulnerabilities(request: Request, team_id: int):
     try:
         opp = _fetch_league_defense()
     except Exception as e:

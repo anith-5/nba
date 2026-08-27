@@ -5,8 +5,8 @@ import re
 import time
 from io import StringIO
 from typing import Optional
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, HTTPException, Query, Request
+from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 import httpx
@@ -14,6 +14,7 @@ import pandas as pd
 
 from app.config import settings
 from app.claude_client import chat_completion, is_available
+from app.limits import limiter, AI_LIMIT
 from app import data_cache
 from app.utils.season import get_current_nba_season_start_year, season_string_for_start_year
 
@@ -369,7 +370,7 @@ def get_teams():
 
 
 @router.get("/players/search")
-async def search_players(q: str = ""):
+async def search_players(q: str = Query(default="", max_length=60)):
     if len(q) < 2:
         return []
     try:
@@ -398,18 +399,28 @@ async def team_roster(team_abbr: str):
 # Trade analysis models
 # ---------------------------------------------------------------------------
 
+# Player and team names are formatted straight into the Claude prompt below,
+# so they get the same length ceilings as any other billed free text. A trade
+# is capped at 8 outgoing players a side, well past any legal NBA deal.
+
 class TradePlayer(BaseModel):
-    name: str
-    salary_millions: float = Field(0.0, ge=0)
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(max_length=60)
+    salary_millions: float = Field(0.0, ge=0, le=200)
 
 
 class TradeSide(BaseModel):
-    team_abbr: str
-    team_name: str
-    sends: list[TradePlayer] = Field(default_factory=list)
+    model_config = ConfigDict(extra="ignore")
+
+    team_abbr: str = Field(max_length=5)
+    team_name: str = Field(max_length=60)
+    sends: list[TradePlayer] = Field(default_factory=list, max_length=8)
 
 
 class TradeAnalysisRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     sides: list[TradeSide] = Field(..., min_length=2, max_length=2)
 
 
@@ -514,7 +525,8 @@ def _grade(score: float) -> str:
 # ---------------------------------------------------------------------------
 
 @router.post("/analyze")
-async def analyze_trade(body: TradeAnalysisRequest):
+@limiter.limit(AI_LIMIT)
+async def analyze_trade(request: Request, body: TradeAnalysisRequest):
     side_a = body.sides[0]
     side_b = body.sides[1]
 
