@@ -4,7 +4,7 @@ import threading
 from typing import Optional
 
 import numpy as np
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.limits import limiter, TRAIN_LIMIT
@@ -40,7 +40,7 @@ def model_status():
 # over. Admin-gated, and rate-limited on top of that.
 @router.post("/setup", dependencies=[Depends(require_admin)])
 @limiter.limit(TRAIN_LIMIT)
-def setup_model(request: Request):
+def setup_model(request: Request, response: Response):
     global _predictor, _is_training, _train_error
 
     if not _training_lock.acquire(blocking=False):

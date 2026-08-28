@@ -5,7 +5,7 @@ import asyncio
 import re
 import time
 from typing import Literal, Optional
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashteamstats, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
@@ -293,7 +293,7 @@ def _do_chat(message: str, history: list[ChatTurn], context: str) -> tuple[str, 
 
 @router.post("/chat", response_model=ChatResponse)
 @limiter.limit(AI_LIMIT)
-async def gm_chat(request: Request, body: ChatRequest):
+async def gm_chat(request: Request, response: Response, body: ChatRequest):
     if not is_available():
         raise HTTPException(
             status_code=503,

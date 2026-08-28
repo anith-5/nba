@@ -17,7 +17,7 @@ import logging
 import re
 from typing import Annotated, Literal, Optional
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import drafthistory
 
@@ -224,7 +224,7 @@ Schema:
 
 @router.post("/setup")
 @limiter.limit(AI_LIMIT)
-def draft_setup(request: Request, body: SetupRequest):
+def draft_setup(request: Request, response: Response, body: SetupRequest):
     picks = 30 if body.rounds == 1 else 60
     board_size = max(body.board_size, picks)
 
@@ -305,7 +305,7 @@ Respond with ONLY valid JSON — no prose, no fences. Schema:
 
 @router.post("/redraft")
 @limiter.limit(AI_HEAVY_LIMIT)
-def draft_redraft(request: Request, body: RedraftRequest):
+def draft_redraft(request: Request, response: Response, body: RedraftRequest):
     if body.year > MAX_REDRAFT_YEAR:
         raise HTTPException(
             400,
@@ -355,7 +355,7 @@ ONLY valid JSON — no prose, no fences. Schema:
 
 @router.post("/pick")
 @limiter.limit(AI_LIMIT)
-def draft_pick(request: Request, body: PickRequest):
+def draft_pick(request: Request, response: Response, body: PickRequest):
     p = body.prospect
     user = (
         f"{body.mode.title()} {body.year} draft. With pick #{body.pick_number}, the "
@@ -388,7 +388,7 @@ You MUST only pick names that appear in the AVAILABLE list, and never pick the s
 
 @router.post("/simulate")
 @limiter.limit(AI_HEAVY_LIMIT)
-def draft_simulate(request: Request, body: SimRequest):
+def draft_simulate(request: Request, response: Response, body: SimRequest):
     order_slice = [
         o.model_dump() for o in body.draft_order if body.from_pick <= o.pick <= body.to_pick
     ]

@@ -1,7 +1,7 @@
 """Lineup Optimizer - real 5-man lineups + XGBoost hypothetical lineup predictor."""
 
 import time
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashlineups, commonteamroster
 from nba_api.stats.static import teams as static_teams
@@ -167,7 +167,7 @@ def _roster_live(team_id: int):
 # should be able to trigger. See app/security.py.
 @router.post("/model/train", dependencies=[Depends(require_admin)])
 @limiter.limit(TRAIN_LIMIT)
-def train_model(request: Request):
+def train_model(request: Request, response: Response):
     if lineup_model._is_training:
         raise HTTPException(409, "Model is already training.")
     if lineup_model.is_trained():

@@ -7,7 +7,7 @@ import re
 import time
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import commonplayerinfo, leaguedashplayerstats
@@ -216,6 +216,7 @@ def _generate_pdf(report_data: dict) -> bytes:
 @limiter.limit(AI_LIMIT)
 async def scouting_report_stats(
     request: Request,
+    response: Response,
     player_id: int,
     # Free text that lands in the prompt, so it needs a ceiling like every
     # other caller-supplied string on a billed route.

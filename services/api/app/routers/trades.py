@@ -5,7 +5,7 @@ import re
 import time
 from io import StringIO
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
@@ -526,7 +526,7 @@ def _grade(score: float) -> str:
 
 @router.post("/analyze")
 @limiter.limit(AI_LIMIT)
-async def analyze_trade(request: Request, body: TradeAnalysisRequest):
+async def analyze_trade(request: Request, response: Response, body: TradeAnalysisRequest):
     side_a = body.sides[0]
     side_b = body.sides[1]
 
