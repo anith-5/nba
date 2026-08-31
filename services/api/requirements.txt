@@ -1,4 +1,4 @@
-fastapi==0.115.6
+fastapi==0.141.1
 uvicorn[standard]==0.32.1
 nba_api==1.11.4
 pandas==2.2.3
@@ -13,7 +13,6 @@ reportlab>=4.2.0
 pydantic-settings==2.6.1
 # Per-IP rate limiting for the AI + training endpoints (app/limits.py).
 slowapi==0.1.9
-python-multipart==0.0.17
 httpx==0.28.1
-requests==2.32.3
+requests==2.33.0
 lxml>=5.0.0

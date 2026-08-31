@@ -10,6 +10,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from app import comp_database
 from app import lineup_model
 from app.config import settings
+from app.headers import add_security_headers
 from app.limits import limiter
 from app.routers import live, players, predictions, teams, trades
 from app.routers import (
@@ -86,6 +87,10 @@ async def validation_error(request: Request, exc: RequestValidationError):
         field = ".".join(str(p) for p in err["loc"] if p not in ("body", "query"))
         problems.append(f"{field or 'request'}: {err['msg']}")
     return JSONResponse(status_code=422, content={"detail": "; ".join(problems)})
+
+# Added before CORS so it ends up OUTSIDE it in the stack, and therefore
+# also covers CORS preflight and error responses.
+add_security_headers(app)
 
 app.add_middleware(
     CORSMiddleware,
