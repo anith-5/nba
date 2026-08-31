@@ -19,6 +19,14 @@ import {
   armBuildAPlayerPickTimer,
 } from "./gameHandlers.js";
 import players from "../data/nba_players.json" with { type: "json" };
+import {
+  allowEvent,
+  cleanName,
+  isValidRoomCode,
+  sanitizeConfig,
+  MAX_PLAYERS_PER_ROOM,
+  MAX_ROOMS_PER_SOCKET,
+} from "../security/guards.js";
 
 const DEFAULT_CLOSEST_TO_CONFIG = {
   targetNumber: 100,
@@ -80,7 +88,7 @@ const DEFAULT_EIGHTY_TWO_OH_CONFIG = {
 
 function initialGameState(gameMode, configOverrides) {
   if (gameMode === "over-under") {
-    const gameConfig = { ...DEFAULT_OVER_UNDER_CONFIG, ...(configOverrides || {}) };
+    const gameConfig = sanitizeConfig(DEFAULT_OVER_UNDER_CONFIG, configOverrides);
     return {
       config: gameConfig,
       roundIndex: 0,
@@ -91,29 +99,40 @@ function initialGameState(gameMode, configOverrides) {
     };
   }
   if (gameMode === "closest-to") {
-    return initClosestToGameState({ ...DEFAULT_CLOSEST_TO_CONFIG, ...(configOverrides || {}) });
+    return initClosestToGameState(sanitizeConfig(DEFAULT_CLOSEST_TO_CONFIG, configOverrides));
   }
   if (gameMode === "five-hints") {
-    return initFiveHintsGameState({ ...DEFAULT_FIVE_HINTS_CONFIG, ...(configOverrides || {}) });
+    return initFiveHintsGameState(sanitizeConfig(DEFAULT_FIVE_HINTS_CONFIG, configOverrides));
   }
   if (gameMode === "hint-auction") {
-    return initHintAuctionGameState({ ...DEFAULT_HINT_AUCTION_CONFIG, ...(configOverrides || {}) });
+    return initHintAuctionGameState(sanitizeConfig(DEFAULT_HINT_AUCTION_CONFIG, configOverrides));
   }
   if (gameMode === "draft") {
-    return initThemedDraftGameState({ ...DEFAULT_THEMED_DRAFT_CONFIG, ...(configOverrides || {}) });
+    return initThemedDraftGameState(sanitizeConfig(DEFAULT_THEMED_DRAFT_CONFIG, configOverrides));
   }
   if (gameMode === "build-a-player") {
-    return initBuildAPlayerGameState({ ...DEFAULT_BUILD_A_PLAYER_CONFIG, ...(configOverrides || {}) });
+    return initBuildAPlayerGameState(sanitizeConfig(DEFAULT_BUILD_A_PLAYER_CONFIG, configOverrides));
   }
   if (gameMode === "82-0") {
-    return initEightyTwoOhGameState({ ...DEFAULT_EIGHTY_TWO_OH_CONFIG, ...(configOverrides || {}) });
+    return initEightyTwoOhGameState(sanitizeConfig(DEFAULT_EIGHTY_TWO_OH_CONFIG, configOverrides));
   }
-  return { config: configOverrides || {} };
+  // Unknown mode: no defaults to validate against, so keep nothing.
+  return { config: {} };
 }
 
 export function registerLobbyHandlers(io, socket) {
   socket.on("create_room", ({ playerName, gameMode } = {}, callback) => {
-    const name = (playerName || "Host").trim().slice(0, 24) || "Host";
+    if (!allowEvent(socket)) return callback?.({ error: "Slow down a moment." });
+
+    // Rooms live in memory until they expire, so one socket spamming
+    // create_room is a memory-exhaustion button.
+    const owned = socket.data._roomsCreated || 0;
+    if (owned >= MAX_ROOMS_PER_SOCKET) {
+      return callback?.({ error: "You already have too many open rooms." });
+    }
+    socket.data._roomsCreated = owned + 1;
+
+    const name = cleanName(playerName, "Host");
     const room = createRoom({ hostSocketId: socket.id, hostName: name, gameMode });
     socket.join(room.code);
     socket.data.roomCode = room.code;
@@ -121,6 +140,16 @@ export function registerLobbyHandlers(io, socket) {
   });
 
   socket.on("join_room", ({ roomCode, playerName } = {}, callback) => {
+    if (!allowEvent(socket)) return callback?.({ error: "Slow down a moment." });
+
+    // Reject malformed codes before touching the store -- this is also the
+    // shape a brute-force scan would iterate over.
+    if (!isValidRoomCode(roomCode)) {
+      const message = "That room code doesn't exist.";
+      socket.emit("join_error", { message });
+      return callback?.({ error: message });
+    }
+
     const room = getRoom(roomCode);
     if (!room) {
       const message = "That room code doesn't exist.";
@@ -135,7 +164,13 @@ export function registerLobbyHandlers(io, socket) {
       return;
     }
 
-    const name = (playerName || "Player").trim().slice(0, 24) || "Player";
+    if (room.players.length >= MAX_PLAYERS_PER_ROOM) {
+      const message = "That room is full.";
+      socket.emit("join_error", { message });
+      return callback?.({ error: message });
+    }
+
+    const name = cleanName(playerName, "Player");
     room.players.push({
       socketId: socket.id,
       name,
@@ -153,6 +188,7 @@ export function registerLobbyHandlers(io, socket) {
   });
 
   socket.on("start_game", ({ roomCode, config: configOverrides } = {}, callback) => {
+    if (!allowEvent(socket)) return callback?.({ error: "Slow down a moment." });
     const room = getRoom(roomCode);
     if (!room) return callback?.({ error: "Room not found." });
     if (room.hostSocketId !== socket.id) return callback?.({ error: "Only the host can start the game." });
@@ -277,6 +313,7 @@ export function registerLobbyHandlers(io, socket) {
   });
 
   socket.on("leave_room", ({ roomCode } = {}) => {
+    if (!allowEvent(socket)) return;
     const room = getRoom(roomCode);
     if (!room) return;
     handlePlayerExit(io, room, socket.id);
