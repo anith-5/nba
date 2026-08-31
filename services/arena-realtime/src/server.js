@@ -9,6 +9,26 @@ import { startRosterSync } from "./data/rosterSync.js";
 import { setIo, startTeamPlayersPreload, loadDiskCacheOnStartup } from "./data/teamPlayersCache.js";
 
 const app = express();
+
+// Security headers. Hand-written rather than pulling in helmet: this server
+// exposes exactly one JSON route plus the socket.io endpoint, so the useful
+// subset is small and this is one fewer dependency to keep patched.
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'");
+  // Only meaningful over TLS; the host terminating it forwards the scheme.
+  if (req.headers["x-forwarded-proto"] === "https") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+  next();
+});
+
+// Express advertises itself in every response by default, which just tells a
+// scanner which CVE list to try.
+app.disable("x-powered-by");
+
 app.use(cors({ origin: config.corsOrigins }));
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", service: "arena-realtime" });

@@ -132,11 +132,15 @@ export default function Predictions() {
       {status.is_trained && (
         <form onSubmit={predict} className="hoop-card-outline max-w-2xl p-6">
           <div className="flex flex-wrap items-end gap-4">
+            {/* Away sits on the LEFT of the "@": "A @ B" means A is visiting
+                B, so the visiting team has to come first. Only the display
+                order changed here — each select still drives its own piece of
+                state, so home_abbr/away_abbr reach the model unswapped. */}
             <label className="flex-1 min-w-[120px] block text-sm">
-              <span className="hoop-stat-label">Home team</span>
+              <span className="hoop-stat-label">Away team</span>
               <select
-                value={home}
-                onChange={(e) => setHome(e.target.value)}
+                value={away}
+                onChange={(e) => setAway(e.target.value)}
                 className="mt-1 w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 font-mono text-ink"
               >
                 {TEAMS.map((t) => (
@@ -148,10 +152,10 @@ export default function Predictions() {
             <span className="text-ink/60 text-2xl font-light pb-2">@</span>
 
             <label className="flex-1 min-w-[120px] block text-sm">
-              <span className="hoop-stat-label">Away team</span>
+              <span className="hoop-stat-label">Home team</span>
               <select
-                value={away}
-                onChange={(e) => setAway(e.target.value)}
+                value={home}
+                onChange={(e) => setHome(e.target.value)}
                 className="mt-1 w-full rounded-xl border-2 border-ink bg-paper shadow-hoop-sm px-3 py-2 font-mono text-ink"
               >
                 {TEAMS.map((t) => (

@@ -7,7 +7,12 @@ blocked). It saves JSON snapshots into app/../data_cache/, which you then
 commit and push. The live server serves those snapshots.
 
 USAGE (from the services/api folder):
-    .venv\\Scripts\\python precompute.py
+    .venv\\Scripts\\python precompute.py            # every dataset
+    .venv\\Scripts\\python precompute.py rosters    # just one (see STEPS)
+
+The `rosters` step pulls from ESPN instead of stats.nba.com, so it is the one
+dataset that can still be refreshed on a network where stats.nba.com is
+blocked. Run it on its own there rather than waiting out seven failures.
 
 Then:
     git add services/api/data_cache
@@ -22,11 +27,65 @@ import time
 
 from nba_api.stats.static import teams as static_teams
 
-from app import data_cache, comp_database, lineup_model
+from app import data_cache, comp_database, lineup_model, espn_rosters
 from app.routers import defense_scanner, clutch_dna, standings, draft_simulator, lineup_optimizer, trades
 
 # Draft-history snapshots cover this range (Redraft / Historical grounding)
 DRAFT_YEARS = range(1990, 2025)
+
+# A refreshed snapshot is rejected if it came back smaller than this fraction
+# of what's already on disk. 0.5 is deliberately loose: real roster churn never
+# halves a dataset, so anything under it means fetches failed, not that the
+# league shrank.
+MIN_KEEP_RATIO = 0.5
+
+
+def _count_players(blob) -> int:
+    """Total players across a {team_id: {players: [...]}} snapshot.
+
+    Rosters need this rather than len(): that counts the 30 TEAM keys, which
+    stays 30 even if every roster came back empty — precisely the failure the
+    guard exists to catch.
+    """
+    if not isinstance(blob, dict):
+        return len(blob or [])
+    return sum(len((t or {}).get("players") or []) for t in blob.values())
+
+
+def _write_if_sane(cache_name: str, new_data, label: str, count_fn=len) -> bool:
+    """Write a refreshed snapshot only if it plausibly succeeded.
+
+    WHY THIS GUARD EXISTS: every NBA call in this script is wrapped in a
+    per-item try/except so one bad team doesn't abort the run. That is the
+    right behaviour for a flaky endpoint, but it means a TOTAL failure — no
+    network, a blocked IP, an API shape change — looks identical to a
+    successful run that simply collected nothing. The old code then wrote that
+    empty result straight over a good snapshot, and since these files ARE the
+    only data source on the deployed site, a single bad run could take the
+    live rosters, lineups and trade pool down to nothing.
+
+    Refusing the write leaves the previous good snapshot in place, which is
+    always the better failure mode: stale data beats no data.
+    """
+    new_count = count_fn(new_data) if new_data is not None else 0
+    old = data_cache.read_json(cache_name)
+    old_count = count_fn(old) if old else 0
+
+    if new_count == 0:
+        print(f"      REFUSED to write {label}: fetched 0 records "
+              f"(existing snapshot of {old_count} left untouched)")
+        return False
+
+    if old_count and new_count < old_count * MIN_KEEP_RATIO:
+        print(f"      REFUSED to write {label}: only {new_count} records vs "
+              f"{old_count} on disk — looks like a partial failure, "
+              f"existing snapshot left untouched")
+        return False
+
+    data_cache.write_json(cache_name, new_data)
+    delta = f" (was {old_count})" if old_count else ""
+    print(f"      saved {new_count} records -> data_cache/{cache_name}{delta}")
+    return True
 
 
 def precompute_defense():
@@ -101,28 +160,63 @@ def precompute_lineups():
             team_lineups[str(tid)] = lineup_optimizer._team_lineups_live(tid)
         except Exception as e:
             print(f"      lineups {t['abbreviation']}: {e}")
-    data_cache.write_json(lineup_optimizer.ROSTERS_CACHE, rosters)
-    data_cache.write_json(lineup_optimizer.TEAM_LINEUPS_CACHE, team_lineups)
-    print(f"      cached {len(rosters)} rosters / {len(team_lineups)} team-lineup sets")
+    _write_if_sane(lineup_optimizer.ROSTERS_CACHE, rosters, "team rosters", _count_players)
+    _write_if_sane(lineup_optimizer.TEAM_LINEUPS_CACHE, team_lineups, "team lineups")
 
 
 def precompute_trades():
     print("[7/7] Trade Machine — player pool + salaries (rosters for the picker)…")
     pool = trades._fetch_pool_with_salaries_live()
-    data_cache.write_json(trades.TRADES_POOL_CACHE, pool)
-    with_sal = sum(1 for p in pool if p.get("salary_millions") is not None)
-    print(f"      saved {len(pool)} players ({with_sal} with salary)")
+    if _write_if_sane(trades.TRADES_POOL_CACHE, pool, "trade pool"):
+        with_sal = sum(1 for p in pool if p.get("salary_millions") is not None)
+        print(f"      ({with_sal} of {len(pool)} with salary)")
+
+
+def precompute_espn_rosters():
+    print("[8/8] Rosters via ESPN — independent of stats.nba.com…")
+    rosters = espn_rosters.build_rosters()
+    if not _write_if_sane(lineup_optimizer.ROSTERS_CACHE, rosters,
+                          "team rosters (ESPN)", _count_players):
+        return
+    # Team assignments live in three places. Propagating only on a successful
+    # write keeps them from drifting apart — a half-refreshed app that shows a
+    # player on two different teams is worse than one that's uniformly stale.
+    espn_rosters.propagate_team_assignments(rosters)
+
+
+# Steps are addressable by name so a single dataset can be refreshed on its
+# own. That matters because the NBA-backed steps are unusable on any network
+# stats.nba.com blocks, while `rosters` (ESPN) still works there — without
+# this you'd have to sit through seven guaranteed failures to refresh one file.
+STEPS = {
+    "defense": precompute_defense,
+    "clutch": precompute_clutch,
+    "standings": precompute_standings,
+    "trajectory": precompute_trajectory,
+    "draft": precompute_draft_history,
+    "lineups": precompute_lineups,
+    "trades": precompute_trades,
+    "rosters": precompute_espn_rosters,
+}
 
 
 def main():
     t0 = time.time()
+    requested = [a for a in sys.argv[1:] if not a.startswith("-")]
+    unknown = [a for a in requested if a not in STEPS]
+    if unknown:
+        print(f"Unknown step(s): {', '.join(unknown)}")
+        print(f"Available: {', '.join(STEPS)}")
+        return 1
+
+    steps = [STEPS[a] for a in requested] if requested else list(STEPS.values())
+
     print("=" * 60)
     print("Pre-computing NBA data snapshots for the live site")
+    if requested:
+        print(f"Running only: {', '.join(requested)}")
     print("=" * 60)
 
-    steps = [precompute_defense, precompute_clutch, precompute_standings,
-             precompute_trajectory, precompute_draft_history, precompute_lineups,
-             precompute_trades]
     for step in steps:
         try:
             step()

@@ -13,15 +13,19 @@ stays anchored to players who were actually drafted.
 """
 
 import json
+import logging
 import re
-from typing import Optional
+from typing import Annotated, Literal, Optional
 
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Request, Response
+from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import drafthistory
 
 from app.claude_client import chat_completion, is_available
+from app.limits import limiter, AI_LIMIT, AI_HEAVY_LIMIT
 from app import data_cache
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/draft", tags=["draft"])
 
@@ -106,8 +110,11 @@ def _claude_json(model: str, system: str, user: str, max_tokens: int) -> dict:
         text, _ = chat_completion(model, system, [{"role": "user", "content": user}], max_tokens)
     except ValueError as e:
         raise HTTPException(503, str(e))
-    except Exception as e:
-        raise HTTPException(502, f"Claude error: {e}")
+    except Exception:
+        # The upstream body can carry key fragments and request echoes -- log
+        # it, don't return it.
+        logger.exception("Draft Simulator Claude call failed")
+        raise HTTPException(502, "The draft model is unavailable right now. Try again shortly.")
     return _parse_json(text)
 
 
@@ -115,35 +122,77 @@ def _claude_json(model: str, system: str, user: str, max_tokens: int) -> dict:
 # Request models
 # ─────────────────────────────────────────────────────────────────────────────
 
+# Every field below is interpolated into a Claude prompt, so each one is a
+# lever on what we get billed. The `dict` / `list[dict]` fields in particular
+# were unbounded: /simulate json.dumps() the whole `available` list into the
+# prompt, so a caller could hand us a megabyte of "prospects" per request.
+# Bounds are set generously enough for a full 60-pick two-round draft.
+
+# 1947 is the first BAA draft; the upper bound is checked per-route against
+# MAX_HISTORICAL_YEAR / MAX_REDRAFT_YEAR, which differ.
+DraftYear = Annotated[int, Field(ge=1947, le=MAX_HISTORICAL_YEAR)]
+PickNumber = Annotated[int, Field(ge=1, le=60)]
+Label = Annotated[str, Field(max_length=60)]
+
+
+class ProspectIn(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    name: Label = ""
+    position: Label = "?"
+    origin: Label = "?"
+    comparison: Label = "?"
+    strengths: list[Label] = Field(default_factory=list, max_length=8)
+    weaknesses: list[Label] = Field(default_factory=list, max_length=8)
+
+
+class DraftSlot(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    # Required: /simulate filters on this, and a missing key used to be a
+    # KeyError -> 500 rather than a 422.
+    pick: PickNumber
+    team: Label = ""
+    needs: list[Label] = Field(default_factory=list, max_length=8)
+
+
 class SetupRequest(BaseModel):
-    year: int
-    rounds: int = 1          # 1 = 30 picks, 2 = 60 picks
-    mode: str = "historical"  # historical (future mode retired)
-    board_size: int = 30     # how many prospects on the big board
+    model_config = ConfigDict(extra="forbid")
+
+    year: DraftYear
+    rounds: int = Field(default=1, ge=1, le=2)   # 1 = 30 picks, 2 = 60 picks
+    mode: Literal["historical", "future", "redraft"] = "historical"
+    board_size: int = Field(default=30, ge=1, le=100)
 
 
 class RedraftRequest(BaseModel):
-    year: int
-    count: int = 14          # how many picks to re-rank (lottery = 14, full = 30/60)
+    model_config = ConfigDict(extra="forbid")
+
+    year: DraftYear
+    count: int = Field(default=14, ge=1, le=60)  # lottery = 14, full = 30/60
 
 
 class PickRequest(BaseModel):
-    year: int
-    mode: str
-    pick_number: int
-    team: str
-    prospect: dict           # the chosen prospect (name, position, etc.)
-    team_needs: list[str] = []
+    model_config = ConfigDict(extra="forbid")
+
+    year: DraftYear
+    mode: Literal["historical", "future", "redraft"]
+    pick_number: PickNumber
+    team: Label
+    prospect: ProspectIn
+    team_needs: list[Label] = Field(default_factory=list, max_length=8)
 
 
 class SimRequest(BaseModel):
-    year: int
-    mode: str
-    from_pick: int           # sim starting at this pick
-    to_pick: int             # ...up to (and including) this pick
-    draft_order: list[dict]  # [{pick, team, needs}]
-    available: list[dict]    # remaining big-board prospects
-    already_picked: list[str] = []
+    model_config = ConfigDict(extra="forbid")
+
+    year: DraftYear
+    mode: Literal["historical", "future", "redraft"]
+    from_pick: PickNumber        # sim starting at this pick
+    to_pick: PickNumber          # ...up to (and including) this pick
+    draft_order: list[DraftSlot] = Field(default_factory=list, max_length=60)
+    available: list[ProspectIn] = Field(default_factory=list, max_length=150)
+    already_picked: list[Label] = Field(default_factory=list, max_length=60)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -174,7 +223,8 @@ Schema:
 
 
 @router.post("/setup")
-def draft_setup(body: SetupRequest):
+@limiter.limit(AI_LIMIT)
+def draft_setup(request: Request, response: Response, body: SetupRequest):
     picks = 30 if body.rounds == 1 else 60
     board_size = max(body.board_size, picks)
 
@@ -254,7 +304,8 @@ Respond with ONLY valid JSON — no prose, no fences. Schema:
 
 
 @router.post("/redraft")
-def draft_redraft(body: RedraftRequest):
+@limiter.limit(AI_HEAVY_LIMIT)
+def draft_redraft(request: Request, response: Response, body: RedraftRequest):
     if body.year > MAX_REDRAFT_YEAR:
         raise HTTPException(
             400,
@@ -303,15 +354,16 @@ ONLY valid JSON — no prose, no fences. Schema:
 
 
 @router.post("/pick")
-def draft_pick(body: PickRequest):
+@limiter.limit(AI_LIMIT)
+def draft_pick(request: Request, response: Response, body: PickRequest):
     p = body.prospect
     user = (
         f"{body.mode.title()} {body.year} draft. With pick #{body.pick_number}, the "
-        f"{body.team} select {p.get('name')} ({p.get('position','?')}, "
-        f"{p.get('origin','?')}). Team needs: {', '.join(body.team_needs) or 'unspecified'}.\n"
-        f"Prospect scouting — strengths: {', '.join(p.get('strengths', []))}; "
-        f"weaknesses: {', '.join(p.get('weaknesses', []))}; "
-        f"pre-existing comp: {p.get('comparison','?')}.\n"
+        f"{body.team} select {p.name} ({p.position}, "
+        f"{p.origin}). Team needs: {', '.join(body.team_needs) or 'unspecified'}.\n"
+        f"Prospect scouting — strengths: {', '.join(p.strengths)}; "
+        f"weaknesses: {', '.join(p.weaknesses)}; "
+        f"pre-existing comp: {p.comparison}.\n"
         f"Grade this specific pick (value at this slot + fit)."
     )
     return _claude_json(HAIKU, GRADE_SYSTEM, user, max_tokens=600)
@@ -335,9 +387,12 @@ You MUST only pick names that appear in the AVAILABLE list, and never pick the s
 
 
 @router.post("/simulate")
-def draft_simulate(body: SimRequest):
-    order_slice = [o for o in body.draft_order if body.from_pick <= o["pick"] <= body.to_pick]
-    avail_names = [a.get("name") for a in body.available]
+@limiter.limit(AI_HEAVY_LIMIT)
+def draft_simulate(request: Request, response: Response, body: SimRequest):
+    order_slice = [
+        o.model_dump() for o in body.draft_order if body.from_pick <= o.pick <= body.to_pick
+    ]
+    avail_names = [a.name for a in body.available if a.name]
     user = (
         f"{body.mode.title()} {body.year} draft. Simulate picks {body.from_pick} through "
         f"{body.to_pick}.\n\n"

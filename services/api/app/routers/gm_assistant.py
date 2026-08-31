@@ -4,13 +4,15 @@ from app.config import settings
 import asyncio
 import re
 import time
-from typing import Optional
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from typing import Literal, Optional
+from fastapi import APIRouter, HTTPException, Request, Response
+from pydantic import BaseModel, ConfigDict, Field
 from nba_api.stats.endpoints import leaguedashteamstats, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
 from app.claude_client import chat_completion, is_available
+from app.limits import limiter, AI_LIMIT
+from app.security import internal_error
 
 router = APIRouter(prefix="/gm-assistant", tags=["gm-assistant"])
 SEASON = settings.current_season
@@ -250,9 +252,29 @@ def _get_context() -> str:
     return ctx
 
 
+class ChatTurn(BaseModel):
+    """One prior turn, replayed back to Claude.
+
+    This was `dict`, which meant the client chose both the role and the size.
+    Roles are pinned to the two the Messages API accepts so a caller can't
+    inject a `system` turn to override the instructions above, and content is
+    bounded so ten turns can't add up to a megabyte of billed input.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=6000)
+
+
 class ChatRequest(BaseModel):
-    message: str
-    history: list[dict] = []  # [{"role": "user"|"assistant", "content": "..."}]
+    model_config = ConfigDict(extra="forbid")
+
+    message: str = Field(min_length=1, max_length=2000)
+    # The UI posts the whole conversation and the server keeps the last 10
+    # turns (see _do_chat), so this ceiling only has to stop an absurd body --
+    # capping it at 10 here would 422 anyone with a long chat open.
+    history: list[ChatTurn] = Field(default_factory=list, max_length=40)
 
 
 class ChatResponse(BaseModel):
@@ -261,14 +283,17 @@ class ChatResponse(BaseModel):
     tokens_used: int
 
 
-def _do_chat(message: str, history: list[dict], context: str) -> tuple[str, int]:
+def _do_chat(message: str, history: list[ChatTurn], context: str) -> tuple[str, int]:
     system = SYSTEM_TEMPLATE.format(season=SEASON, context=context)
-    messages = history[-10:] + [{"role": "user", "content": message}]
+    # Only the last 10 turns are billed, matching the previous behaviour.
+    replay = [{"role": t.role, "content": t.content} for t in history[-10:]]
+    messages = replay + [{"role": "user", "content": message}]
     return chat_completion(model=MODEL, system=system, messages=messages, max_tokens=800)
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def gm_chat(body: ChatRequest):
+@limiter.limit(AI_LIMIT)
+async def gm_chat(request: Request, response: Response, body: ChatRequest):
     if not is_available():
         raise HTTPException(
             status_code=503,
@@ -281,7 +306,7 @@ async def gm_chat(body: ChatRequest):
     except ValueError as e:
         raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise internal_error(e, "GM Assistant")
 
     return ChatResponse(reply=reply, model=MODEL, tokens_used=tokens)
 

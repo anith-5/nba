@@ -4,8 +4,11 @@ import threading
 from typing import Optional
 
 import numpy as np
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.limits import limiter, TRAIN_LIMIT
+from app.security import internal_error, require_admin
 
 router = APIRouter(prefix="/predictions", tags=["predictions"])
 
@@ -16,8 +19,11 @@ _train_error: Optional[str] = None
 
 
 class PredictRequest(BaseModel):
-    home_abbr: str
-    away_abbr: str
+    model_config = ConfigDict(extra="forbid")
+
+    # Team abbreviations are 2-3 letters; anything longer is a probe, not a team.
+    home_abbr: str = Field(min_length=2, max_length=5)
+    away_abbr: str = Field(min_length=2, max_length=5)
 
 
 @router.get("/status")
@@ -29,8 +35,12 @@ def model_status():
     }
 
 
-@router.post("/setup")
-def setup_model():
+# Training pulls the NBA API for minutes and fits on a 512MB instance, so it
+# is both the most expensive route here and the easiest way to knock the site
+# over. Admin-gated, and rate-limited on top of that.
+@router.post("/setup", dependencies=[Depends(require_admin)])
+@limiter.limit(TRAIN_LIMIT)
+def setup_model(request: Request, response: Response):
     global _predictor, _is_training, _train_error
 
     if not _training_lock.acquire(blocking=False):
@@ -57,7 +67,7 @@ def setup_model():
 
     except Exception as e:
         _train_error = str(e)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise internal_error(e, "Model training")
     finally:
         _is_training = False
         _training_lock.release()
@@ -91,4 +101,4 @@ def predict_game(body: PredictRequest):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise internal_error(e, "Game prediction")

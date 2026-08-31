@@ -1,11 +1,17 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app import comp_database
 from app import lineup_model
 from app.config import settings
+from app.headers import add_security_headers
+from app.limits import limiter
 from app.routers import live, players, predictions, teams, trades
 from app.routers import (
     shot_quality,
@@ -40,12 +46,58 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Rate limiting. `limiter` on app.state is how slowapi's decorators and its
+# exception handler find the configured limiter; SlowAPIMiddleware is what
+# applies the default limit to every route that doesn't set its own.
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+
+@app.exception_handler(RateLimitExceeded)
+def rate_limited(request: Request, exc: RateLimitExceeded):
+    """429 in the same `detail` shape as every other error the API returns.
+
+    Deliberately sync, not async: SlowAPIMiddleware checks limits from a
+    synchronous path and silently swaps in its own handler if the registered
+    one is a coroutine function, which would put the body back to `error`.
+
+    slowapi's stock handler uses an `error` key, which the frontend's
+    `request()` helper doesn't read -- users would just see "Request failed".
+    The Retry-After / X-RateLimit-* headers are injected the same way the
+    stock handler does it.
+    """
+    response = JSONResponse(
+        status_code=429,
+        content={"detail": f"Rate limit reached ({exc.detail}). Please wait a moment and try again."},
+    )
+    return request.app.state.limiter._inject_headers(response, request.state.view_rate_limit)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error(request: Request, exc: RequestValidationError):
+    """Flatten FastAPI's 422 body into a `detail` string.
+
+    The default shape is a list of error objects; the frontend reads
+    `err.detail` and renders it directly, which would show "[object Object]"
+    for every input that trips one of the new field limits. Only the field
+    path and the rule are echoed -- never the offending value.
+    """
+    problems = []
+    for err in exc.errors()[:5]:
+        field = ".".join(str(p) for p in err["loc"] if p not in ("body", "query"))
+        problems.append(f"{field or 'request'}: {err['msg']}")
+    return JSONResponse(status_code=422, content={"detail": "; ".join(problems)})
+
+# Added before CORS so it ends up OUTSIDE it in the stack, and therefore
+# also covers CORS preflight and error responses.
+add_security_headers(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Admin-Token"],
 )
 
 # Original routers

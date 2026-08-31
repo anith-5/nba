@@ -69,14 +69,25 @@ import {
   calculateResults as calculateEightyTwoOhResults,
 } from "../game-logic/eightyTwoOh.js";
 import players from "../data/nba_players.json" with { type: "json" };
+import { allowEvent, isMember } from "../security/guards.js";
 
 const NEXT_ROUND_DELAY_MS = 5000;
 const CASUAL_REVEAL_PAUSE_MS = 3000;
 
 export function registerGameHandlers(io, socket) {
   socket.on("game_action", ({ roomCode, action, data } = {}) => {
+    // Per-socket token bucket: a client can play at human speed but cannot
+    // flood the server with actions.
+    if (!allowEvent(socket)) return;
+
     const room = getRoom(roomCode);
     if (!room || room.status !== "in-game") return;
+
+    // The room code is the only thing identifying the room, and it is public
+    // by design -- players read it aloud and paste it into chats. Without
+    // this check anyone holding or guessing a code could vote, bid and pick
+    // in a game they never joined.
+    if (!isMember(room, socket.id)) return;
 
     if (room.gameMode === "over-under") {
       handleOverUnderAction(io, room, socket, action, data || {});

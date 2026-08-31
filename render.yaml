@@ -20,3 +20,32 @@ services:
         sync: false   # set in dashboard — your real Claude key
       - key: CORS_ORIGINS
         sync: false   # set to your Vercel URL, e.g. https://your-app.vercel.app
+      - key: ADMIN_TOKEN
+        sync: false   # leave UNSET in production -- it keeps the two model-training
+                      # endpoints closed. The cloud serves pre-trained snapshots.
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"    # Render's proxy is the only hop, so X-Forwarded-For's last
+                      # entry is the real client IP (see app/limits.py).
+
+  # The Arena's realtime multiplayer server. Without this deployed, the web
+  # app falls back to http://localhost:4000 (see socketClient.js) and every
+  # visitor's browser tries to reach a server on their own machine, so no
+  # room ever gets created.
+  #
+  # NOTE: rooms live in memory (rooms/roomStore.js). A free instance sleeps
+  # after 15 minutes idle and cold-starts in ~50s, and any sleep, deploy or
+  # restart destroys every in-progress game. Fine for testing; move to a paid
+  # instance before anyone relies on it.
+  - type: web
+    name: hoopiq-arena
+    runtime: node
+    rootDir: services/arena-realtime
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: CORS_ORIGIN
+        sync: false   # set to your Vercel URL, same value as the API's CORS_ORIGINS
