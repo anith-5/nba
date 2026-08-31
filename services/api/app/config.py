@@ -14,6 +14,11 @@ class Settings(BaseSettings):
     # Unlocks the two model-training endpoints. Empty (the default) keeps them
     # closed -- see app/security.py.
     admin_token: str = ""
+    # Hard ceiling on Anthropic tokens per UTC day, across all callers. This is
+    # what caps the bill: the per-IP limits don't stop someone rotating
+    # addresses. 0 disables it. At Haiku rates 500k tokens is roughly $1-2/day
+    # worst case; raise it once you know your real traffic.
+    daily_token_budget: int = 500_000
     # Ceiling for ordinary cached/computed endpoints. The AI routes set their
     # own, much tighter, limits on top of this.
     rate_limit_default: str = "120/minute"
