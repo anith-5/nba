@@ -49,3 +49,8 @@ services:
         value: "20"
       - key: CORS_ORIGIN
         sync: false   # set to your Vercel URL, same value as the API's CORS_ORIGINS
+      - key: HOOPIQ_API_URL
+        sync: false   # REQUIRED: the hoopiq-api URL, e.g. https://hoopiq-api.onrender.com
+                      # The arena fetches team rosters from the API, not from the NBA
+                      # directly (see data/teamPlayersCache.js). Unset, it falls back to
+                      # http://localhost:8001 and every team preload fails instantly.
