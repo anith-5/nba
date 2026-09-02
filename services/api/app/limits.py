@@ -15,27 +15,28 @@ from app.config import settings
 
 
 def client_ip(request: Request) -> str:
-    """The caller's real IP, as seen from behind Render's proxy.
+    """The caller's IP, as seen from behind Render's proxy.
 
-    `request.client.host` is the *proxy's* address in production, which would
-    collapse every visitor into one bucket and rate-limit the whole site as a
-    single client. X-Forwarded-For carries the chain instead.
+    Take the LEFTMOST X-Forwarded-For entry. This is the opposite of the
+    usual advice, and the reason is specific to how this is hosted: Render
+    appends its own edge address to the chain, so the rightmost entry is the
+    SAME value for every request that reaches us. Keying on it silently made
+    the limit global rather than per-client -- one busy caller (the arena
+    server's roster preload, in practice) exhausted the pool for every
+    visitor at once. Render documents the first entry as the originating
+    client, so that is the only per-client signal available here.
 
-    We count from the RIGHT, not the left. Each proxy appends the address it
-    saw, so the rightmost entry is the one Render itself added and is the only
-    part of the header a caller cannot forge -- reading the leftmost entry
-    would let anyone reset their own limit by sending a made-up header.
-    `trusted_proxy_hops` says how many proxies sit in front of us (1 = Render
-    alone; bump it to 2 if you later put Cloudflare in front).
+    The tradeoff is that the leftmost entry is caller-supplied and therefore
+    forgeable: someone can rotate the header to get a fresh bucket. That is
+    inherent to IP-based limiting behind a proxy and is why these limits are
+    only one layer -- the global daily token ceiling in claude_client.py is
+    what actually bounds spend against a caller who does this.
     """
     forwarded = request.headers.get("x-forwarded-for", "")
     if forwarded:
-        hops = [h.strip() for h in forwarded.split(",") if h.strip()]
-        depth = max(1, settings.trusted_proxy_hops)
-        if len(hops) >= depth:
-            return hops[-depth]
-        if hops:
-            return hops[0]
+        first = forwarded.split(",")[0].strip()
+        if first:
+            return first
     return request.client.host if request.client else "unknown"
 
 

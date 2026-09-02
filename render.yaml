@@ -23,9 +23,6 @@ services:
       - key: ADMIN_TOKEN
         sync: false   # leave UNSET in production -- it keeps the two model-training
                       # endpoints closed. The cloud serves pre-trained snapshots.
-      - key: TRUSTED_PROXY_HOPS
-        value: "1"    # Render's proxy is the only hop, so X-Forwarded-For's last
-                      # entry is the real client IP (see app/limits.py).
 
   # The Arena's realtime multiplayer server. Without this deployed, the web
   # app falls back to http://localhost:4000 (see socketClient.js) and every

@@ -23,9 +23,6 @@ class Settings(BaseSettings):
     # own, much tighter, limits on top of this.
     rate_limit_default: str = "120/minute"
     rate_limit_enabled: bool = True
-    # How many proxies sit in front of the app, for reading X-Forwarded-For.
-    # 1 = Render alone. Raise it if you add another proxy (e.g. Cloudflare).
-    trusted_proxy_hops: int = 1
     # Computed fresh every process start rather than hardcoded -- see
     # app/utils/season.py. Still overridable via a CURRENT_SEASON env var
     # for local testing/pinning, same as every other setting here.
