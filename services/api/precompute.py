@@ -188,6 +188,27 @@ def precompute_espn_rosters():
 # own. That matters because the NBA-backed steps are unusable on any network
 # stats.nba.com blocks, while `rosters` (ESPN) still works there — without
 # this you'd have to sit through seven guaranteed failures to refresh one file.
+def precompute_arena_players():
+    """Current-season players + traits for the Arena's Build a Player mode.
+
+    Walks all 30 rosters, so it is slow (~2-4 min) and must run somewhere
+    stats.nba.com is reachable -- i.e. not on the cloud host.
+    """
+    print("[arena] current players + traits...")
+    from app.routers import rosters as rosters_router
+
+    players = rosters_router.fetch_current_players()
+    envelope = rosters_router._envelope(players)
+    with_traits = sum(1 for p in players if p.get("traits"))
+    # _count_players is for the {team_id: {players: []}} shape; this snapshot
+    # is a flat envelope, so count its own list.
+    def count_envelope(blob):
+        return len((blob or {}).get("players") or [])
+
+    if _write_if_sane(rosters_router.CURRENT_PLAYERS_CACHE, envelope, "arena players", count_envelope):
+        print(f"      {with_traits} of {len(players)} players have traits")
+
+
 STEPS = {
     "defense": precompute_defense,
     "clutch": precompute_clutch,
@@ -197,6 +218,7 @@ STEPS = {
     "lineups": precompute_lineups,
     "trades": precompute_trades,
     "rosters": precompute_espn_rosters,
+    "arena": precompute_arena_players,
 }
 
 
