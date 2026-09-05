@@ -102,4 +102,13 @@ export const api = {
   // Draft Prospect Comparison
   draftCompList: () => request("/draft-comp/list"),
   draftComp: (slug) => request(`/draft-comp/${slug}`),
+
+  // Head-to-Head player-season comparison
+  h2hSearch: (q) => request(`/head-to-head/search?q=${encodeURIComponent(q)}`),
+  h2hSeasons: (playerId) => request(`/head-to-head/player/${playerId}/seasons`),
+  h2hCompare: (aId, aSeason, bId, bSeason) =>
+    request(
+      `/head-to-head/compare?a_id=${aId}&a_season=${encodeURIComponent(aSeason)}` +
+      `&b_id=${bId}&b_season=${encodeURIComponent(bSeason)}`,
+    ),
 };

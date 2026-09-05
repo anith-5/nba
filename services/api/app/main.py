@@ -29,6 +29,7 @@ from app.routers import (
     draft_comp,
     rosters,
     team_players,
+    head_to_head,
 )
 
 @asynccontextmanager
@@ -123,6 +124,7 @@ app.include_router(standings.router)
 app.include_router(draft_comp.router)
 app.include_router(rosters.router)
 app.include_router(team_players.router)
+app.include_router(head_to_head.router)
 
 
 @app.get("/health")

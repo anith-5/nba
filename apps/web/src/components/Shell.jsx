@@ -8,6 +8,7 @@ const navGroups = [
     label: "Players",
     items: [
       { to: "/players", label: "Player Search" },
+      { to: "/head-to-head", label: "Head-to-Head" },
       { to: "/shot-quality", label: "Shot Quality xFG%" },
       { to: "/shot-evaluator", label: "Shot Evaluator" },
       { to: "/clutch", label: "Clutch DNA" },
