@@ -20,6 +20,7 @@ import GMAssistant from "./pages/GMAssistant.jsx";
 import ShotEvaluator from "./pages/ShotEvaluator.jsx";
 import DraftSimulator from "./pages/DraftSimulator.jsx";
 import DraftComps from "./pages/DraftComps.jsx";
+import HeadToHead from "./pages/HeadToHead.jsx";
 import ArenaLayout from "./arena/ArenaLayout.jsx";
 import ArenaHome from "./arena/pages/ArenaHome.jsx";
 import JoinRoom from "./arena/pages/JoinRoom.jsx";
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="shot-evaluator" element={<ShotEvaluator />} />
           <Route path="draft" element={<DraftSimulator />} />
           <Route path="draft-comps" element={<DraftComps />} />
+          <Route path="head-to-head" element={<HeadToHead />} />
           {/* Arena hub, Wordle solo, and the not-yet-playable modes never need a
               realtime connection, so they stay outside ArenaLayout/SocketProvider
               — only lobby-based flows (join/create/room/over-under) connect the socket. */}

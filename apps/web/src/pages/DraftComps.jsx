@@ -3,35 +3,12 @@ import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
 import { InitialsTile } from "../components/TeamTile.jsx";
 import ShotChart from "../components/ShotChart.jsx";
+import StatRadar from "../components/StatRadar.jsx";
+import { BLUE, INK, ORANGE, SUBINK, TRACK } from "../lib/compTheme.js";
 
-// Matched to the site's paper/ink theme. Prospect = ink blue (solid fill),
-// comp = terracotta (dashed outline) — the app's own tokens. Identity never
-// rests on color alone: the two series also differ in fill vs dashed stroke.
-//
-// These are raw hex rather than Tailwind classes because they feed SVG
-// fill/stroke attributes, so they don't pick up token changes automatically —
-// keep them in step with tailwind.config.js by hand. Every value below is
-// chosen for contrast against paper (#F2F1EA): labels land ~8:1, the two
-// series and secondary text ~5:1, all comfortably above the 4.5:1 floor at
-// the 10–11px sizes this chart draws.
-const INK = "#2431C4";     // ink — primary labels (axis names, player names)
-const SUBINK = "#4A52B8";  // muted ink — secondary / caption text
-const BLUE = "#3F4EE0";    // ink-glow — prospect series
-const ORANGE = "#9E4A30";  // terracotta-dim — comp series
-const GRID = "rgba(36,49,196,0.22)"; // ink @22% — rings, spokes, court lines
-const TRACK = "rgba(36,49,196,0.12)"; // percentile bar track
-
-const clamp01 = (x) => Math.max(0, Math.min(1, x));
-
-// ── Radar axes: label, value formatter, and 0–1 normalization for the plot ────
-const RADAR_AXES = [
-  { key: "scoring", label: "Scoring", fmt: (v) => `${v?.toFixed(1)} PPG`, norm: (v) => clamp01(v / 28) },
-  { key: "efficiency", label: "Efficiency", fmt: (v) => `${Math.round(v * 100)} TS%`, norm: (v) => clamp01((v - 0.45) / 0.25) },
-  { key: "playmaking", label: "Playmaking", fmt: (v) => `${v?.toFixed(1)} APG`, norm: (v) => clamp01(v / 8) },
-  { key: "rebounding", label: "Rebounding", fmt: (v) => `${v?.toFixed(1)} RPG`, norm: (v) => clamp01(v / 12) },
-  { key: "defense", label: "Defense", fmt: (v) => `${v?.toFixed(1)} STL+BLK`, norm: (v) => clamp01(v / 4) },
-  { key: "shooting", label: "Shooting", fmt: (v) => `${Math.round(v * 100)}% 3P`, norm: (v) => clamp01((v - 0.25) / 0.25) },
-];
+// The palette and the six radar axes live in lib/compTheme.js, and the
+// hexagon itself in components/StatRadar.jsx, so the Head-to-Head cards plot
+// the identical chart instead of a lookalike that can drift out of step.
 
 function CardShell({ title, subtitle, children }) {
   return (
@@ -68,51 +45,13 @@ function Legend({ prospect, comp, compMatch }) {
 // ── Card 1: radar / hexagon ───────────────────────────────────────────────────
 function RadarCard({ data }) {
   const { prospect, comp } = data;
-  const cx = 175, cy = 172, R = 104;
-  const compRadar = comp?.line?.radar;
-
-  const pt = (i, n) => {
-    const a = (-90 + i * 60) * (Math.PI / 180);
-    return [cx + n * R * Math.cos(a), cy + n * R * Math.sin(a)];
-  };
-  const poly = (radar) =>
-    RADAR_AXES.map((ax, i) => pt(i, ax.norm(radar[ax.key] ?? 0)).join(",")).join(" ");
-
   return (
     <CardShell title={prospect.name} subtitle="College Stat Comp">
       <Legend prospect={prospect.name} comp={comp?.name} compMatch={comp?.match} />
       <p className="mb-1 text-center text-[11px]" style={{ color: SUBINK }}>
         {prospect.team} {prospect.season} · vs {comp?.line?.team} {comp?.line?.season}
       </p>
-      <svg viewBox="-75 -6 500 356" className="mx-auto block w-full max-w-[460px]">
-        {/* rings */}
-        {[0.25, 0.5, 0.75, 1].map((r) => (
-          <polygon key={r} points={RADAR_AXES.map((_, i) => pt(i, r).join(",")).join(" ")}
-            fill="none" stroke={GRID} strokeWidth="1" />
-        ))}
-        {/* spokes + labels */}
-        {RADAR_AXES.map((ax, i) => {
-          const [x, y] = pt(i, 1);
-          const [lx, ly] = pt(i, 1.28);
-          const anchor = Math.abs(lx - cx) < 8 ? "middle" : lx > cx ? "start" : "end";
-          return (
-            <g key={ax.key}>
-              <line x1={cx} y1={cy} x2={x} y2={y} stroke={GRID} strokeWidth="1" />
-              <text x={lx} y={ly - 6} textAnchor={anchor} fontSize="11" fontWeight="700" fill={INK}>{ax.label}</text>
-              <text x={lx} y={ly + 6} textAnchor={anchor} fontSize="10" fill={BLUE}>{ax.fmt(prospect.radar[ax.key])}</text>
-              {compRadar && (
-                <text x={lx} y={ly + 18} textAnchor={anchor} fontSize="10" fill={ORANGE}>{ax.fmt(compRadar[ax.key])}</text>
-              )}
-            </g>
-          );
-        })}
-        {/* comp polygon (dashed outline) */}
-        {compRadar && (
-          <polygon points={poly(compRadar)} fill="none" stroke={ORANGE} strokeWidth="2" strokeDasharray="5 4" />
-        )}
-        {/* prospect polygon (solid fill) */}
-        <polygon points={poly(prospect.radar)} fill={BLUE} fillOpacity="0.32" stroke={BLUE} strokeWidth="2" />
-      </svg>
+      <StatRadar a={{ radar: prospect.radar }} b={comp?.line?.radar ? { radar: comp.line.radar } : null} />
     </CardShell>
   );
 }

@@ -18,6 +18,7 @@ from fastapi import APIRouter
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
+from app import data_cache
 from app.routers.clutch_dna import true_shooting_pct
 from app.routers.clutch_dna import _fetch_leaderboard as _fetch_clutch_leaderboard
 from app.utils.season import get_current_nba_season, get_current_nba_season_start_year
@@ -477,9 +478,37 @@ def _envelope(players: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+# The Arena's Build a Player mode reads this to get its trait pool, via the
+# Node server's rosterSync. It is the one arena endpoint with no cache path,
+# which is why that mode came up empty in production: fetch_current_players
+# walks all 30 rosters live from stats.nba.com, and NBA blocks cloud IPs, so
+# on Render every team burned 3 retries x 30s before being skipped and the
+# request never returned.
+CURRENT_PLAYERS_CACHE = "current_players.json"
+
+
 @router.get("/current-players")
 def get_current_players():
-    return _envelope(fetch_current_players())
+    if data_cache.IS_CLOUD:
+        cached = data_cache.read_json(CURRENT_PLAYERS_CACHE)
+        if cached is not None:
+            # The snapshot recorded source="live" when it was captured; say
+            # where this response actually came from so a stale pool is
+            # diagnosable from the response alone.
+            return {**cached, "source": "cache"}
+        # Deliberately do NOT fall through to the live walk here. On a blocked
+        # host that is ~45 minutes of retries that ends in nothing; returning
+        # an empty pool immediately lets the caller degrade instead of hang.
+        return {
+            **_envelope([]),
+            "source": "unavailable",
+            "note": "No cached roster snapshot. Run: python precompute.py arena",
+        }
+
+    envelope = _envelope(fetch_current_players())
+    if envelope["players"]:
+        data_cache.write_json(CURRENT_PLAYERS_CACHE, envelope)
+    return envelope
 
 
 @router.post("/sync-rosters")

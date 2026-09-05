@@ -35,8 +35,14 @@ const BIN_GAP = "#F2F1EA";
 // The college numbers reproduce what the draft-comp chart already drew. The
 // NBA numbers are the real ones — without them a top-of-key three (29ft from
 // the baseline) would render INSIDE a 31ft college arc and read as a long two.
-export const COLLEGE_COURT = { hoop: 4, arcR: 22, corner: 22, arcStart: 9 };
-export const NBA_COURT = { hoop: 5.25, arcR: 23.75, corner: 22, arcStart: 14.2 };
+// `paint` is the lane's HALF-width in feet. It was previously hardcoded to 6
+// for both courts; the NBA lane is 16ft wide, so an NBA chart drew a lane 4ft
+// too narrow. It lives in the config now because the zone chart partitions the
+// floor along the lane's edge (lib/shotZones.js) and the two views of the same
+// court have to agree on where that edge is. The college value is left as it
+// was rather than changed under an unrelated feature.
+export const COLLEGE_COURT = { hoop: 4, arcR: 22, corner: 22, arcStart: 9, paint: 6 };
+export const NBA_COURT = { hoop: 5.25, arcR: 23.75, corner: 22, arcStart: 14.2, paint: 8 };
 
 // Baseline is py 0 and the panel is exactly 47ft deep (282px / 6px-per-ft), so
 // shots and court markings share one origin.
@@ -94,6 +100,7 @@ export default function ShotChart({
   const hoopX = (25 / 50) * COURT_W, hoopY = court.hoop * FT;
   const pct = attempts ? ((made / attempts) * 100).toFixed(0) : null;
   const cornerX = court.corner * FT, arcR = court.arcR * FT, arcY = court.arcStart * FT;
+  const paintHalf = (court.paint ?? 6) * FT;
 
   return (
     <div className={className}>
@@ -107,7 +114,7 @@ export default function ShotChart({
         {/* court outline */}
         <rect x="1" y="1" width={COURT_W - 2} height={COURT_H - 2} fill="none" stroke={COURT_LINE} strokeWidth="1.5" />
         {/* paint */}
-        <rect x={hoopX - 6 * FT} y="0" width={12 * FT} height={19 * FT} fill="none" stroke={COURT_LINE} strokeWidth="1.2" />
+        <rect x={hoopX - paintHalf} y="0" width={paintHalf * 2} height={19 * FT} fill="none" stroke={COURT_LINE} strokeWidth="1.2" />
         {/* 3pt line: corner straightaways, then the arc */}
         <path d={`M ${hoopX - cornerX} 0 L ${hoopX - cornerX} ${arcY} A ${arcR} ${arcR} 0 0 0 ${hoopX + cornerX} ${arcY} L ${hoopX + cornerX} 0`}
           fill="none" stroke={COURT_LINE} strokeWidth="1.2" />
