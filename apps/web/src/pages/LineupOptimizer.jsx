@@ -259,7 +259,7 @@ function PredictionResult({ result }) {
             ? <p className="text-ink/60 text-sm">No major weaknesses detected.</p>
             : result.weaknesses.map((w, i) => (
                 <p key={i} className="text-sm text-ink/70 flex items-start gap-2">
-                  <span className="text-stat-down mt-0.5 flex-shrink-0">⚠</span>{w}
+                  <span className="text-stat-down mt-0.5 flex-shrink-0">!</span>{w}
                 </p>
               ))
           }
@@ -445,7 +445,6 @@ function HypotheticalBuilder() {
             : (
               <div className="hoop-card-outline p-8 text-center text-ink/50 h-full flex items-center justify-center">
                 <div className="space-y-2">
-                  <p className="text-4xl">🏀</p>
                   <p>Build a 5-man lineup to see the predicted net rating</p>
                 </div>
               </div>
@@ -477,7 +476,7 @@ export default function LineupOptimizer() {
       </header>
 
       <div className="flex gap-1 p-1 rounded-xl border-2 border-ink bg-ink/5 w-fit">
-        {[["real", "📊 Real Lineups"], ["hypo", "🔮 Hypothetical Builder"]].map(([v, label]) => (
+        {[["real", "Real Lineups"], ["hypo", "Hypothetical Builder"]].map(([v, label]) => (
           <button key={v} onClick={() => setTab(v)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
               tab === v ? "bg-ink text-paper" : "text-ink/70 hover:text-ink"

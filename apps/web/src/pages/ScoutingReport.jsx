@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../api.js";
+import { REPORT_SECTIONS, plainLine } from "../lib/aiText.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
 
@@ -18,14 +19,15 @@ function ReportText({ text }) {
   if (!text) return null;
   return (
     <div className="space-y-1.5">
-      {text.split("\n").map((line, i) => {
-        if (!line.trim()) return <div key={i} className="h-2" />;
-        if (line.startsWith("**") && line.endsWith("**"))
-          return <p key={i} className="font-bold text-ink mt-3">{line.replace(/\*\*/g, "")}</p>;
-        if (/^\d+\.\s\*\*/.test(line))
-          return <p key={i} className="text-ink font-medium mt-2">{line.replace(/\*\*/g, "")}</p>;
-        if (line.startsWith("• ") || line.startsWith("- "))
-          return <p key={i} className="text-ink pl-3">• {line.slice(2)}</p>;
+      {text.split(/\r?\n/).map((raw, i) => {
+        // Headers used to be detected by the ** the model wrapped them in. The
+        // prompt now asks for plain section names, so they are matched by name.
+        const line = plainLine(raw);
+        if (!line) return <div key={i} className="h-2" />;
+        if (REPORT_SECTIONS.has(line))
+          return <p key={i} className="font-bold text-ink mt-3">{line}</p>;
+        if (line.startsWith("• "))
+          return <p key={i} className="text-ink pl-3">{line}</p>;
         return <p key={i} className="text-ink">{line}</p>;
       })}
     </div>
@@ -209,7 +211,7 @@ export default function ScoutingReport() {
                   disabled={pdfLoading}
                   className="hoop-btn-ghost text-sm flex items-center gap-1.5"
                 >
-                  {pdfLoading ? "Generating…" : "⬇ Export PDF"}
+                  {pdfLoading ? "Generating…" : "Export PDF"}
                 </button>
               </div>
             </div>

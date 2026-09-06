@@ -88,7 +88,7 @@ function ProspectDetail({ p, onClose }) {
           </div>
           <div>
             <p className="hoop-stat-label mb-2 text-stat-down">Concerns</p>
-            {p.concerns.map((c, i) => <p key={i} className="text-ink/70 text-xs py-0.5">⚠ {c}</p>)}
+            {p.concerns.map((c, i) => <p key={i} className="text-ink/70 text-xs py-0.5">! {c}</p>)}
           </div>
         </div>
       </div>

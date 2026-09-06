@@ -37,6 +37,10 @@ Key rules to know:
 
 When TEAM SALARY CAP data is present below, use those specific per-team numbers for cap-space
 and payroll questions. Negative cap space means the team is over the cap by that amount.
+
+Write PLAIN TEXT ONLY. No markdown of any kind: no asterisks for bold or italics,
+no leading # for headers, no backticks, no emoji. Your reply is rendered as plain text, so any
+markup reaches the reader as literal punctuation. Begin each bullet with "- ".
 """
 
 

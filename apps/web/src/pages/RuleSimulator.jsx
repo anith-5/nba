@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { api } from "../api.js";
 
 const SCENARIOS = [
-  { value: "three_point_back", label: "Move 3-Point Line Back 2 Feet", icon: "📏" },
-  { value: "no_corner_three", label: "Eliminate Corner 3-Pointers", icon: "🚫" },
-  { value: "wider_lane", label: "Widen the Lane (16→20 ft)", icon: "📐" },
-  { value: "four_point_line", label: "Add a 4-Point Line (30+ ft)", icon: "⭐" },
-  { value: "shorter_shot_clock", label: "Shorten Shot Clock to 18s", icon: "⏱" },
+  { value: "three_point_back", label: "Move 3-Point Line Back 2 Feet" },
+  { value: "no_corner_three", label: "Eliminate Corner 3-Pointers" },
+  { value: "wider_lane", label: "Widen the Lane (16→20 ft)" },
+  { value: "four_point_line", label: "Add a 4-Point Line (30+ ft)" },
+  { value: "shorter_shot_clock", label: "Shorten Shot Clock to 18s" },
 ];
 
 function TeamImpactRow({ team, isWinner }) {
@@ -68,7 +68,6 @@ export default function RuleSimulator() {
                 onChange={() => setScenario(s.value)}
                 className="accent-terracotta"
               />
-              <span className="text-lg">{s.icon}</span>
               <span className="text-sm text-ink">{s.label}</span>
             </label>
           ))}
