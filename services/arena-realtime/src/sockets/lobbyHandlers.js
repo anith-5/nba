@@ -120,6 +120,22 @@ function initialGameState(gameMode, configOverrides) {
   return { config: {} };
 }
 
+// Minimum players needed to start, by mode. Only modes that differ from the
+// default are listed, so this stays short rather than drifting out of step
+// with the client.
+//
+// 82-0 is playable solo: every player spins and builds their lineup
+// independently, with no turn order and no interaction between builds, so a
+// single lineup resolves to a projected record on its own. The client mirrors
+// these in apps/web/src/arena/data/gameModes.js to disable the Start button,
+// but THIS is the check that counts -- the client can be edited.
+const DEFAULT_MIN_PLAYERS = 2;
+const MIN_PLAYERS = { "82-0": 1 };
+
+function minPlayersFor(gameMode) {
+  return MIN_PLAYERS[gameMode] ?? DEFAULT_MIN_PLAYERS;
+}
+
 export function registerLobbyHandlers(io, socket) {
   socket.on("create_room", ({ playerName, gameMode } = {}, callback) => {
     if (!allowEvent(socket)) return callback?.({ error: "Slow down a moment." });
@@ -192,7 +208,12 @@ export function registerLobbyHandlers(io, socket) {
     const room = getRoom(roomCode);
     if (!room) return callback?.({ error: "Room not found." });
     if (room.hostSocketId !== socket.id) return callback?.({ error: "Only the host can start the game." });
-    if (room.players.length < 2) return callback?.({ error: "Need at least 2 players to start." });
+    const minPlayers = minPlayersFor(room.gameMode);
+    if (room.players.length < minPlayers) {
+      return callback?.({
+        error: `Need at least ${minPlayers} player${minPlayers === 1 ? "" : "s"} to start.`,
+      });
+    }
 
     room.status = "in-game";
     room.gameState = initialGameState(room.gameMode, configOverrides);
