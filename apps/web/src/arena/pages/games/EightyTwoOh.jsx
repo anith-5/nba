@@ -81,6 +81,7 @@ export default function EightyTwoOh() {
   const myBuild = gameState.playerBuilds[myId];
   if (!myBuild) return <p className="text-center text-ink/60">Setting up your lineup…</p>;
 
+  const others = room.players.filter((p) => p.socketId !== myId);
   const slots = SLOT_ORDER.filter((s) => s !== "BENCH" || gameState.benchEnabled);
   const filledCount = slots.filter((s) => myBuild.lineup[s]).length;
   const requiredCount = slots.length;
@@ -94,8 +95,11 @@ export default function EightyTwoOh() {
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+      {/* Solo games have no opponents, so the "Other Builds" column is dropped
+          entirely rather than left as a heading over empty space, and the
+          board takes the full width instead of two thirds of it. */}
+      <div className={`grid gap-6 ${others.length > 0 ? "lg:grid-cols-3" : ""}`}>
+        <div className={`space-y-6 ${others.length > 0 ? "lg:col-span-2" : ""}`}>
           {!myBuild.done && (
             <EightyTwoOhSpinner
               myBuild={myBuild}
@@ -151,11 +155,11 @@ export default function EightyTwoOh() {
           )}
         </div>
 
+        {others.length > 0 && (
         <div>
           <p className="hoop-stat-label mb-2 text-center lg:text-left">Other Builds</p>
           <div className="space-y-3">
-            {room.players
-              .filter((p) => p.socketId !== myId)
+            {others
               .map((p) => {
                 const build = gameState.playerBuilds[p.socketId];
                 const otherFilled = build ? slots.filter((s) => build.lineup[s]).length : 0;
@@ -187,6 +191,7 @@ export default function EightyTwoOh() {
               })}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
