@@ -35,7 +35,7 @@ export default function FiveHintsMysteryCard({ round, maxHints, winners, players
 
         {winners.length > 0 ? (
           <div className="animate-slide-up space-y-2 rounded-xl border border-terracotta/40 bg-paper p-4">
-            <p className="text-sm font-semibold text-terracotta">🏀 Correct!</p>
+            <p className="text-sm font-semibold text-terracotta">Correct!</p>
             {winners.map((w) => {
               const name = players.find((p) => p.socketId === w.socketId)?.name || "Someone";
               return (

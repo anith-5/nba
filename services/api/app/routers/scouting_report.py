@@ -27,16 +27,56 @@ HAIKU  = "claude-haiku-4-5-20251001"
 
 STATS_SYSTEM = """You are a professional NBA scout writing a report for a front office.
 Write in the style of a real NBA scouting report: concise, analytical, data-backed.
-Structure exactly:
 
-**Overview** (2 sentences  " role and value)
-**Offensive Profile** (3 bullets)
-**Defensive Profile** (2 bullets)
-**Best Comparable** (1 historical player with brief reason)
-**Outlook** (1 sentence  " ceiling/floor)
-**Trade Value** (1 sentence)
+Use exactly these six section headers, each alone on its own line:
+
+Overview (2 sentences - role and value)
+Offensive Profile (3 bullets)
+Defensive Profile (2 bullets)
+Best Comparable (1 historical player with brief reason)
+Outlook (1 sentence - ceiling/floor)
+Trade Value (1 sentence)
+
+Write PLAIN TEXT ONLY. No markdown of any kind: no asterisks for bold or
+italics, no leading # for headers, no backticks. Use no emoji. The report is rendered as
+plain text, so any markup reaches the reader as literal punctuation. Begin
+each bullet with "- ".
 
 Be specific. Reference the stats provided. No filler."""
+
+
+# Mirrors apps/web/src/lib/aiText.js -- both renderers style these lines as
+# headings now that they no longer arrive wrapped in asterisks.
+REPORT_SECTIONS = {
+    "Overview", "Offensive Profile", "Defensive Profile",
+    "Best Comparable", "Outlook", "Trade Value",
+}
+
+
+# Pictographic ranges only: the emoji planes, misc symbols, stars, and the
+# variation/keycap joiners. Mirrors the EMOJI regex in aiText.js, and likewise
+# leaves arrows, geometric shapes and dingbats alone.
+_EMOJI = re.compile(
+    "[\U0001F000-\U0001FAFF☀-⛿⬀-⯿️⃣]"
+)
+
+
+def _plain(line: str) -> str:
+    """One line of model output as plain text.
+
+    Second line of defence behind the prompt above: models reach for markdown
+    and emoji even when told not to, and the PDF draws whatever it is handed.
+    Any bullet marker becomes a real bullet and every asterisk goes, since a
+    scouting report has no legitimate use for one.
+    """
+    out = _EMOJI.sub("", line).strip()
+    out = re.sub(r"^#{1,6}\s*", "", out)
+    # Read the bullet marker BEFORE dropping asterisks -- "*" is itself one.
+    is_bullet = re.match(r"^[-*•]\s+", out) is not None
+    if is_bullet:
+        out = re.sub(r"^[-*•]\s+", "", out)
+    out = out.replace("*", "").strip()
+    return f"• {out}" if is_bullet else out
 
 
 # ---------------------------------------------------------------------------
@@ -186,16 +226,15 @@ def _generate_pdf(report_data: dict) -> bytes:
 
     # Report text
     elements.append(Paragraph("Scouting Report", h2_style))
-    for line in (report_data.get("report", "") or "").split("\n"):
-        if not line.strip():
+    for raw in (report_data.get("report", "") or "").splitlines():
+        line = _plain(raw)
+        if not line:
             elements.append(Spacer(1, 4))
             continue
-        if line.startswith("**") and line.endswith("**"):
-            elements.append(Paragraph(line.replace("**", ""), h2_style))
-        elif line.startswith(" ¢ ") or line.startswith("- "):
-            elements.append(Paragraph(f"&nbsp;&nbsp; ¢ {line[2:]}", body_style))
-        elif line[0].isdigit() and line[1:3] in (". ", ") "):
-            elements.append(Paragraph(line, body_style))
+        if line in REPORT_SECTIONS:
+            elements.append(Paragraph(line, h2_style))
+        elif line.startswith("• "):
+            elements.append(Paragraph(f"&nbsp;&nbsp;{line}", body_style))
         else:
             elements.append(Paragraph(line, body_style))
 

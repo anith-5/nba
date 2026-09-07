@@ -575,7 +575,11 @@ async def analyze_trade(request: Request, response: Response, body: TradeAnalysi
             text, _ = await asyncio.to_thread(
                 chat_completion,
                 model="claude-haiku-4-5-20251001",
-                system="You are an expert NBA front office analyst. Be specific, analytical, and direct. Reference GMs and players by name.",
+                system=(
+                    "You are an expert NBA front office analyst. Be specific, analytical, "
+                    "and direct. Reference GMs and players by name. Write plain text only: "
+                    "no markdown, no asterisks for bold, no emoji. The summary is rendered as plain text."
+                ),
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=350,
             )

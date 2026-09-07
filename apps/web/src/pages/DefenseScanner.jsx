@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../api.js";
+import { plainText } from "../lib/aiText.js";
 
 // Severity is a warning ladder, so the two levels get different hues rather
 // than two opacities of the same one — legacy separated them only by red-vs-
@@ -66,11 +67,11 @@ function OffensivePlan({ plan, aiPlan }) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg bg-paper border border-ink/15 p-3">
-          <p className="text-xs font-semibold text-ink/70 mb-1">⏱ Tempo</p>
+          <p className="text-xs font-semibold text-ink/70 mb-1">Tempo</p>
           <p className="text-sm text-ink leading-snug">{plan.tempo}</p>
         </div>
         <div className="rounded-lg bg-paper border border-ink/15 p-3">
-          <p className="text-xs font-semibold text-ink/70 mb-1">🎯 Shot Profile</p>
+          <p className="text-xs font-semibold text-ink/70 mb-1">Shot Profile</p>
           <p className="text-sm text-ink leading-snug">{plan.shot_profile}</p>
         </div>
       </div>
@@ -108,14 +109,14 @@ function OffensivePlan({ plan, aiPlan }) {
       )}
 
       <div className="rounded-lg bg-stat-down/5 border border-stat-down/20 p-3">
-        <p className="text-xs font-semibold text-stat-down mb-1">⛔ Avoid</p>
+        <p className="text-xs font-semibold text-stat-down mb-1">Avoid</p>
         <p className="text-sm text-ink leading-snug">{plan.avoid}</p>
       </div>
 
       {aiPlan && (
         <div className="rounded-lg border border-ink/10 bg-ink/[0.04] p-3">
           <p className="mb-1.5 text-xs font-semibold text-terracotta">AI Coach&apos;s Plan</p>
-          <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{aiPlan}</p>
+          <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{plainText(aiPlan)}</p>
         </div>
       )}
     </div>
@@ -135,7 +136,7 @@ function StrengthCard({ item }) {
       </p>
       {item.warning && (
         <p className="text-xs opacity-80 leading-snug border-t border-current/20 pt-1 mt-1">
-          ⚠ {item.warning}
+          {item.warning}
         </p>
       )}
     </div>
@@ -423,7 +424,7 @@ export default function DefenseScanner() {
       </header>
 
       <div className="flex gap-1 p-1 rounded-xl border-2 border-ink bg-ink/5 w-fit">
-        {[["team", "🔍 Single Team"], ["league", "🏆 All 30 Teams"]].map(([v, label]) => (
+        {[["team", "Single Team"], ["league", "All 30 Teams"]].map(([v, label]) => (
           <button key={v} onClick={() => setTab(v)}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
               tab === v ? "bg-ink text-paper" : "text-ink/70 hover:text-ink"

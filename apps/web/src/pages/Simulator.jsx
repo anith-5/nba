@@ -8,7 +8,6 @@ export default function Simulator() {
         </p>
       </header>
       <div className="hoop-card-outline max-w-2xl p-8 text-center">
-        <p className="text-6xl opacity-30">🏆</p>
         <h2 className="mt-4 text-xl font-semibold text-ink">Coming in Phase 4</h2>
         <p className="mt-2 text-ink/70">
           Player progression, AI GMs, cap constraints, and dynasty scoring will plug into{" "}

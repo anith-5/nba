@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { api } from "../api.js";
+import { plainText } from "../lib/aiText.js";
 
 // Five-step scales, kept genuinely five-step. On the legacy dark theme the
 // top two bands were white vs light-grey and the bottom two were bright-red
@@ -395,7 +396,7 @@ export default function TradeMachine() {
           {result.ai_summary && (
             <div className="hoop-card-outline p-5 space-y-2">
               <p className="hoop-stat-label">AI Front Office Analysis</p>
-              <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{result.ai_summary}</p>
+              <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">{plainText(result.ai_summary)}</p>
             </div>
           )}
         </div>

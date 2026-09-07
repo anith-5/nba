@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { api } from "../api.js";
+import { plainText } from "../lib/aiText.js";
 
 const EXAMPLE_QUESTIONS = [
   "Which teams have the most cap space heading into the offseason?",
@@ -17,14 +18,14 @@ function Message({ msg }) {
       <div className={`h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold ${
         isUser ? "bg-terracotta/20 text-terracotta" : "bg-ink/10 text-ink"
       }`}>
-        {isUser ? "GM" : "🏀"}
+        {isUser ? "GM" : "AI"}
       </div>
       <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
         isUser
           ? "bg-terracotta/15 text-ink rounded-tr-sm"
           : "bg-ink/5 text-ink rounded-tl-sm"
       }`}>
-        {msg.content.split("\n").map((line, i) => (
+        {plainText(msg.content).split(/\r?\n/).map((line, i) => (
           line ? <p key={i} className="mb-1 last:mb-0">{line}</p> : <br key={i} />
         ))}
       </div>
@@ -110,7 +111,7 @@ export default function GMAssistant() {
 
         {loading && (
           <div className="flex gap-3">
-            <div className="h-8 w-8 rounded-full bg-ink/10 flex items-center justify-center text-xs">🏀</div>
+            <div className="h-8 w-8 rounded-full bg-ink/10 flex items-center justify-center text-xs font-bold text-ink">AI</div>
             <div className="bg-ink/5 rounded-2xl rounded-tl-sm px-4 py-3">
               <div className="flex gap-1">
                 <span className="h-2 w-2 rounded-full bg-ink/30 animate-bounce" style={{ animationDelay: "0ms" }} />

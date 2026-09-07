@@ -3,7 +3,11 @@ export const GAME_MODES = [
     id: "82-0",
     name: "NBA 82-0",
     description: "Spin a team + decade, build a 5-position lineup, and see whose projected record is best.",
-    minPlayers: 2,
+    // Playable solo: every player spins and builds independently with no turn
+    // order and no interaction between lineups, so a single build resolves to
+    // a projected record on its own. The server mirrors this in
+    // services/arena-realtime/src/sockets/lobbyHandlers.js (MIN_PLAYERS).
+    minPlayers: 1,
     maxPlayers: 8,
     estimate: "15-25 min",
     status: "playable",

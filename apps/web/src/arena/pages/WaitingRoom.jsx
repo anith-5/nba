@@ -872,7 +872,10 @@ export default function WaitingRoom() {
 
   const gameMode = GAME_MODES.find((m) => m.id === room?.gameMode);
   const isHost = room && myId === room.hostSocketId;
-  const canStart = room && room.players.length >= 2;
+  // Per-mode, not a flat 2: 82-0 is playable solo. Unknown modes keep the
+  // old floor rather than becoming startable by accident.
+  const minPlayers = gameMode?.minPlayers ?? 2;
+  const canStart = room && room.players.length >= minPlayers;
 
   useEffect(() => {
     if (room?.status === "in-game") {
@@ -954,7 +957,9 @@ export default function WaitingRoom() {
             disabled={!canStart}
             className="hoop-btn-primary w-full disabled:opacity-50"
           >
-            {canStart ? "Start Game" : "Waiting for at least 2 players…"}
+            {canStart
+              ? "Start Game"
+              : `Waiting for at least ${minPlayers} player${minPlayers === 1 ? "" : "s"}…`}
           </button>
         ) : room.gameMode === "closest-to" ||
           room.gameMode === "five-hints" ||
