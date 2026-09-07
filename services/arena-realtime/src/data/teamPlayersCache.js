@@ -275,6 +275,18 @@ function startLiveFetch(abbr, options) {
 // Callers (gameHandlers.js) are expected to show a loading state while
 // waiting on case 3 and an error state if the fetch throws -- never a
 // partial or stale-looking substitute for a team we haven't loaded yet.
+//
+// Case 3 is bounded. A full-history fetch runs for MINUTES, and a player
+// staring at an empty picker has no way to tell that from a hang -- there was
+// previously no ceiling short of FETCH_ABORT_MS (20 minutes), so a team that
+// never resolved simply never rendered. Past FIRST_FETCH_WAIT_MS the caller
+// gets a rejection it can turn into a visible "try a respin" message.
+//
+// The underlying fetch is deliberately NOT cancelled: it stays in `inFlight`,
+// finishes on its own, and caches as usual -- so the team works on a later
+// attempt instead of restarting from nothing every time.
+const FIRST_FETCH_WAIT_MS = 25_000;
+
 export async function getTeamPlayers(abbr) {
   const cached = cache.get(abbr);
   if (isFresh(cached)) return cached.data;
@@ -289,7 +301,22 @@ export async function getTeamPlayers(abbr) {
   }
 
   const livePromise = inFlight.get(abbr) || startLiveFetch(abbr);
-  return livePromise; // resolves with data, or rejects -- caller's problem to handle
+  // Swallow a late rejection on the losing side of the race: without this the
+  // fetch's own failure becomes an unhandled rejection once we've timed out.
+  livePromise.catch(() => {});
+
+  let timer;
+  const deadline = new Promise((_, reject) => {
+    timer = setTimeout(
+      () => reject(new Error(`Still loading ${abbr} — this team hasn't been cached yet.`)),
+      FIRST_FETCH_WAIT_MS,
+    );
+  });
+  try {
+    return await Promise.race([livePromise, deadline]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // Sync accessor used to validate a confirm_pick against whatever data the
