@@ -176,7 +176,6 @@ export default function ScoutingReport() {
             </span>
           ) : "Generate Report"}
         </button>
-        <p className="text-xs text-ink/50">Requires ANTHROPIC_API_KEY in services/api/.env</p>
       </div>
 
       {error && (
