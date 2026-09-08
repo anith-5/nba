@@ -24,6 +24,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import staticData from "./nba_player_seasons.json" with { type: "json" };
+import historicalStats from "./historical_player_stats.json" with { type: "json" };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DISK_CACHE_DIR = path.join(__dirname, "teamCache");
@@ -113,6 +114,121 @@ async function readDiskCache(abbr) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Pre-1996 stats overlay
+// ---------------------------------------------------------------------------
+// stats.nba.com serves no player stats before 1996-97, so every earlier season
+// arrives ppg_confirmed:false with null numbers and the game logic (which
+// filters on ppg_confirmed) drops it -- the 1980s wheel in 82-0 showed nobody,
+// for every franchise. The rosters were never the problem; the three per-game
+// numbers were. historical_player_stats.json supplies them from
+// Basketball-Reference (see scripts/generate-historical-stats.mjs).
+//
+// This is applied as an overlay when data enters the in-memory cache, NOT
+// baked into what gets written to disk. Two reasons: the disk cache stays a
+// faithful record of what the API actually returned, and a later refresh can
+// never silently drop the overlay the way it would if this were merged into
+// the stored payload.
+//
+// It only ever fills seasons NBA left unconfirmed, so live data always wins.
+
+// Mirrors normName in scripts/generate-historical-stats.mjs -- both sides of
+// the join have to normalise identically or nothing matches.
+function normName(name) {
+  return (name || "")
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[ðĐđ]/gi, "d")
+    .replace(/[øØ]/g, "o")
+    .replace(/[þÞ]/gi, "th")
+    .replace(/[^A-Za-z ]/g, "")
+    .toLowerCase()
+    .replace(/\s+(jr|sr|ii|iii|iv|v)$/, "")
+    .trim();
+}
+
+function withHistoricalStats(abbr, data) {
+  const history = historicalStats[abbr];
+  if (!history || !data?.players) return data;
+
+  let filled = 0;
+  const players = data.players.map((p) => {
+    const key = normName(p.name);
+    let touched = false;
+    const seasons = p.seasons.map((s) => {
+      if (s.ppg_confirmed) return s; // live data is authoritative
+      const hit = history[s.season]?.[key];
+      if (!hit) return s;
+      touched = true;
+      filled++;
+      return {
+        ...s,
+        ppg: hit.ppg,
+        ast_pg: hit.ast_pg,
+        reb_pg: hit.reb_pg,
+        position: s.position || hit.position,
+        ppg_confirmed: true,
+        stats_source: "bbref",
+      };
+    });
+    return touched ? { ...p, seasons } : p;
+  });
+
+  // Filling only works where the roster walk produced a row to fill. Some
+  // franchises are missing whole eras -- BKN's cached roster starts at 1996-97
+  // and LAC's at 2003-04, so their 1980s had nothing to attach numbers to.
+  // For a season the cache covers not at all, the entries are built outright.
+  //
+  // Restricted to seasons with ZERO cached players on purpose. Adding into a
+  // season the walk did cover would double up anyone the two sources spell
+  // differently ("Nate" vs "Tiny" Archibald), which is worse than the handful
+  // of names that simply stay unconfirmed.
+  const seasonsInCache = new Set();
+  for (const p of data.players) for (const s of p.seasons) seasonsInCache.add(s.season);
+
+  // Copy-on-write throughout: `data` is the payload startLiveFetch persists to
+  // disk, so mutating a player or its seasons array here would quietly write
+  // the overlay into the cache file this is deliberately kept out of.
+  const patched = players.slice();
+  const added = [];
+  const atIndex = new Map(); // normalised name -> index into patched
+  const atAdded = new Map(); // normalised name -> index into added
+  patched.forEach((p, i) => {
+    const k = normName(p.name);
+    if (!atIndex.has(k)) atIndex.set(k, i); // first wins; duplicates keep their own row
+  });
+
+  let addedSeasons = 0;
+  for (const [season, roster] of Object.entries(history)) {
+    if (seasonsInCache.has(season)) continue;
+    for (const [key, h] of Object.entries(roster)) {
+      const entry = {
+        season,
+        ppg: h.ppg,
+        ast_pg: h.ast_pg,
+        reb_pg: h.reb_pg,
+        position: h.position,
+        ppg_confirmed: true,
+        stats_source: "bbref",
+      };
+      addedSeasons++;
+      if (atIndex.has(key)) {
+        const i = atIndex.get(key);
+        patched[i] = { ...patched[i], seasons: [...patched[i].seasons, entry] };
+      } else if (atAdded.has(key)) {
+        const i = atAdded.get(key);
+        added[i] = { ...added[i], seasons: [...added[i].seasons, entry] };
+      } else {
+        atAdded.set(key, added.length);
+        added.push({ name: h.name, player_id: h.player_id, seasons: [entry] });
+      }
+    }
+  }
+
+  if (!filled && !addedSeasons) return data;
+  return { ...data, players: [...patched, ...added] };
+}
+
 // Loads every team's disk cache (if present) into memory before the server
 // starts accepting connections. This is a handful of small local file reads
 // so it doesn't meaningfully delay startup -- the slow part (live NBA API
@@ -124,7 +240,7 @@ export async function loadDiskCacheOnStartup() {
   for (const abbr of PRELOAD_TEAMS) {
     const entry = await readDiskCache(abbr);
     if (entry) {
-      cache.set(abbr, { data: entry.data, fetchedAt: entry.fetchedAt });
+      cache.set(abbr, { data: withHistoricalStats(abbr, entry.data), fetchedAt: entry.fetchedAt });
       loaded++;
     }
   }
@@ -247,7 +363,7 @@ function startLiveFetch(abbr, options) {
   const promise = fetchLive(abbr, options)
     .then(async (data) => {
       const fetchedAt = Date.now();
-      cache.set(abbr, { data, fetchedAt });
+      cache.set(abbr, { data: withHistoricalStats(abbr, data), fetchedAt });
       inFlight.delete(abbr);
       console.log(`[teamPlayersCache] live fetch for ${abbr} completed and cached (${data.players.length} players)`);
       await writeDiskCache(abbr, data, fetchedAt);
