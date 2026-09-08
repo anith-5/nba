@@ -34,7 +34,8 @@ const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // re-fetch a team once its data i
 const FETCH_ABORT_MS = 20 * 60 * 1000; // safety ceiling for a single team's live fetch
 const SEASON_RETRY_GAP_MS = 3_000; // background re-checks of unconfirmed seasons
 const PRELOAD_TEAM_GAP_MS = 3_000; // gap between starting each preloaded team's request
-const PRELOAD_SEASON_DELAY_SEC = 1.0; // gentler per-season pacing during preload
+const PRELOAD_SEASON_DELAY_SEC = 1.0;
+const FIRST_NBA_STATS_YEAR = 1996; // leaguedashplayerstats serves nothing earlier // gentler per-season pacing during preload
 
 // All 30 franchises, ordered most-popular-first. The preload loop below is a
 // straight sequential walk through this array, so "tier 2 starts once tier 1
@@ -267,6 +268,42 @@ async function fetchLive(abbr, { seasonDelay } = {}) {
 // missed the whole year to injury and has 0 real games anywhere in the
 // stats dataset) aren't throttling victims, they just don't have
 // confirmable data, and re-querying the same season won't change that.
+// NBA seasons roll over in October, matching app/utils/season.py.
+function currentSeasonStartYear() {
+  const now = new Date();
+  return now.getMonth() + 1 >= 10 ? now.getFullYear() : now.getFullYear() - 1;
+}
+
+function seasonStr(startYear) {
+  return `${startYear}-${String(startYear + 1).slice(2)}`;
+}
+
+// Seasons absent from the data entirely, inferred from the range it does cover.
+//
+// A franchise plays every season between its first and the current one, so any
+// hole in that range is a failed fetch rather than history. This is what finds
+// gaps in caches written BEFORE the API started reporting failed_seasons --
+// MEM's missing 2019-20..2025-26, for instance.
+//
+// It can only see holes INSIDE the covered range: a walk that died before its
+// earliest season leaves no trace to infer from. Those are all pre-1996 in
+// practice, where the Basketball-Reference overlay already covers us.
+function missingSeasons(data) {
+  const have = new Set();
+  for (const p of data.players || []) for (const s of p.seasons || []) have.add(s.season);
+  if (have.size === 0) return [];
+
+  const startYears = [...have].map((s) => Number(s.slice(0, 4))).filter(Number.isFinite);
+  const from = Math.min(...startYears);
+  const to = currentSeasonStartYear();
+  const gaps = [];
+  for (let y = from; y <= to; y++) {
+    const season = seasonStr(y);
+    if (!have.has(season)) gaps.push(season);
+  }
+  return gaps;
+}
+
 function unconfirmedSeasons(data) {
   const bySeasson = new Map(); // season -> { anyConfirmed, anyUnconfirmed }
   for (const player of data.players) {
@@ -285,7 +322,14 @@ function unconfirmedSeasons(data) {
   // loop above cannot see them -- which is why a truncated franchise history
   // never repaired itself. team_players.py now reports them explicitly.
   const failed = data.failed_seasons || [];
-  return [...new Set([...unconfirmed, ...failed])];
+  const all = [...new Set([...unconfirmed, ...failed, ...missingSeasons(data)])];
+
+  // Never spend a call on a season NBA structurally cannot answer:
+  // leaguedashplayerstats returns nothing before 1996-97, so those seasons
+  // would come back unconfirmed every round, forever. They are the
+  // Basketball-Reference overlay's job, not the retry loop's -- and API calls
+  // are the scarce resource that throttling punishes.
+  return all.filter((season) => Number(season.slice(0, 4)) >= FIRST_NBA_STATS_YEAR);
 }
 
 function wait(ms) {
@@ -376,10 +420,57 @@ async function scheduleUnavailableSeasonRetries(abbr) {
   }
 }
 
+// A live walk is a PARTIAL view, not a replacement. When stats.nba.com
+// throttles, failed seasons drop out of the response silently, so a re-fetch
+// can easily carry less than the cache it is about to replace -- that is how
+// ATL went from a full 2020s to an empty one on a routine staleness refresh.
+//
+// Merging per season instead of overwriting means a fetch can only ever add:
+// a confirmed season beats an unconfirmed one, and between two confirmed the
+// fresher wins.
+function mergeTeamData(previous, fresh) {
+  if (!previous?.players?.length) return fresh;
+
+  const byId = new Map();
+  const absorb = (data, preferFresh) => {
+    for (const p of data.players || []) {
+      let e = byId.get(p.player_id);
+      if (!e) byId.set(p.player_id, (e = { name: p.name, player_id: p.player_id, seasons: new Map() }));
+      for (const s of p.seasons || []) {
+        const have = e.seasons.get(s.season);
+        const better =
+          !have ||
+          (s.ppg_confirmed && !have.ppg_confirmed) ||
+          (s.ppg_confirmed && have.ppg_confirmed && preferFresh);
+        if (better) e.seasons.set(s.season, s);
+      }
+    }
+  };
+  absorb(previous, false);
+  absorb(fresh, true);
+
+  const players = [...byId.values()].map((e) => ({
+    name: e.name,
+    player_id: e.player_id,
+    seasons: [...e.seasons.values()].sort((a, b) => b.season.localeCompare(a.season)),
+  }));
+
+  // failed_seasons is only meaningful for seasons the merge still lacks.
+  const covered = new Set(players.flatMap((p) => p.seasons.filter((s) => s.ppg_confirmed).map((s) => s.season)));
+  const failed = (fresh.failed_seasons || []).filter((s) => !covered.has(s));
+
+  return { ...fresh, failed_seasons: failed, data_complete: failed.length === 0, players };
+}
+
 function startLiveFetch(abbr, options) {
   const promise = fetchLive(abbr, options)
-    .then(async (data) => {
+    .then(async (fetched) => {
+      let data = fetched;
       const fetchedAt = Date.now();
+      // Merge against what we already had rather than replacing it: a
+      // throttled walk must never cost us seasons we have already confirmed.
+      const previous = cache.get(abbr)?.data;
+      data = mergeTeamData(previous, data);
       cache.set(abbr, { data: withHistoricalStats(abbr, data), fetchedAt });
       inFlight.delete(abbr);
       console.log(`[teamPlayersCache] live fetch for ${abbr} completed and cached (${data.players.length} players)`);
@@ -481,7 +572,22 @@ export function isTeamCached(abbr) {
 export async function startTeamPlayersPreload() {
   for (const abbr of PRELOAD_TEAMS) {
     if (isFresh(cache.get(abbr))) {
-      console.log(`[teamPlayersCache] preload: ${abbr} already fresh from disk cache, skipping API fetch`);
+      // Fresh, but not necessarily whole. The repair loop used to run only
+      // after a live fetch, so a team already cached with a truncated history
+      // stayed truncated until its 7-day TTL expired -- and the next walk was
+      // just as likely to be throttled. Repairing here costs one call per
+      // missing season instead of re-walking 30+ of them, and it runs inside
+      // this same sequential loop so the pacing is unchanged.
+      const gaps = unconfirmedSeasons(cache.get(abbr).data);
+      if (gaps.length === 0) {
+        console.log(`[teamPlayersCache] preload: ${abbr} already fresh from disk cache, skipping API fetch`);
+        continue;
+      }
+      console.log(`[teamPlayersCache] preload: ${abbr} fresh but missing ${gaps.length} season(s) -- repairing`);
+      await scheduleUnavailableSeasonRetries(abbr).catch((err) =>
+        console.warn(`[teamPlayersCache] ${abbr}: gap repair errored: ${err.message}`)
+      );
+      await wait(PRELOAD_TEAM_GAP_MS);
       continue;
     }
     try {
