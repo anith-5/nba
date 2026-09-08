@@ -277,7 +277,15 @@ function unconfirmedSeasons(data) {
       bySeasson.set(s.season, entry);
     }
   }
-  return [...bySeasson.entries()].filter(([, e]) => e.anyUnconfirmed && !e.anyConfirmed).map(([season]) => season);
+  const unconfirmed = [...bySeasson.entries()]
+    .filter(([, e]) => e.anyUnconfirmed && !e.anyConfirmed)
+    .map(([season]) => season);
+
+  // Seasons the API's walk could not fetch at all aren't in `players`, so the
+  // loop above cannot see them -- which is why a truncated franchise history
+  // never repaired itself. team_players.py now reports them explicitly.
+  const failed = data.failed_seasons || [];
+  return [...new Set([...unconfirmed, ...failed])];
 }
 
 function wait(ms) {
@@ -311,7 +319,16 @@ async function retrySeasonOnce(abbr, season) {
       playersById.set(row.player_id, player);
     }
     const existing = player.seasons.find((s) => s.season === season);
-    const updated = { season, ppg: row.ppg, position: row.position, ppg_confirmed: true };
+    const updated = {
+      season,
+      ppg: row.ppg,
+      // ast_pg/reb_pg were dropped here, so a repaired season came back
+      // "confirmed" but scored as 0 assists and 0 rebounds in 82-0.
+      ast_pg: row.ast_pg,
+      reb_pg: row.reb_pg,
+      position: row.position,
+      ppg_confirmed: true,
+    };
     if (existing) Object.assign(existing, updated);
     else player.seasons.push(updated);
     changed = true;
