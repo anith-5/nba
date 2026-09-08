@@ -379,6 +379,14 @@ async function retrySeasonOnce(abbr, season) {
   }
 
   if (changed) {
+    // Drop it from failed_seasons too. That list is what unconfirmedSeasons
+    // reads, and it does not shrink on its own -- so without this a repaired
+    // season is re-queued every round, and the loop spends its remaining
+    // rounds re-fetching work it already finished. API calls are exactly the
+    // resource throttling punishes, so burning them twice matters.
+    if (Array.isArray(current.data.failed_seasons)) {
+      current.data.failed_seasons = current.data.failed_seasons.filter((s) => s !== season);
+    }
     console.log(`[teamPlayersCache] ${abbr}: confirmed PPG for ${season}, notifying clients`);
     await writeDiskCache(abbr, current.data, current.fetchedAt);
     ioInstance?.emit("cache_updated", { team: abbr, season });
