@@ -1,0 +1,5984 @@
+{
+  "fetchedAt": 1788800875648,
+  "data": {
+    "team_name": "Charlotte Hornets",
+    "data_complete": true,
+    "source": "live",
+    "players": [
+      {
+        "name": "Muggsy Bogues",
+        "player_id": "177",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 8,
+            "ast_pg": 7.2,
+            "reb_pg": 2.2,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 11.1,
+            "ast_pg": 8.7,
+            "reb_pg": 3.3,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 10.8,
+            "ast_pg": 10.1,
+            "reb_pg": 4.1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 10,
+            "ast_pg": 8.8,
+            "reb_pg": 3.7,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 8.9,
+            "ast_pg": 9.1,
+            "reb_pg": 2.9,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 7,
+            "ast_pg": 8.3,
+            "reb_pg": 2.7,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 9.4,
+            "ast_pg": 10.7,
+            "reb_pg": 2.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 5.4,
+            "ast_pg": 7.8,
+            "reb_pg": 2.1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Rex Chapman",
+        "player_id": "364",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 15.7,
+            "ast_pg": 3.6,
+            "reb_pg": 2.7,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 17.5,
+            "ast_pg": 2.4,
+            "reb_pg": 3.3,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 16.9,
+            "ast_pg": 2.3,
+            "reb_pg": 2.5,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Earl Cureton",
+        "player_id": "940",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 1.9,
+            "ast_pg": 0.3,
+            "reb_pg": 4,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 6.5,
+            "ast_pg": 1.6,
+            "reb_pg": 6,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Dell Curry",
+        "player_id": "209",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 9.4,
+            "ast_pg": 1.3,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 14.8,
+            "ast_pg": 1.7,
+            "reb_pg": 3.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 13.6,
+            "ast_pg": 1.6,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 16.3,
+            "ast_pg": 2.7,
+            "reb_pg": 3.2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 15.3,
+            "ast_pg": 2.3,
+            "reb_pg": 3.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 15.7,
+            "ast_pg": 2.3,
+            "reb_pg": 3.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 10.6,
+            "ast_pg": 2.2,
+            "reb_pg": 2.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 16,
+            "ast_pg": 2.4,
+            "reb_pg": 2.5,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 11.9,
+            "ast_pg": 1,
+            "reb_pg": 2.2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Michael Holton",
+        "player_id": "77047",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 1.8,
+            "ast_pg": 1,
+            "reb_pg": 0.1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 8.3,
+            "ast_pg": 6.3,
+            "reb_pg": 1.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Dave Hoppen",
+        "player_id": "77053",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 4,
+            "ast_pg": 0.6,
+            "reb_pg": 3.6,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 6.5,
+            "ast_pg": 0.7,
+            "reb_pg": 5,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Tim Kempton",
+        "player_id": "1118",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 6.1,
+            "ast_pg": 1.3,
+            "reb_pg": 3.8,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Greg Kite",
+        "player_id": "1123",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 3.2,
+            "ast_pg": 0.6,
+            "reb_pg": 4.4,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Ralph Lewis",
+        "player_id": "77383",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 3.3,
+            "ast_pg": 0,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 3.2,
+            "ast_pg": 0.4,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Sidney Lowe",
+        "player_id": "77415",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 1.6,
+            "ast_pg": 6.6,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Kurt Rambis",
+        "player_id": "77905",
+        "seasons": [
+          {
+            "season": "1988-89",
+            "ppg": 11.1,
+            "ast_pg": 2.1,
+            "reb_pg": 9.4,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Robert Reid",
+        "player_id": "77936",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 6.4,
+            "ast_pg": 1.4,
+            "reb_pg": 2.4,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 14.7,
+            "ast_pg": 1.9,
+            "reb_pg": 3.7,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Brian Rowsom",
+        "player_id": "78031",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 5.1,
+            "ast_pg": 0.5,
+            "reb_pg": 3,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 6.6,
+            "ast_pg": 0.7,
+            "reb_pg": 4,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Tom Tolbert",
+        "player_id": "78347",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 1.4,
+            "ast_pg": 0.2,
+            "reb_pg": 1.7,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 2.9,
+            "ast_pg": 0.5,
+            "reb_pg": 1.5,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Kelly Tripucka",
+        "player_id": "78369",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 7,
+            "ast_pg": 2.1,
+            "reb_pg": 2.3,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 15.6,
+            "ast_pg": 2.8,
+            "reb_pg": 4.1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1988-89",
+            "ppg": 22.6,
+            "ast_pg": 3.2,
+            "reb_pg": 3.8,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Richard Anderson",
+        "player_id": "76045",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 4.3,
+            "ast_pg": 1,
+            "reb_pg": 2.4,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Terry Dozier",
+        "player_id": "76596",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 2.4,
+            "ast_pg": 0.3,
+            "reb_pg": 1.7,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Kenny Gattison",
+        "player_id": "930",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 6,
+            "ast_pg": 0.8,
+            "reb_pg": 3.6,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 7.7,
+            "ast_pg": 1.2,
+            "reb_pg": 4.6,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 6.8,
+            "ast_pg": 0.9,
+            "reb_pg": 4.7,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 12.7,
+            "ast_pg": 1.6,
+            "reb_pg": 7.1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 9,
+            "ast_pg": 0.6,
+            "reb_pg": 5.3,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 5.9,
+            "ast_pg": 0.6,
+            "reb_pg": 3.1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Armen Gilliam",
+        "player_id": "288",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 18.8,
+            "ast_pg": 1.5,
+            "reb_pg": 8.8,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Randolph Keys",
+        "player_id": "705",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 3.2,
+            "ast_pg": 0.4,
+            "reb_pg": 2.3,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 10.5,
+            "ast_pg": 1.5,
+            "reb_pg": 3.6,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "J.R. Reid",
+        "player_id": "462",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 4.9,
+            "ast_pg": 0.6,
+            "reb_pg": 2.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1991-92",
+            "ppg": 11,
+            "ast_pg": 1.6,
+            "reb_pg": 6.2,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 11.3,
+            "ast_pg": 1.1,
+            "reb_pg": 6.3,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1989-90",
+            "ppg": 11.1,
+            "ast_pg": 1.2,
+            "reb_pg": 8.4,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Andre Turner",
+        "player_id": "78377",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 2.8,
+            "ast_pg": 2.5,
+            "reb_pg": 0.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Micheal Williams",
+        "player_id": "52",
+        "seasons": [
+          {
+            "season": "1989-90",
+            "ppg": 6.9,
+            "ast_pg": 3.5,
+            "reb_pg": 1.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Kendall Gill",
+        "player_id": "383",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 16.9,
+            "ast_pg": 3.9,
+            "reb_pg": 4.9,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 20.5,
+            "ast_pg": 4.2,
+            "reb_pg": 5.1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 11,
+            "ast_pg": 3.7,
+            "reb_pg": 3.2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Mike Gminski",
+        "player_id": "76826",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 2.7,
+            "ast_pg": 0.2,
+            "reb_pg": 2.5,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 5.8,
+            "ast_pg": 0.9,
+            "reb_pg": 3.4,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 11.4,
+            "ast_pg": 1.2,
+            "reb_pg": 7.6,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Scott Haffner",
+        "player_id": "76911",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 2.4,
+            "ast_pg": 1.3,
+            "reb_pg": 0.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Eric Leckner",
+        "player_id": "287",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 3.3,
+            "ast_pg": 0.5,
+            "reb_pg": 3.5,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 5.8,
+            "ast_pg": 0.5,
+            "reb_pg": 5.2,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Johnny Newman",
+        "player_id": "271",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 11.9,
+            "ast_pg": 1.8,
+            "reb_pg": 2.2,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 15.3,
+            "ast_pg": 2.7,
+            "reb_pg": 3.3,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1990-91",
+            "ppg": 16.9,
+            "ast_pg": 2.3,
+            "reb_pg": 3.1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Jeff Sanders",
+        "player_id": "1874",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 4.3,
+            "ast_pg": 0.3,
+            "reb_pg": 3,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Steve Scheffler",
+        "player_id": "88",
+        "seasons": [
+          {
+            "season": "1990-91",
+            "ppg": 1.5,
+            "ast_pg": 0.2,
+            "reb_pg": 1.2,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Michael Ansley",
+        "player_id": "76050",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 3,
+            "ast_pg": 0,
+            "reb_pg": 1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Anthony Frederick",
+        "player_id": "76752",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 5.9,
+            "ast_pg": 1.1,
+            "reb_pg": 2.2,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Ronnie Grandison",
+        "player_id": "97",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Cedric Hunter",
+        "player_id": "77083",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 0,
+            "ast_pg": 0,
+            "reb_pg": 0,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Larry Johnson",
+        "player_id": "913",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 18.8,
+            "ast_pg": 4.6,
+            "reb_pg": 7.2,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 16.4,
+            "ast_pg": 3.6,
+            "reb_pg": 8.8,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 22.1,
+            "ast_pg": 4.3,
+            "reb_pg": 10.5,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 19.2,
+            "ast_pg": 3.6,
+            "reb_pg": 11,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Kevin Lynch",
+        "player_id": "77426",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 2.2,
+            "ast_pg": 0.6,
+            "reb_pg": 0.9,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1991-92",
+            "ppg": 4.1,
+            "ast_pg": 1.5,
+            "reb_pg": 1.5,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Elliot Perry",
+        "player_id": "386",
+        "seasons": [
+          {
+            "season": "1991-92",
+            "ppg": 2.8,
+            "ast_pg": 1.6,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Tony Bennett",
+        "player_id": "76148",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 4.7,
+            "ast_pg": 1.3,
+            "reb_pg": 0.7,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 3.4,
+            "ast_pg": 2.2,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 3.7,
+            "ast_pg": 1.8,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Sidney Green",
+        "player_id": "76876",
+        "seasons": [
+          {
+            "season": "1992-93",
+            "ppg": 1.7,
+            "ast_pg": 0.2,
+            "reb_pg": 2,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Alonzo Mourning",
+        "player_id": "297",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 21.3,
+            "ast_pg": 1.4,
+            "reb_pg": 9.9,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 21.5,
+            "ast_pg": 1.4,
+            "reb_pg": 10.2,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 21,
+            "ast_pg": 1,
+            "reb_pg": 10.3,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "David Wingate",
+        "player_id": "766",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 2.3,
+            "ast_pg": 1.1,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 6.2,
+            "ast_pg": 2.1,
+            "reb_pg": 2.7,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1992-93",
+            "ppg": 6.1,
+            "ast_pg": 2.5,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Frank Brickowski",
+        "player_id": "783",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 10.1,
+            "ast_pg": 2,
+            "reb_pg": 4.5,
+            "position": "PF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Scott Burrell",
+        "player_id": "197",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 4.2,
+            "ast_pg": 0.2,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 11.5,
+            "ast_pg": 2.5,
+            "reb_pg": 5.7,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 4.8,
+            "ast_pg": 1.2,
+            "reb_pg": 2.6,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "LeRon Ellis",
+        "player_id": "1034",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 4.4,
+            "ast_pg": 0.5,
+            "reb_pg": 3.8,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Hersey Hawkins",
+        "player_id": "765",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 3.1,
+            "ast_pg": 1.2,
+            "reb_pg": 1.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1994-95",
+            "ppg": 14.3,
+            "ast_pg": 3.2,
+            "reb_pg": 3.8,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          },
+          {
+            "season": "1993-94",
+            "ppg": 14.4,
+            "ast_pg": 2.6,
+            "reb_pg": 4.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Steve Henson",
+        "player_id": "1667",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 1,
+            "ast_pg": 1.7,
+            "reb_pg": 0.3,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Eddie Johnson",
+        "player_id": "698",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 11.5,
+            "ast_pg": 1.7,
+            "reb_pg": 3.1,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Rumeal Robinson",
+        "player_id": "716",
+        "seasons": [
+          {
+            "season": "1993-94",
+            "ppg": 2.1,
+            "ast_pg": 1.3,
+            "reb_pg": 0.6,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Michael Adams",
+        "player_id": "149",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 6.5,
+            "ast_pg": 3.3,
+            "reb_pg": 1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Darrin Hancock",
+        "player_id": "241",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 3.3,
+            "ast_pg": 0.7,
+            "reb_pg": 1.2,
+            "position": "SF",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Robert Parish",
+        "player_id": "305",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "C",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "1994-95",
+            "ppg": 4.8,
+            "ast_pg": 0.5,
+            "reb_pg": 4.3,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Greg Sutton",
+        "player_id": "357",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 5,
+            "ast_pg": 1.7,
+            "reb_pg": 1.1,
+            "position": "SG",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Joe Wolf",
+        "player_id": "341",
+        "seasons": [
+          {
+            "season": "1994-95",
+            "ppg": 1.4,
+            "ast_pg": 0.6,
+            "reb_pg": 2,
+            "position": "C",
+            "ppg_confirmed": true,
+            "stats_source": "bbref"
+          }
+        ]
+      },
+      {
+        "name": "Anthony Goldwire",
+        "player_id": "924",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Rafael Addison",
+        "player_id": "912",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 3.1,
+            "ast_pg": 0.8,
+            "reb_pg": 1.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Kenny Anderson",
+        "player_id": "72",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Corey Beck",
+        "player_id": "1133",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 1.9,
+            "ast_pg": 0.8,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1997-98",
+            "ppg": 3.2,
+            "ast_pg": 1.7,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Pete Myers",
+        "player_id": "939",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "George Zidek",
+        "player_id": "678",
+        "seasons": [
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "C",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Glen Rice",
+        "player_id": "779",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 22.3,
+            "ast_pg": 2.2,
+            "reb_pg": 4.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 26.8,
+            "ast_pg": 2,
+            "reb_pg": 4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Matt Geiger",
+        "player_id": "761",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 11.3,
+            "ast_pg": 1,
+            "reb_pg": 6.7,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 8.9,
+            "ast_pg": 0.8,
+            "reb_pg": 5.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1995-96",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "C",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "Tony Delk",
+        "player_id": "960",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 5.4,
+            "ast_pg": 1.6,
+            "reb_pg": 1.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Donald Royal",
+        "player_id": "140",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 2.5,
+            "ast_pg": 0.5,
+            "reb_pg": 1.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 3.5,
+            "ast_pg": 0.4,
+            "reb_pg": 2.5,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Vlade Divac",
+        "player_id": "124",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 10.4,
+            "ast_pg": 2.7,
+            "reb_pg": 8.1,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 12.6,
+            "ast_pg": 3.7,
+            "reb_pg": 9,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Anthony Mason",
+        "player_id": "193",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 11.6,
+            "ast_pg": 4.5,
+            "reb_pg": 8.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1997-98",
+            "ppg": 12.8,
+            "ast_pg": 4.2,
+            "reb_pg": 10.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1996-97",
+            "ppg": 16.2,
+            "ast_pg": 5.7,
+            "reb_pg": 11.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ricky Pierce",
+        "player_id": "894",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 11,
+            "ast_pg": 1.3,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Malik Rose",
+        "player_id": "990",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 3,
+            "ast_pg": 0.6,
+            "reb_pg": 3,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tony Smith",
+        "player_id": "380",
+        "seasons": [
+          {
+            "season": "1996-97",
+            "ppg": 5,
+            "ast_pg": 2.2,
+            "reb_pg": 1.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "David Wesley",
+        "player_id": "133",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 14.2,
+            "ast_pg": 3.5,
+            "reb_pg": 2.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 17.2,
+            "ast_pg": 4.4,
+            "reb_pg": 2.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 13.6,
+            "ast_pg": 5.6,
+            "reb_pg": 2.7,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 14.1,
+            "ast_pg": 6.4,
+            "reb_pg": 3.2,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1997-98",
+            "ppg": 13,
+            "ast_pg": 6.5,
+            "reb_pg": 2.6,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "B.J. Armstrong",
+        "player_id": "769",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 4,
+            "ast_pg": 2.3,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Bobby Phills",
+        "player_id": "184",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 14.3,
+            "ast_pg": 3.5,
+            "reb_pg": 4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1997-98",
+            "ppg": 10.4,
+            "ast_pg": 3,
+            "reb_pg": 3.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Travis Williams",
+        "player_id": "1576",
+        "seasons": [
+          {
+            "season": "1997-98",
+            "ppg": 3.5,
+            "ast_pg": 0.5,
+            "reb_pg": 2.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Eldridge Recasner",
+        "player_id": "695",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 2.4,
+            "ast_pg": 0.9,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 1,
+            "ast_pg": 0.7,
+            "reb_pg": 0.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 5,
+            "ast_pg": 2.1,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Elden Campbell",
+        "player_id": "922",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 13.9,
+            "ast_pg": 1.3,
+            "reb_pg": 6.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 13.1,
+            "ast_pg": 1.3,
+            "reb_pg": 7.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 12.7,
+            "ast_pg": 1.7,
+            "reb_pg": 7.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 12.6,
+            "ast_pg": 1.4,
+            "reb_pg": 8.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Eddie Jones",
+        "player_id": "224",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 20.1,
+            "ast_pg": 4.2,
+            "reb_pg": 4.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 15.6,
+            "ast_pg": 3.7,
+            "reb_pg": 3.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ricky Davis",
+        "player_id": "1729",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 4.7,
+            "ast_pg": 1.3,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 4.5,
+            "ast_pg": 1.3,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Charles Shackleford",
+        "player_id": "1593",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 3.3,
+            "ast_pg": 0.4,
+            "reb_pg": 4,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brad Miller",
+        "player_id": "1802",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 7.7,
+            "ast_pg": 0.8,
+            "reb_pg": 5.3,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 6.3,
+            "ast_pg": 0.6,
+            "reb_pg": 3.1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Derrick Coleman",
+        "player_id": "934",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 8.1,
+            "ast_pg": 1.1,
+            "reb_pg": 5.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 16.7,
+            "ast_pg": 2.4,
+            "reb_pg": 8.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 13.1,
+            "ast_pg": 2.1,
+            "reb_pg": 8.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Chuck Person",
+        "player_id": "456",
+        "seasons": [
+          {
+            "season": "1998-99",
+            "ppg": 6.1,
+            "ast_pg": 1.2,
+            "reb_pg": 2.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Chucky Brown",
+        "player_id": "359",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 5.3,
+            "ast_pg": 1,
+            "reb_pg": 2.7,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1998-99",
+            "ppg": 8.5,
+            "ast_pg": 1.2,
+            "reb_pg": 3.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Baron Davis",
+        "player_id": "1884",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 18.1,
+            "ast_pg": 8.5,
+            "reb_pg": 4.3,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 13.8,
+            "ast_pg": 7.3,
+            "reb_pg": 5,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 5.9,
+            "ast_pg": 3.8,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Eddie Robinson",
+        "player_id": "1944",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 7.4,
+            "ast_pg": 0.9,
+            "reb_pg": 3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "1999-00",
+            "ppg": 7,
+            "ast_pg": 0.5,
+            "reb_pg": 2.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Todd Fuller",
+        "player_id": "957",
+        "seasons": [
+          {
+            "season": "1999-00",
+            "ppg": 3.3,
+            "ast_pg": 0.1,
+            "reb_pg": 2.7,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jamaal Magloire",
+        "player_id": "2048",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 8.5,
+            "ast_pg": 0.4,
+            "reb_pg": 5.6,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 4.6,
+            "ast_pg": 0.4,
+            "reb_pg": 4,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jamal Mashburn",
+        "player_id": "469",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 21.4,
+            "ast_pg": 4.3,
+            "reb_pg": 6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 20.1,
+            "ast_pg": 5.4,
+            "reb_pg": 7.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "P.J. Brown",
+        "player_id": "136",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 8.4,
+            "ast_pg": 1.3,
+            "reb_pg": 9.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2000-01",
+            "ppg": 8.4,
+            "ast_pg": 1.6,
+            "reb_pg": 9.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Otis Thorpe",
+        "player_id": "901",
+        "seasons": [
+          {
+            "season": "2000-01",
+            "ppg": 2.8,
+            "ast_pg": 0.6,
+            "reb_pg": 3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Stacey Augmon",
+        "player_id": "278",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 4.7,
+            "ast_pg": 1.3,
+            "reb_pg": 2.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "George Lynch",
+        "player_id": "248",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 3.8,
+            "ast_pg": 1.2,
+            "reb_pg": 4.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Bryce Drew",
+        "player_id": "1724",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 3.4,
+            "ast_pg": 1.7,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Robert Traylor",
+        "player_id": "1714",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 3.7,
+            "ast_pg": 0.6,
+            "reb_pg": 3.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kirk Haston",
+        "player_id": "2213",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 1.7,
+            "ast_pg": 0.3,
+            "reb_pg": 1.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Lee Nailon",
+        "player_id": "1924",
+        "seasons": [
+          {
+            "season": "2001-02",
+            "ppg": 10.8,
+            "ast_pg": 1.2,
+            "reb_pg": 3.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jason Hart",
+        "player_id": "2078",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 9.5,
+            "ast_pg": 5,
+            "reb_pg": 2.7,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Melvin Ely",
+        "player_id": "2408",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 9.8,
+            "ast_pg": 1.3,
+            "reb_pg": 4.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 7.3,
+            "ast_pg": 1,
+            "reb_pg": 4.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Gerald Wallace",
+        "player_id": "2222",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 18.2,
+            "ast_pg": 2.1,
+            "reb_pg": 10,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 16.6,
+            "ast_pg": 2.7,
+            "reb_pg": 7.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": 19.4,
+            "ast_pg": 3.5,
+            "reb_pg": 6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 18.1,
+            "ast_pg": 2.6,
+            "reb_pg": 7.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 15.2,
+            "ast_pg": 1.7,
+            "reb_pg": 7.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 11.1,
+            "ast_pg": 2,
+            "reb_pg": 5.5,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Primoz Brezec",
+        "player_id": "2056",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 5,
+            "ast_pg": 0.4,
+            "reb_pg": 3.2,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 12.4,
+            "ast_pg": 0.6,
+            "reb_pg": 5.6,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 13,
+            "ast_pg": 1.2,
+            "reb_pg": 7.4,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Keith Bogans",
+        "player_id": "2586",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 9.6,
+            "ast_pg": 1.8,
+            "reb_pg": 3.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Cory Alexander",
+        "player_id": "724",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 3.1,
+            "ast_pg": 2.3,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Matt Carroll",
+        "player_id": "2679",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 2.7,
+            "ast_pg": 0.7,
+            "reb_pg": 1.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 4.4,
+            "ast_pg": 0.4,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": 9,
+            "ast_pg": 0.9,
+            "reb_pg": 2.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 12.1,
+            "ast_pg": 1.3,
+            "reb_pg": 2.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 7.6,
+            "ast_pg": 0.4,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 9,
+            "ast_pg": 0.7,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Bernard Robinson",
+        "player_id": "2774",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 6.4,
+            "ast_pg": 1.2,
+            "reb_pg": 3.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 3,
+            "ast_pg": 1,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brevin Knight",
+        "player_id": "1510",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 9.1,
+            "ast_pg": 6.6,
+            "reb_pg": 2.6,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 12.6,
+            "ast_pg": 8.8,
+            "reb_pg": 3.2,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 10.1,
+            "ast_pg": 9,
+            "reb_pg": 2.6,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jason Kapono",
+        "player_id": "2574",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 8.5,
+            "ast_pg": 0.8,
+            "reb_pg": 2,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Malik Allen",
+        "player_id": "2124",
+        "seasons": [
+          {
+            "season": "2004-05",
+            "ppg": 5.4,
+            "ast_pg": 0.5,
+            "reb_pg": 2.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Emeka Okafor",
+        "player_id": "2731",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 13.2,
+            "ast_pg": 0.6,
+            "reb_pg": 10.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": 13.8,
+            "ast_pg": 0.9,
+            "reb_pg": 10.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 14.4,
+            "ast_pg": 1.2,
+            "reb_pg": 11.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 13.2,
+            "ast_pg": 1.2,
+            "reb_pg": 10,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2004-05",
+            "ppg": 15.1,
+            "ast_pg": 0.9,
+            "reb_pg": 10.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kevin Burleson",
+        "player_id": "101207",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 1.8,
+            "ast_pg": 1.2,
+            "reb_pg": 0.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Alan Anderson",
+        "player_id": "101187",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 5.8,
+            "ast_pg": 1.2,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 5.8,
+            "ast_pg": 0.9,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Raymond Felton",
+        "player_id": "101109",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 12.1,
+            "ast_pg": 5.6,
+            "reb_pg": 3.6,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 14.2,
+            "ast_pg": 6.7,
+            "reb_pg": 3.8,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": 14.4,
+            "ast_pg": 7.4,
+            "reb_pg": 3,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 14,
+            "ast_pg": 7,
+            "reb_pg": 3.4,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 11.8,
+            "ast_pg": 5.6,
+            "reb_pg": 3.3,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jumaine Jones",
+        "player_id": "1908",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 10.5,
+            "ast_pg": 0.8,
+            "reb_pg": 4.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Lonny Baxter",
+        "player_id": "2437",
+        "seasons": [
+          {
+            "season": "2005-06",
+            "ppg": 2.9,
+            "ast_pg": 0.1,
+            "reb_pg": 2.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Sean May",
+        "player_id": "101118",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 3.9,
+            "ast_pg": 0.4,
+            "reb_pg": 2.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "PF",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "2006-07",
+            "ppg": 11.9,
+            "ast_pg": 1.9,
+            "reb_pg": 6.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 8.2,
+            "ast_pg": 1,
+            "reb_pg": 4.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jake Voskuhl",
+        "player_id": "2063",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 4.4,
+            "ast_pg": 0.6,
+            "reb_pg": 3.5,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2005-06",
+            "ppg": 5.3,
+            "ast_pg": 0.8,
+            "reb_pg": 3.6,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jeff McInnis",
+        "player_id": "976",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 4.3,
+            "ast_pg": 3.3,
+            "reb_pg": 1.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ryan Hollins",
+        "player_id": "200797",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 2.5,
+            "ast_pg": 0.2,
+            "reb_pg": 1.8,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 2.4,
+            "ast_pg": 0,
+            "reb_pg": 1.1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Walter Herrmann",
+        "player_id": "200835",
+        "seasons": [
+          {
+            "season": "2006-07",
+            "ppg": 9.2,
+            "ast_pg": 0.5,
+            "reb_pg": 2.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Derek Anderson",
+        "player_id": "1507",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 5,
+            "ast_pg": 1.6,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 8,
+            "ast_pg": 2.7,
+            "reb_pg": 2.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Othella Harrington",
+        "player_id": "970",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 2.1,
+            "ast_pg": 0.2,
+            "reb_pg": 1.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2006-07",
+            "ppg": 2.6,
+            "ast_pg": 0.2,
+            "reb_pg": 1.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Adam Morrison",
+        "player_id": "200747",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SF",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "2006-07",
+            "ppg": 11.8,
+            "ast_pg": 2.1,
+            "reb_pg": 2.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jared Dudley",
+        "player_id": "201162",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 5.8,
+            "ast_pg": 1.1,
+            "reb_pg": 3.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Nazr Mohammed",
+        "player_id": "1737",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 7.9,
+            "ast_pg": 0.5,
+            "reb_pg": 5.2,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 2.7,
+            "ast_pg": 0.2,
+            "reb_pg": 2,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2007-08",
+            "ppg": 7.8,
+            "ast_pg": 0.9,
+            "reb_pg": 6,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Earl Boykins",
+        "player_id": "1863",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 5.1,
+            "ast_pg": 2.7,
+            "reb_pg": 0.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jason Richardson",
+        "player_id": "2202",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 21.8,
+            "ast_pg": 3.1,
+            "reb_pg": 5.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jermareo Davidson",
+        "player_id": "201176",
+        "seasons": [
+          {
+            "season": "2007-08",
+            "ppg": 3.2,
+            "ast_pg": 0.3,
+            "reb_pg": 1.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Cartier Martin",
+        "player_id": "201858",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 2.6,
+            "ast_pg": 0.4,
+            "reb_pg": 1,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dontell Jefferson",
+        "player_id": "200971",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 4.8,
+            "ast_pg": 1.5,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Juwan Howard",
+        "player_id": "436",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 4.1,
+            "ast_pg": 0.6,
+            "reb_pg": 1.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "DeSagana Diop",
+        "player_id": "2205",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 0.7,
+            "ast_pg": 0.6,
+            "reb_pg": 2.3,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 1.1,
+            "ast_pg": 0.9,
+            "reb_pg": 3.1,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 1.2,
+            "ast_pg": 0.4,
+            "reb_pg": 2.5,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 1.2,
+            "ast_pg": 0.2,
+            "reb_pg": 2.4,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 2.3,
+            "ast_pg": 0.4,
+            "reb_pg": 3.6,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Vladimir Radmanovic",
+        "player_id": "2209",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 6.9,
+            "ast_pg": 1,
+            "reb_pg": 2.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "D.J. Augustin",
+        "player_id": "201571",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 11.1,
+            "ast_pg": 6.4,
+            "reb_pg": 2.3,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 14.4,
+            "ast_pg": 6.1,
+            "reb_pg": 2.7,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 6.3,
+            "ast_pg": 2.4,
+            "reb_pg": 1.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 11.8,
+            "ast_pg": 3.5,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Raja Bell",
+        "player_id": "1952",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 11.9,
+            "ast_pg": 2.1,
+            "reb_pg": 3.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Alexis Ajinca",
+        "player_id": "201582",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 1.7,
+            "ast_pg": 0,
+            "reb_pg": 0.7,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 2.3,
+            "ast_pg": 0.1,
+            "reb_pg": 1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Boris Diaw",
+        "player_id": "2564",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 11.3,
+            "ast_pg": 4.1,
+            "reb_pg": 5,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 11.3,
+            "ast_pg": 4,
+            "reb_pg": 5.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2008-09",
+            "ppg": 13.2,
+            "ast_pg": 4.1,
+            "reb_pg": 5.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Sean Singletary",
+        "player_id": "201606",
+        "seasons": [
+          {
+            "season": "2008-09",
+            "ppg": 2.4,
+            "ast_pg": 0.8,
+            "reb_pg": 0.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Larry Hughes",
+        "player_id": "1716",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 9.1,
+            "ast_pg": 3,
+            "reb_pg": 3.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Stephen Jackson",
+        "player_id": "1536",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 18.5,
+            "ast_pg": 3.6,
+            "reb_pg": 4.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 20.6,
+            "ast_pg": 3.7,
+            "reb_pg": 5,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Derrick Brown",
+        "player_id": "201974",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 8.1,
+            "ast_pg": 1,
+            "reb_pg": 3.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 3.3,
+            "ast_pg": 0.3,
+            "reb_pg": 1.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tyson Chandler",
+        "player_id": "2199",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 6.5,
+            "ast_pg": 0.3,
+            "reb_pg": 6.3,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tyrus Thomas",
+        "player_id": "200748",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 4.8,
+            "ast_pg": 0.7,
+            "reb_pg": 2.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 5.6,
+            "ast_pg": 0.6,
+            "reb_pg": 3.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 10.2,
+            "ast_pg": 0.7,
+            "reb_pg": 5.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 9.4,
+            "ast_pg": 1,
+            "reb_pg": 6.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Gerald Henderson",
+        "player_id": "201945",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 12.1,
+            "ast_pg": 2.6,
+            "reb_pg": 3.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 14,
+            "ast_pg": 2.6,
+            "reb_pg": 4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 15.5,
+            "ast_pg": 2.6,
+            "reb_pg": 3.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 15.1,
+            "ast_pg": 2.3,
+            "reb_pg": 4.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 9.6,
+            "ast_pg": 1.5,
+            "reb_pg": 3,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2009-10",
+            "ppg": 2.6,
+            "ast_pg": 0.3,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Stephen Graham",
+        "player_id": "101211",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 4.2,
+            "ast_pg": 0.3,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Theo Ratliff",
+        "player_id": "689",
+        "seasons": [
+          {
+            "season": "2009-10",
+            "ppg": 3.6,
+            "ast_pg": 0.5,
+            "reb_pg": 3.2,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Shaun Livingston",
+        "player_id": "2733",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 6.6,
+            "ast_pg": 2.2,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dominic McGuire",
+        "player_id": "201187",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 3.3,
+            "ast_pg": 0.8,
+            "reb_pg": 3.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "DJ White",
+        "player_id": "201591",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 0,
+            "ast_pg": 0,
+            "reb_pg": 1,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 6.8,
+            "ast_pg": 0.8,
+            "reb_pg": 3.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 5.7,
+            "ast_pg": 0.4,
+            "reb_pg": 3.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Joel Przybilla",
+        "player_id": "2038",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 1.8,
+            "ast_pg": 0.4,
+            "reb_pg": 4,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Eduardo Najera",
+        "player_id": "2059",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 2.6,
+            "ast_pg": 0.5,
+            "reb_pg": 2.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2010-11",
+            "ppg": 2.2,
+            "ast_pg": 0.6,
+            "reb_pg": 1.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Garrett Temple",
+        "player_id": "202066",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 2.4,
+            "ast_pg": 1.3,
+            "reb_pg": 1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dante Cunningham",
+        "player_id": "201967",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 6.2,
+            "ast_pg": 0.6,
+            "reb_pg": 3.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kwame Brown",
+        "player_id": "2198",
+        "seasons": [
+          {
+            "season": "2010-11",
+            "ppg": 7.9,
+            "ast_pg": 0.7,
+            "reb_pg": 6.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Bismack Biyombo",
+        "player_id": "202687",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 5,
+            "ast_pg": 1.2,
+            "reb_pg": 5.3,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 7.4,
+            "ast_pg": 0.9,
+            "reb_pg": 5.8,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 4.4,
+            "ast_pg": 0.6,
+            "reb_pg": 4.6,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 4.8,
+            "ast_pg": 0.2,
+            "reb_pg": 6.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 2.9,
+            "ast_pg": 0.1,
+            "reb_pg": 4.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 4.8,
+            "ast_pg": 0.4,
+            "reb_pg": 7.3,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 5.2,
+            "ast_pg": 0.4,
+            "reb_pg": 5.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kemba Walker",
+        "player_id": "202689",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 25.6,
+            "ast_pg": 5.9,
+            "reb_pg": 4.4,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 22.1,
+            "ast_pg": 5.5,
+            "reb_pg": 3.1,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 23.2,
+            "ast_pg": 5.5,
+            "reb_pg": 3.9,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 20.9,
+            "ast_pg": 5.2,
+            "reb_pg": 4.4,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 17.3,
+            "ast_pg": 5.1,
+            "reb_pg": 3.5,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 17.7,
+            "ast_pg": 6.1,
+            "reb_pg": 4.2,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 17.7,
+            "ast_pg": 5.7,
+            "reb_pg": 3.5,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 12.1,
+            "ast_pg": 4.4,
+            "reb_pg": 3.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jamario Moon",
+        "player_id": "200081",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 2.2,
+            "ast_pg": 0.6,
+            "reb_pg": 2.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Cory Higgins",
+        "player_id": "202809",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 3.9,
+            "ast_pg": 0.9,
+            "reb_pg": 0.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Byron Mullens",
+        "player_id": "201957",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 10.6,
+            "ast_pg": 1.5,
+            "reb_pg": 6.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 9.3,
+            "ast_pg": 0.9,
+            "reb_pg": 5,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Corey Maggette",
+        "player_id": "1894",
+        "seasons": [
+          {
+            "season": "2011-12",
+            "ppg": 15,
+            "ast_pg": 1.2,
+            "reb_pg": 3.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Reggie Williams",
+        "player_id": "202130",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 3.6,
+            "ast_pg": 1,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2011-12",
+            "ppg": 8.3,
+            "ast_pg": 1.8,
+            "reb_pg": 2.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jeff Adrien",
+        "player_id": "202399",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 4,
+            "ast_pg": 0.7,
+            "reb_pg": 3.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jannero Pargo",
+        "player_id": "2457",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 4.7,
+            "ast_pg": 1.8,
+            "reb_pg": 0.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 6.5,
+            "ast_pg": 2.1,
+            "reb_pg": 1.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ramon Sessions",
+        "player_id": "201196",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 6.2,
+            "ast_pg": 2.6,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 14.4,
+            "ast_pg": 3.8,
+            "reb_pg": 2.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ben Gordon",
+        "player_id": "2732",
+        "seasons": [
+          {
+            "season": "2012-13",
+            "ppg": 11.2,
+            "ast_pg": 1.9,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Josh McRoberts",
+        "player_id": "201177",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 8.5,
+            "ast_pg": 4.3,
+            "reb_pg": 4.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 6,
+            "ast_pg": 2.1,
+            "reb_pg": 4.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Michael Kidd-Gilchrist",
+        "player_id": "203077",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 6.7,
+            "ast_pg": 1,
+            "reb_pg": 3.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 9.2,
+            "ast_pg": 1,
+            "reb_pg": 4.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 9.2,
+            "ast_pg": 1.4,
+            "reb_pg": 7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 12.7,
+            "ast_pg": 1.3,
+            "reb_pg": 6.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 10.9,
+            "ast_pg": 1.4,
+            "reb_pg": 7.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 7.2,
+            "ast_pg": 0.8,
+            "reb_pg": 5.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 9,
+            "ast_pg": 1.5,
+            "reb_pg": 5.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brendan Haywood",
+        "player_id": "2217",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "C",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "2012-13",
+            "ppg": 3.5,
+            "ast_pg": 0.5,
+            "reb_pg": 4.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jeffery Taylor",
+        "player_id": "203106",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 4.4,
+            "ast_pg": 0.8,
+            "reb_pg": 1.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 8,
+            "ast_pg": 0.8,
+            "reb_pg": 2.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2012-13",
+            "ppg": 6.1,
+            "ast_pg": 0.8,
+            "reb_pg": 1.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Gary Neal",
+        "player_id": "202390",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 10.5,
+            "ast_pg": 1.6,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Luke Ridnour",
+        "player_id": "2557",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 5,
+            "ast_pg": 2.9,
+            "reb_pg": 1.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Al Jefferson",
+        "player_id": "2744",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 12,
+            "ast_pg": 1.5,
+            "reb_pg": 6.4,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 16.6,
+            "ast_pg": 1.7,
+            "reb_pg": 8.4,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 21.8,
+            "ast_pg": 2.1,
+            "reb_pg": 10.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Cody Zeller",
+        "player_id": "203469",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 9.4,
+            "ast_pg": 1.8,
+            "reb_pg": 6.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 11.1,
+            "ast_pg": 1.5,
+            "reb_pg": 7.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 10.1,
+            "ast_pg": 2.1,
+            "reb_pg": 6.8,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 7.1,
+            "ast_pg": 0.9,
+            "reb_pg": 5.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 10.3,
+            "ast_pg": 1.6,
+            "reb_pg": 6.5,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 8.7,
+            "ast_pg": 1,
+            "reb_pg": 6.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 7.6,
+            "ast_pg": 1.6,
+            "reb_pg": 5.8,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2013-14",
+            "ppg": 6,
+            "ast_pg": 1.1,
+            "reb_pg": 4.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Anthony Tolliver",
+        "player_id": "201229",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 6.1,
+            "ast_pg": 0.7,
+            "reb_pg": 2.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Chris Douglas-Roberts",
+        "player_id": "201604",
+        "seasons": [
+          {
+            "season": "2013-14",
+            "ppg": 6.9,
+            "ast_pg": 1,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Lance Stephenson",
+        "player_id": "202362",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 8.2,
+            "ast_pg": 3.9,
+            "reb_pg": 4.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Marvin Williams",
+        "player_id": "101107",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 10.1,
+            "ast_pg": 1.2,
+            "reb_pg": 5.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 9.5,
+            "ast_pg": 1.2,
+            "reb_pg": 4.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 11.2,
+            "ast_pg": 1.4,
+            "reb_pg": 6.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 11.7,
+            "ast_pg": 1.4,
+            "reb_pg": 6.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 7.4,
+            "ast_pg": 1.3,
+            "reb_pg": 4.9,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Mo Williams",
+        "player_id": "2590",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 14.2,
+            "ast_pg": 6.2,
+            "reb_pg": 2.6,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Noah Vonleh",
+        "player_id": "203943",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 3.3,
+            "ast_pg": 0.2,
+            "reb_pg": 3.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "PJ Hairston",
+        "player_id": "203798",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 5.6,
+            "ast_pg": 0.5,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brian Roberts",
+        "player_id": "203148",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 3.5,
+            "ast_pg": 1.3,
+            "reb_pg": 1,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 6.7,
+            "ast_pg": 2.2,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Troy Daniels",
+        "player_id": "203584",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 5.6,
+            "ast_pg": 0.5,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2014-15",
+            "ppg": 3.7,
+            "ast_pg": 0.5,
+            "reb_pg": 0.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jason Maxiell",
+        "player_id": "101131",
+        "seasons": [
+          {
+            "season": "2014-15",
+            "ppg": 3.3,
+            "ast_pg": 0.3,
+            "reb_pg": 3.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Spencer Hawes",
+        "player_id": "201150",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 6,
+            "ast_pg": 1.9,
+            "reb_pg": 4.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Courtney Lee",
+        "player_id": "201584",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 9.6,
+            "ast_pg": 1.7,
+            "reb_pg": 2.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jeremy Lamb",
+        "player_id": "203087",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 15.3,
+            "ast_pg": 2.2,
+            "reb_pg": 5.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 12.9,
+            "ast_pg": 2.3,
+            "reb_pg": 4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 9.7,
+            "ast_pg": 1.2,
+            "reb_pg": 4.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 8.8,
+            "ast_pg": 1.2,
+            "reb_pg": 3.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Nicolas Batum",
+        "player_id": "201587",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 3.6,
+            "ast_pg": 3,
+            "reb_pg": 4.5,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 9.3,
+            "ast_pg": 3.3,
+            "reb_pg": 5.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 11.6,
+            "ast_pg": 5.5,
+            "reb_pg": 4.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 15.1,
+            "ast_pg": 5.9,
+            "reb_pg": 6.2,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 14.9,
+            "ast_pg": 5.8,
+            "reb_pg": 6.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jeremy Lin",
+        "player_id": "202391",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 11.7,
+            "ast_pg": 3,
+            "reb_pg": 3.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Aaron Harrison",
+        "player_id": "1626151",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 0.9,
+            "ast_pg": 0.1,
+            "reb_pg": 0.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jorge Gutierrez",
+        "player_id": "203268",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 1.8,
+            "ast_pg": 1.4,
+            "reb_pg": 0.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Frank Kaminsky",
+        "player_id": "1626163",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 8.6,
+            "ast_pg": 1.3,
+            "reb_pg": 3.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 11.1,
+            "ast_pg": 1.6,
+            "reb_pg": 3.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 11.7,
+            "ast_pg": 2.2,
+            "reb_pg": 4.5,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2015-16",
+            "ppg": 7.5,
+            "ast_pg": 1.2,
+            "reb_pg": 4.1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tyler Hansbrough",
+        "player_id": "201946",
+        "seasons": [
+          {
+            "season": "2015-16",
+            "ppg": 2.4,
+            "ast_pg": 0.2,
+            "reb_pg": 2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Briante Weber",
+        "player_id": "1627362",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 3.1,
+            "ast_pg": 1.1,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Johnny O'Bryant III",
+        "player_id": "203948",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 3.5,
+            "ast_pg": 0.5,
+            "reb_pg": 1.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Treveon Graham",
+        "player_id": "1626203",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 4.3,
+            "ast_pg": 0.9,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2016-17",
+            "ppg": 2.1,
+            "ast_pg": 0.2,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Miles Plumlee",
+        "player_id": "203101",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 2.5,
+            "ast_pg": 0.5,
+            "reb_pg": 2.1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Marco Belinelli",
+        "player_id": "201158",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 10.5,
+            "ast_pg": 2,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Christian Wood",
+        "player_id": "1626174",
+        "seasons": [
+          {
+            "season": "2016-17",
+            "ppg": 2.7,
+            "ast_pg": 0.2,
+            "reb_pg": 2.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Malik Monk",
+        "player_id": "1628370",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 11.7,
+            "ast_pg": 2.1,
+            "reb_pg": 2.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 10.3,
+            "ast_pg": 2.1,
+            "reb_pg": 2.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 8.9,
+            "ast_pg": 1.6,
+            "reb_pg": 1.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 6.7,
+            "ast_pg": 1.4,
+            "reb_pg": 1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Marcus Paige",
+        "player_id": "1627779",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 2.4,
+            "ast_pg": 0.6,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dwayne Bacon",
+        "player_id": "1628407",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 5.7,
+            "ast_pg": 1.3,
+            "reb_pg": 2.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 7.3,
+            "ast_pg": 1.1,
+            "reb_pg": 2.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 3.3,
+            "ast_pg": 0.7,
+            "reb_pg": 2.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Mangok Mathiang",
+        "player_id": "1628493",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 2,
+            "ast_pg": 0,
+            "reb_pg": 2.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Michael Carter-Williams",
+        "player_id": "203487",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 4.6,
+            "ast_pg": 2.2,
+            "reb_pg": 2.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dwight Howard",
+        "player_id": "2730",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 16.6,
+            "ast_pg": 1.3,
+            "reb_pg": 12.5,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Julyan Stone",
+        "player_id": "202933",
+        "seasons": [
+          {
+            "season": "2017-18",
+            "ppg": 0.8,
+            "ast_pg": 1.1,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Willy Hernangomez",
+        "player_id": "1626195",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": 6.1,
+            "ast_pg": 0.9,
+            "reb_pg": 4.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 7.3,
+            "ast_pg": 1,
+            "reb_pg": 5.4,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2017-18",
+            "ppg": 5.1,
+            "ast_pg": 0.7,
+            "reb_pg": 3.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Miles Bridges",
+        "player_id": "1628970",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 17.1,
+            "ast_pg": 3.2,
+            "reb_pg": 5.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2021-22",
+            "ppg": 20.2,
+            "ast_pg": 3.8,
+            "reb_pg": 7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 12.7,
+            "ast_pg": 2.2,
+            "reb_pg": 6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 13,
+            "ast_pg": 1.8,
+            "reb_pg": 5.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 7.5,
+            "ast_pg": 1.2,
+            "reb_pg": 4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 21,
+            "ast_pg": 3.3,
+            "reb_pg": 7.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 20.3,
+            "ast_pg": 3.9,
+            "reb_pg": 7.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Devonte' Graham",
+        "player_id": "1628984",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 14.8,
+            "ast_pg": 5.4,
+            "reb_pg": 2.7,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 18.2,
+            "ast_pg": 7.5,
+            "reb_pg": 3.4,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2018-19",
+            "ppg": 4.7,
+            "ast_pg": 2.6,
+            "reb_pg": 1.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Shelvin Mack",
+        "player_id": "202714",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 7.5,
+            "ast_pg": 3.2,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tony Parker",
+        "player_id": "2225",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 9.5,
+            "ast_pg": 3.7,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Joe Chealey",
+        "player_id": "1629147",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 2,
+            "ast_pg": 1,
+            "reb_pg": 0,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "J.P. Macura",
+        "player_id": "1629122",
+        "seasons": [
+          {
+            "season": "2018-19",
+            "ppg": 3,
+            "ast_pg": 1,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Terry Rozier",
+        "player_id": "1626179",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 19.3,
+            "ast_pg": 4.5,
+            "reb_pg": 4.3,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 20.4,
+            "ast_pg": 4.2,
+            "reb_pg": 4.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 18,
+            "ast_pg": 4.1,
+            "reb_pg": 4.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 21.1,
+            "ast_pg": 5.1,
+            "reb_pg": 4.1,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jalen McDaniels",
+        "player_id": "1629667",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 6.2,
+            "ast_pg": 1.1,
+            "reb_pg": 3.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 7.4,
+            "ast_pg": 1.1,
+            "reb_pg": 3.6,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 5.6,
+            "ast_pg": 0.8,
+            "reb_pg": 4.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Caleb Martin",
+        "player_id": "1628997",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 5,
+            "ast_pg": 1.3,
+            "reb_pg": 2.7,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 6.2,
+            "ast_pg": 1.3,
+            "reb_pg": 2.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Cody Martin",
+        "player_id": "1628998",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 7.7,
+            "ast_pg": 2.5,
+            "reb_pg": 4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 4,
+            "ast_pg": 1.7,
+            "reb_pg": 3.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 5,
+            "ast_pg": 2,
+            "reb_pg": 3.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 5,
+            "ast_pg": 1.6,
+            "reb_pg": 3.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 7.5,
+            "ast_pg": 3.7,
+            "reb_pg": 3.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kobi Simmons",
+        "player_id": "1628424",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "SG",
+            "ppg_confirmed": false
+          },
+          {
+            "season": "2022-23",
+            "ppg": 1,
+            "ast_pg": 1,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "P.J. Washington",
+        "player_id": "1629023",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 10.3,
+            "ast_pg": 2.3,
+            "reb_pg": 5.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 12.9,
+            "ast_pg": 2.5,
+            "reb_pg": 6.5,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2019-20",
+            "ppg": 12.2,
+            "ast_pg": 2.1,
+            "reb_pg": 5.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 15.7,
+            "ast_pg": 2.4,
+            "reb_pg": 4.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ray Spalding",
+        "player_id": "1629034",
+        "seasons": [
+          {
+            "season": "2019-20",
+            "ppg": null,
+            "ast_pg": null,
+            "reb_pg": null,
+            "position": "PF",
+            "ppg_confirmed": false
+          }
+        ]
+      },
+      {
+        "name": "LaMelo Ball",
+        "player_id": "1630163",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 20.1,
+            "ast_pg": 7.1,
+            "reb_pg": 4.8,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2021-22",
+            "ppg": 20.1,
+            "ast_pg": 7.6,
+            "reb_pg": 6.7,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 15.7,
+            "ast_pg": 6.1,
+            "reb_pg": 5.9,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 23.3,
+            "ast_pg": 8.4,
+            "reb_pg": 6.4,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 23.9,
+            "ast_pg": 8,
+            "reb_pg": 5.1,
+            "position": "PG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 25.2,
+            "ast_pg": 7.4,
+            "reb_pg": 4.9,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Grant Riller",
+        "player_id": "1630203",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 2.6,
+            "ast_pg": 0.4,
+            "reb_pg": 0.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brad Wanamaker",
+        "player_id": "202954",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 5.5,
+            "ast_pg": 2.9,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Nick Richards",
+        "player_id": "1630208",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 3,
+            "ast_pg": 0.3,
+            "reb_pg": 1.7,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 0.8,
+            "ast_pg": 0.1,
+            "reb_pg": 0.6,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 8.2,
+            "ast_pg": 0.6,
+            "reb_pg": 6.4,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 9.7,
+            "ast_pg": 0.8,
+            "reb_pg": 8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Gordon Hayward",
+        "player_id": "202330",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 15.9,
+            "ast_pg": 3.6,
+            "reb_pg": 4.6,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2020-21",
+            "ppg": 19.6,
+            "ast_pg": 4.1,
+            "reb_pg": 5.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 14.7,
+            "ast_pg": 4.1,
+            "reb_pg": 4.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Vernon Carey Jr.",
+        "player_id": "1630176",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 2.4,
+            "ast_pg": 0.1,
+            "reb_pg": 1.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Nate Darling",
+        "player_id": "1630268",
+        "seasons": [
+          {
+            "season": "2020-21",
+            "ppg": 1.3,
+            "ast_pg": 0.1,
+            "reb_pg": 0.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Isaiah Thomas",
+        "player_id": "202738",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 8.4,
+            "ast_pg": 1.5,
+            "reb_pg": 1.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "James Bouknight",
+        "player_id": "1630547",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 4.6,
+            "ast_pg": 0.8,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 5.6,
+            "ast_pg": 1.2,
+            "reb_pg": 2.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Montrezl Harrell",
+        "player_id": "1626149",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 13.1,
+            "ast_pg": 2,
+            "reb_pg": 6.1,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kelly Oubre Jr.",
+        "player_id": "1626162",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 15,
+            "ast_pg": 1.1,
+            "reb_pg": 4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 20.2,
+            "ast_pg": 1.1,
+            "reb_pg": 5.2,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Scottie Lewis",
+        "player_id": "1630575",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 0.5,
+            "ast_pg": 0.5,
+            "reb_pg": 0,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "JT Thor",
+        "player_id": "1630550",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 2,
+            "ast_pg": 0.6,
+            "reb_pg": 1.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 3.8,
+            "ast_pg": 0.5,
+            "reb_pg": 2.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 3.2,
+            "ast_pg": 0.5,
+            "reb_pg": 2.3,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kai Jones",
+        "player_id": "1630539",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 1,
+            "ast_pg": 0.2,
+            "reb_pg": 0.5,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2022-23",
+            "ppg": 3.4,
+            "ast_pg": 0.3,
+            "reb_pg": 2.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Mason Plumlee",
+        "player_id": "203486",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 6.5,
+            "ast_pg": 3.1,
+            "reb_pg": 7.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Arnoldas Kulboka",
+        "player_id": "1629083",
+        "seasons": [
+          {
+            "season": "2021-22",
+            "ppg": 0,
+            "ast_pg": 0,
+            "reb_pg": 0,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Grant Williams",
+        "player_id": "1629684",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 7,
+            "ast_pg": 1.6,
+            "reb_pg": 3.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 10.3,
+            "ast_pg": 2.3,
+            "reb_pg": 4.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 10.4,
+            "ast_pg": 2.3,
+            "reb_pg": 5.1,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Coby White",
+        "player_id": "1629632",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 17.4,
+            "ast_pg": 4,
+            "reb_pg": 3.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Sion James",
+        "player_id": "1642883",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 5.4,
+            "ast_pg": 2,
+            "reb_pg": 3.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Kon Knueppel",
+        "player_id": "1642851",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 18.5,
+            "ast_pg": 3.4,
+            "reb_pg": 5.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Josh Green",
+        "player_id": "1630182",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 4.3,
+            "ast_pg": 0.8,
+            "reb_pg": 1.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 7.4,
+            "ast_pg": 1.6,
+            "reb_pg": 2.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Ryan Kalkbrenner",
+        "player_id": "1641750",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 7.6,
+            "ast_pg": 0.8,
+            "reb_pg": 5.5,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Antonio Reeves",
+        "player_id": "1641810",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 2.7,
+            "ast_pg": 0.3,
+            "reb_pg": 0.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Moussa Diabaté",
+        "player_id": "1631217",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 7.9,
+            "ast_pg": 1.9,
+            "reb_pg": 8.7,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 5.7,
+            "ast_pg": 0.8,
+            "reb_pg": 6.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "PJ Hall",
+        "player_id": "1641790",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 4.5,
+            "ast_pg": 0.5,
+            "reb_pg": 3.9,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tosan Evbuomwan",
+        "player_id": "1641787",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 0,
+            "ast_pg": 0,
+            "reb_pg": 0.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Pat Connaughton",
+        "player_id": "1626192",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 2.6,
+            "ast_pg": 0.4,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tre Mann",
+        "player_id": "1630544",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 5.5,
+            "ast_pg": 1.6,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 9.3,
+            "ast_pg": 4,
+            "reb_pg": 3.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 14.1,
+            "ast_pg": 3,
+            "reb_pg": 2.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Brandon Miller",
+        "player_id": "1641706",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 20.2,
+            "ast_pg": 3.3,
+            "reb_pg": 4.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 17.3,
+            "ast_pg": 2.4,
+            "reb_pg": 4.3,
+            "position": "SF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 21,
+            "ast_pg": 3.6,
+            "reb_pg": 4.9,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Xavier Tillman",
+        "player_id": "1630214",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 1.5,
+            "ast_pg": 0.4,
+            "reb_pg": 1.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Tidjane Salaün",
+        "player_id": "1642275",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 6,
+            "ast_pg": 0.7,
+            "reb_pg": 4,
+            "position": "PF",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 5.9,
+            "ast_pg": 1.2,
+            "reb_pg": 4.7,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Liam McNeeley",
+        "player_id": "1642862",
+        "seasons": [
+          {
+            "season": "2025-26",
+            "ppg": 4.3,
+            "ast_pg": 0.8,
+            "reb_pg": 2.4,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Mark Williams",
+        "player_id": "1631109",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 9,
+            "ast_pg": 0.4,
+            "reb_pg": 7.1,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 12.7,
+            "ast_pg": 1.2,
+            "reb_pg": 9.7,
+            "position": "C",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 15.2,
+            "ast_pg": 2.5,
+            "reb_pg": 10.2,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Bryce McGowens",
+        "player_id": "1631121",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 5.3,
+            "ast_pg": 1.2,
+            "reb_pg": 2,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2023-24",
+            "ppg": 5.1,
+            "ast_pg": 0.9,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Dennis Smith Jr.",
+        "player_id": "1628372",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 8.8,
+            "ast_pg": 4.8,
+            "reb_pg": 3.1,
+            "position": "PG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Theo Maledon",
+        "player_id": "1630177",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 6.7,
+            "ast_pg": 3.5,
+            "reb_pg": 2.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Svi Mykhailiuk",
+        "player_id": "1629004",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 6.9,
+            "ast_pg": 1.7,
+            "reb_pg": 1.7,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Xavier Sneed",
+        "player_id": "1630270",
+        "seasons": [
+          {
+            "season": "2022-23",
+            "ppg": 4.2,
+            "ast_pg": 1.2,
+            "reb_pg": 1.2,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Nick Smith Jr.",
+        "player_id": "1641733",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 5.9,
+            "ast_pg": 1.2,
+            "reb_pg": 1.4,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 9.8,
+            "ast_pg": 2.4,
+            "reb_pg": 2.1,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Davis Bertans",
+        "player_id": "202722",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 6.7,
+            "ast_pg": 0.8,
+            "reb_pg": 1.4,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Amari Bailey",
+        "player_id": "1641735",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 2.3,
+            "ast_pg": 0.7,
+            "reb_pg": 0.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Marques Bolden",
+        "player_id": "1629716",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 3.4,
+            "ast_pg": 0.4,
+            "reb_pg": 3.1,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Leaky Black",
+        "player_id": "1641778",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 2.7,
+            "ast_pg": 0.9,
+            "reb_pg": 1.8,
+            "position": "SF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Aleksej Pokusevski",
+        "player_id": "1630197",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 5.2,
+            "ast_pg": 1.2,
+            "reb_pg": 3.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Vasilije Micic",
+        "player_id": "203995",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 7,
+            "ast_pg": 4.4,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Seth Curry",
+        "player_id": "203552",
+        "seasons": [
+          {
+            "season": "2023-24",
+            "ppg": 5.1,
+            "ast_pg": 1,
+            "reb_pg": 1.5,
+            "position": "SG",
+            "ppg_confirmed": true
+          },
+          {
+            "season": "2024-25",
+            "ppg": 6.5,
+            "ast_pg": 0.9,
+            "reb_pg": 1.7,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "DaQuan Jeffries",
+        "player_id": "1629610",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 6.7,
+            "ast_pg": 1.1,
+            "reb_pg": 2.9,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Damion Baugh",
+        "player_id": "1641878",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 7.3,
+            "ast_pg": 3.7,
+            "reb_pg": 3.3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Wendell Moore Jr.",
+        "player_id": "1631111",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 4.2,
+            "ast_pg": 1.2,
+            "reb_pg": 2.6,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Jusuf Nurkić",
+        "player_id": "203994",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 8.9,
+            "ast_pg": 2.3,
+            "reb_pg": 7.8,
+            "position": "C",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Josh Okogie",
+        "player_id": "1629006",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 7.1,
+            "ast_pg": 0.8,
+            "reb_pg": 2.8,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "KJ Simpson",
+        "player_id": "1642354",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 7.8,
+            "ast_pg": 3.1,
+            "reb_pg": 3,
+            "position": "SG",
+            "ppg_confirmed": true
+          }
+        ]
+      },
+      {
+        "name": "Taj Gibson",
+        "player_id": "201959",
+        "seasons": [
+          {
+            "season": "2024-25",
+            "ppg": 2.9,
+            "ast_pg": 0.6,
+            "reb_pg": 3.2,
+            "position": "PF",
+            "ppg_confirmed": true
+          }
+        ]
+      }
+    ]
+  }
+}

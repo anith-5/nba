@@ -1,3 +1,18 @@
 node_modules/
 .env
-src/data/teamCache/
+
+# src/data/teamCache/ is deliberately NOT ignored.
+#
+# It was, and that made the Arena unusable once deployed. The cache is what
+# spares the server a full franchise walk -- 60-160 sequential NBA calls -- and
+# with the directory ignored, the deployed instance shipped with none of it. A
+# measured cold request for one team's history took 37 MINUTES and never
+# returned, which is what "82-0 is slow and doesn't work" actually was.
+#
+# Render's disk is ephemeral too, so anything fetched in production is lost on
+# every restart and re-walked from scratch. Committing the caches is what makes
+# them a shipped artifact rather than a local convenience -- the same approach
+# services/api/data_cache/ already takes, at a similar size.
+#
+# Refresh them with the server running: the startup pass repairs gaps by itself
+# (see teamPlayersCache.js), then commit whatever changed.
