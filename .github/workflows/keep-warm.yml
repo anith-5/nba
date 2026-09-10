@@ -1,0 +1,56 @@
+# Keeps the Render free-tier services awake during a 12-hour daily window.
+#
+# WHY A WINDOW AND NOT ALL DAY
+# ----------------------------
+# Render allows 750 free instance hours per workspace per calendar month, and a
+# spun-down service consumes none. Pinging removes the spin-down, so it starts
+# burning hours continuously. There are two free services here:
+#
+#   2 services x 24h x 30 days = ~1,459 h  -> exceeds 750 in about 15 days,
+#                                             and Render then SUSPENDS the free
+#                                             services until the 1st.
+#   2 services x 12h x 30 days =   ~730 h  -> fits, with ~20 h to spare.
+#
+# So the window is the point. Widening it, or adding a second always-on pinger,
+# takes the site down mid-month -- which is far worse than a cold start.
+#
+# IMPORTANT: this only helps if it is the ONLY thing pinging. An external
+# monitor (Pulsetic, UptimeRobot, ...) running 24/7 alongside this keeps the
+# services up the other 12 hours too, and the quota is gone regardless.
+#
+# TIMING CAVEAT: GitHub delays scheduled workflows under load, sometimes past
+# the 15-minute idle timeout. Most pings land; the ones that don't just mean the
+# next visitor waits out a normal cold start. It degrades, it doesn't break.
+name: Keep Render services warm
+
+on:
+  schedule:
+    # Every 10 minutes, 14:00-01:59 UTC = 10am-10pm Eastern (9am-9pm during EST,
+    # since cron is UTC and does not follow daylight saving).
+    - cron: "*/10 14-23 * * *"
+    - cron: "*/10 0-1 * * *"
+  workflow_dispatch: # so you can trigger a run by hand to check it works
+
+# A queued run is pointless once a newer one exists -- the goal is only ever
+# "something touched the service recently".
+concurrency:
+  group: keep-warm
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping arena and API
+        run: |
+          for url in \
+            "https://hoopiq-arena.onrender.com/health" \
+            "https://hoopiq-api.onrender.com/health"
+          do
+            # A cold start can take ~75s, so allow well past that. Failures are
+            # reported but never fail the job: a red X every time Render happens
+            # to be slow is noise, not signal.
+            code=$(curl -s -o /dev/null -m 120 -w "%{http_code}" "$url" || echo "000")
+            echo "$url -> $code"
+          done
