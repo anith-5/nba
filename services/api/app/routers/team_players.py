@@ -23,7 +23,7 @@ and retry them later in the background (see /team-players/{abbr}/season/{season}
 from __future__ import annotations
 
 import time
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
@@ -131,11 +131,19 @@ def _fetch_dash_stats(season: str) -> dict[int, dict[str, float]] | None:
     return None  # unreachable, keeps type-checkers happy
 
 
-def _fetch_season_roster_with_stats(team: dict[str, Any], season: str) -> list[dict[str, Any]]:
-    """Roster + PPG for exactly one team+season. Returns a list of
-    {player_id, name, ppg, position, ppg_confirmed} -- empty list if the
-    roster call itself fails (that season effectively didn't happen for this
-    team as far as we can tell) or has no rows.
+def _fetch_season_roster_with_stats(team: dict[str, Any], season: str) -> Optional[list[dict[str, Any]]]:
+    """Roster + PPG for exactly one team+season.
+
+    Returns a list of {player_id, name, ppg, ast_pg, reb_pg, position,
+    ppg_confirmed}; an EMPTY list when the team genuinely did not play that
+    season; and None when the roster call FAILED.
+
+    That last distinction matters. Both cases used to return [], so a season
+    lost to throttling simply vanished from the walk -- indistinguishable from
+    one before the franchise existed. The caller reported data_complete=True
+    regardless, and the Node cache's background repair loop only ever retries
+    seasons it can SEE, so a truncated history stayed truncated forever. That
+    is how MIN lost 2020-21..2025-26 and NOP lost its first ten years.
     """
     try:
         roster = _retry(lambda: commonteamroster.CommonTeamRoster(team_id=team["id"], season=season, timeout=6))
@@ -143,7 +151,7 @@ def _fetch_season_roster_with_stats(team: dict[str, Any], season: str) -> list[d
         idx = {h: i for i, h in enumerate(rs["headers"])}
         rows = rs["rowSet"]
     except Exception:  # noqa: BLE001
-        return []
+        return None
     if not rows:
         return []
 
@@ -186,10 +194,16 @@ def fetch_team_players(abbr: str, season_delay: float = 0.1) -> dict[str, Any]:
     team = _get_team(abbr)
     start_year = team.get("year_founded") or 1976
     players_by_id: dict[str, dict[str, Any]] = {}
+    failed_seasons: list[str] = []
 
     for year in range(start_year, CURRENT_SEASON_START_YEAR + 1):
         season = _season_str(year)
         season_rows = _fetch_season_roster_with_stats(team, season)
+        if season_rows is None:
+            # Throttled or timed out. Recorded rather than silently skipped so
+            # the caller can retry exactly these seasons later.
+            failed_seasons.append(season)
+            continue
 
         for row in season_rows:
             entry = players_by_id.setdefault(
@@ -214,7 +228,10 @@ def fetch_team_players(abbr: str, season_delay: float = 0.1) -> dict[str, Any]:
 
     return {
         "team_name": team["full_name"],
-        "data_complete": True,
+        # Was hardcoded True even when most of the walk failed, which is what
+        # let half-empty franchise histories pass as complete.
+        "data_complete": not failed_seasons,
+        "failed_seasons": failed_seasons,
         "source": "live",
         "players": players,
     }
@@ -233,4 +250,9 @@ def retry_team_season(abbr: str, season: str):
     """
     team = _get_team(abbr.upper())
     rows = _fetch_season_roster_with_stats(team, season)
-    return {"team_name": team["full_name"], "season": season, "players": rows}
+    return {
+        "team_name": team["full_name"],
+        "season": season,
+        "failed": rows is None,
+        "players": rows or [],
+    }
