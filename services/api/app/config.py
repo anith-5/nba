@@ -4,6 +4,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from app.utils.season import get_current_nba_season
 
 
+# Always allowed, independent of CORS_ORIGINS -- see Settings.cors_origin_list.
+PRODUCTION_ORIGINS = ["https://hoopiq-nba.com", "https://www.hoopiq-nba.com"]
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -30,7 +34,20 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        """Allowed browser origins: the production site, always, plus CORS_ORIGINS.
+
+        The site moved to a custom domain while CORS_ORIGINS on Render still
+        listed the old address, so every browser request was refused and pages
+        showed no players -- while the API looked perfectly healthy to anything
+        that isn't a browser, since only browsers enforce CORS. Pinning the known
+        domain here means a stale dashboard value can't take the site down;
+        CORS_ORIGINS still adds to it (previews, staging).
+
+        Trailing slashes are stripped: a browser's Origin never has one and the
+        match is exact, so "https://site.com/" would otherwise match nothing.
+        """
+        configured = [o.strip().rstrip("/") for o in self.cors_origins.split(",") if o.strip()]
+        return list(dict.fromkeys(PRODUCTION_ORIGINS + configured))
 
 
 settings = Settings()
