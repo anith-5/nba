@@ -28,7 +28,7 @@ import time
 from nba_api.stats.static import teams as static_teams
 
 from app import data_cache, comp_database, lineup_model, espn_rosters
-from app.routers import defense_scanner, clutch_dna, standings, draft_simulator, lineup_optimizer, trades
+from app.routers import defense_scanner, clutch_dna, standings, draft_simulator, lineup_optimizer, trades, rule_simulator
 
 # Draft-history snapshots cover this range (Redraft / Historical grounding)
 DRAFT_YEARS = range(1990, 2025)
@@ -209,6 +209,22 @@ def precompute_arena_players():
         print(f"      {with_traits} of {len(players)} players have traits")
 
 
+def precompute_rules():
+    """Every player's shot profile for the Rule Change Simulator.
+
+    Three league-wide calls (player totals, shots by zone, shots by distance),
+    so it is quick -- but it needs stats.nba.com, so run it locally.
+    """
+    print("[rules] player shot profiles for the rule simulator...")
+    data = rule_simulator._fetch_rule_data_live()
+
+    def count_players(blob):
+        return len((blob or {}).get("players") or [])
+
+    if _write_if_sane(rule_simulator.RULES_CACHE, data, "rule simulator players", count_players):
+        print(f"      {len(data['teams'])} teams, season {data['season']}")
+
+
 STEPS = {
     "defense": precompute_defense,
     "clutch": precompute_clutch,
@@ -219,6 +235,7 @@ STEPS = {
     "trades": precompute_trades,
     "rosters": precompute_espn_rosters,
     "arena": precompute_arena_players,
+    "rules": precompute_rules,
 }
 
 
