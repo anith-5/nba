@@ -79,7 +79,7 @@ export default function ClosestToReveal({ entries, target, onRevealComplete }) {
                   {entry.overTarget ? (
                     <p className="text-sm font-semibold text-stat-down">Busted</p>
                   ) : entry.perfect ? (
-                    <p className="text-sm font-semibold text-basketball">Perfect</p>
+                    <p className="text-sm font-semibold text-basketball-dim">Perfect</p>
                   ) : (
                     <p className="text-sm text-terracotta">{entry.distance} from target</p>
                   )}

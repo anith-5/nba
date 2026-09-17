@@ -64,7 +64,7 @@ export function FiveHintsFinalResults({ gameState, players }) {
                   {winnerName} got it on hint {winner.hintNumber} (+{winner.points})
                 </span>
               ) : (
-                <span className="text-basketball">nobody guessed it</span>
+                <span className="text-basketball-dim">nobody guessed it</span>
               )}
             </div>
           );

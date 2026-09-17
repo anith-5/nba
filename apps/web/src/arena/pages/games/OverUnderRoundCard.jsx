@@ -47,7 +47,7 @@ export default function OverUnderRoundCard({ round, players, myId, onVote, timer
         <div className="space-y-3 text-left">
           <p className="text-center text-lg">
             Actual: <span className="hoop-stat-value">{formatStatValue(round.actualValue, round.statFormat)}</span>{" "}
-            <span className={round.actualValue > round.line ? "text-terracotta" : "text-basketball"}>
+            <span className={round.actualValue > round.line ? "text-terracotta" : "text-basketball-dim"}>
               {round.actualValue > round.line ? "▲ Over" : "▼ Under"}
             </span>
           </p>

@@ -66,15 +66,27 @@ export default {
           glow: "#3F4EE0",
         },
         terracotta: {
-          DEFAULT: "#C15B3C", // secondary labels, card fills, UI accents
+          // Secondary labels, card fills, UI accents. Was #C15B3C, which is
+          // 3.84:1 on paper -- below the 4.5:1 WCAG AA floor for normal-size
+          // text, and this token carries `hoop-stat-label` (12px) plus small
+          // status text all over the app. Darkened ~10% along the same hue to
+          // clear the floor at 4.57:1; paper-on-terracotta fills improve by
+          // the same amount.
+          DEFAULT: "#AE5236",
           dim: "#9E4A30",
           glow: "#D37456",
         },
         // Reserved specifically for interactive basketball-icon elements
         // (wordmark O's, nav-ball arc, carousel) — distinct from terracotta.
         basketball: {
+          // DEFAULT stays a real basketball orange: it colours the wordmark's
+          // O's and the nav-ball arc, which are brand marks and graphics, not
+          // text. At 2.50:1 on paper it must never carry text -- use `dim`.
           DEFAULT: "#E67E3C",
-          dim: "#C6672E",
+          // The text-safe sibling. Was #C6672E (3.45:1), which carried the
+          // grade-D letter and, via a swap in this commit, the arena's error
+          // and status lines. Darkened to clear the 4.5:1 AA floor at 4.61:1.
+          dim: "#A3592B",
           glow: "#F0985F",
         },
         // Data-semantic pair for stat deltas (better/worse, over/under,
@@ -83,7 +95,10 @@ export default {
         // reusing it for "this number is bad" would make every ordinary label
         // read as a negative signal. These two are scoped to figures only.
         stat: {
-          up: "#2F7D5B",
+          // `up` was #2F7D5B at 4.41:1 -- just under the AA floor, and delta
+          // figures render small. Nudged 2% darker to 4.53:1; the pairing with
+          // `down` is unchanged to the eye.
+          up: "#2E7B59",
           down: "#C0392B",
         },
       },

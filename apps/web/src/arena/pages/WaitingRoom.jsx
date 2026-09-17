@@ -909,7 +909,7 @@ export default function WaitingRoom() {
         <p className="hoop-stat-label">Players ({room.players.length})</p>
         <PlayerList players={room.players} hostSocketId={room.hostSocketId} />
 
-        {error && <p className="text-sm text-basketball">{error}</p>}
+        {error && <p className="text-sm text-basketball-dim">{error}</p>}
 
         {isHost && room.gameMode === "over-under" && (
           <OverUnderConfigForm config={overUnderConfig} setConfig={setOverUnderConfig} />

@@ -21,7 +21,9 @@ import { toPng } from "html-to-image";
 const PAPER = "#F2F1EA";
 const CARD = "#FAFAF6";
 const BASKETBALL = "#E67E3C";
-const TERRACOTTA = "#C15B3C";
+// Mirrors the terracotta token in tailwind.config.js (inline styles are used
+// here because image capture does not resolve Tailwind classes reliably).
+const TERRACOTTA = "#AE5236";
 const TEXT = "#2431C4";
 const MUTED = "#6B72D8";
 const RULE = "rgba(36,49,196,0.18)";

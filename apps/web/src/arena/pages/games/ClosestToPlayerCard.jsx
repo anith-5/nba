@@ -79,7 +79,7 @@ export default function ClosestToPlayerCard({
         {dataComplete ? (
           <span className="text-xs text-terracotta">Live data</span>
         ) : (
-          <span className="text-xs text-basketball">{note || "Showing limited player data"}</span>
+          <span className="text-xs text-basketball-dim">{note || "Showing limited player data"}</span>
         )}
       </div>
 
@@ -109,7 +109,7 @@ export default function ClosestToPlayerCard({
 
       {selectedPlayer && selectedPlayer.seasons.length === 0 && (
         <div className="space-y-2 rounded-xl border border-ink/20 bg-paper p-4 text-center">
-          <p className="text-sm text-basketball">
+          <p className="text-sm text-basketball-dim">
             Season stats unavailable for this player with this team — please select another player.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function ClosestToPlayerCard({
 
       {selectedSeason && seasonBlocked && (
         <div className="space-y-3 rounded-xl border border-basketball/40 bg-paper p-4">
-          <p className="text-sm text-basketball">
+          <p className="text-sm text-basketball-dim">
             You already have a player for that position ({selectedSeason.position} filled). Pick a different season
             or a different player from this team's list.
           </p>

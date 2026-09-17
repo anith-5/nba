@@ -49,7 +49,9 @@ export default function HoopWordmark({ className = "" }) {
       <BasketballO className="relative h-9 w-9 shrink-0" />
       <BasketballO className="relative h-9 w-9 shrink-0" />
       <span className="relative font-hoop text-4xl font-bold leading-none text-ink">P</span>
-      <span className="relative ml-1 font-hoop text-xl font-bold leading-none text-basketball">IQ</span>
+      <span className="relative ml-1 font-hoop text-xl font-bold leading-none text-basketball">IQ</span> {/* Logotype: keeps the brand orange. WCAG exempts logos from the
+          contrast floor, so this is the one place `text-basketball` is
+          allowed to carry glyphs. */}
     </div>
   );
 }

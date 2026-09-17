@@ -320,7 +320,7 @@ function SidePicker({ label, color, value, onChange }) {
           </option>
         ))}
       </select>
-      {error && <p className="mt-1.5 text-xs text-basketball">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-basketball-dim">{error}</p>}
     </div>
   );
 }
@@ -398,7 +398,7 @@ export default function HeadToHead() {
           Pick two different player-seasons to compare.
         </div>
       )}
-      {error && <div className="hoop-card-outline border border-basketball/30 p-3 text-sm text-basketball">{error}</div>}
+      {error && <div className="hoop-card-outline border border-basketball/30 p-3 text-sm text-basketball-dim">{error}</div>}
       {loading && <div className="hoop-card-outline p-6 text-center text-ink/70">Loading comparison…</div>}
 
       {cards && !loading && (
