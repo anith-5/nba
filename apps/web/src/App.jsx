@@ -20,6 +20,9 @@ import GMAssistant from "./pages/GMAssistant.jsx";
 import ShotEvaluator from "./pages/ShotEvaluator.jsx";
 import DraftSimulator from "./pages/DraftSimulator.jsx";
 import DraftComps from "./pages/DraftComps.jsx";
+import Privacy from "./pages/Privacy.jsx";
+import Terms from "./pages/Terms.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import HeadToHead from "./pages/HeadToHead.jsx";
 import ArenaLayout from "./arena/ArenaLayout.jsx";
 import ArenaHome from "./arena/pages/ArenaHome.jsx";
@@ -62,6 +65,8 @@ export default function App() {
           <Route path="draft" element={<DraftSimulator />} />
           <Route path="draft-comps" element={<DraftComps />} />
           <Route path="head-to-head" element={<HeadToHead />} />
+          <Route path="privacy" element={<Privacy />} />
+          <Route path="terms" element={<Terms />} />
           {/* Arena hub, Wordle solo, and the not-yet-playable modes never need a
               realtime connection, so they stay outside ArenaLayout/SocketProvider
               — only lobby-based flows (join/create/room/over-under) connect the socket. */}
@@ -84,6 +89,8 @@ export default function App() {
             <Route path="games/build-a-player/:code" element={<BuildAPlayer />} />
             <Route path="games/82-0/:code" element={<EightyTwoOh />} />
           </Route>
+          {/* Last route wins only if nothing above matched. */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </div>

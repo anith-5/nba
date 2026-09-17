@@ -4,12 +4,43 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0F172A" />
+    <!-- Paper, matching the app's actual background. This was #0F172A, a dark
+         slate left over from an earlier theme, which tinted mobile browser
+         chrome a colour that appears nowhere on the site. -->
+    <meta name="theme-color" content="#F2F1EA" />
     <meta
       name="description"
       content="HoopIQ — a modern NBA analytics hub. Scores, standings, and AI tools for shot quality, clutch ratings, scouting, and a draft simulator."
     />
     <title>HoopIQ — NBA Analytics</title>
+    <link rel="canonical" href="https://hoopiq-nba.com/" />
+
+    <!-- Open Graph: what Slack, iMessage, Discord, LinkedIn and Facebook read
+         when the link is pasted. Without these a shared link renders as a bare
+         URL with no title, description or image. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="HoopIQ" />
+    <meta property="og:url" content="https://hoopiq-nba.com/" />
+    <meta property="og:title" content="HoopIQ — NBA Analytics" />
+    <meta
+      property="og:description"
+      content="Shot charts, head-to-head player seasons, rule simulations and a multiplayer arena — built on real NBA data."
+    />
+    <meta property="og:image" content="https://hoopiq-nba.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="HoopIQ — NBA analytics, built on the real numbers" />
+
+    <!-- Twitter/X reads its own tags and falls back to OG only inconsistently. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="HoopIQ — NBA Analytics" />
+    <meta
+      name="twitter:description"
+      content="Shot charts, head-to-head player seasons, rule simulations and a multiplayer arena — built on real NBA data."
+    />
+    <meta name="twitter:image" content="https://hoopiq-nba.com/og-image.png" />
+
+    <meta name="robots" content="index, follow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

@@ -1,0 +1,13 @@
+# HoopIQ — https://hoopiq-nba.com
+User-agent: *
+Allow: /
+
+# The Arena's rooms are ephemeral, code-specific and useless to a crawler:
+# every room is gone within two hours, so indexing them only produces dead
+# results. The lobby itself is indexable.
+Disallow: /arena/room/
+Disallow: /arena/join/
+Disallow: /arena/create/
+Disallow: /arena/games/
+
+Sitemap: https://hoopiq-nba.com/sitemap.xml

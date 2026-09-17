@@ -14,11 +14,12 @@ import time
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from nba_api.stats.endpoints import commonteamroster, leaguedashplayerstats
 from nba_api.stats.static import teams as static_teams
 
 from app import data_cache
+from app.security import require_admin
 from app.routers.clutch_dna import true_shooting_pct
 from app.routers.clutch_dna import _fetch_leaderboard as _fetch_clutch_leaderboard
 from app.utils.season import get_current_nba_season, get_current_nba_season_start_year
@@ -511,6 +512,13 @@ def get_current_players():
     return envelope
 
 
-@router.post("/sync-rosters")
+@router.post("/sync-rosters", dependencies=[Depends(require_admin)])
 def sync_rosters():
+    """Force a live pull of all 30 rosters.
+
+    Admin-gated: this fans out to one commonteamroster call per team plus a
+    league-wide stats pull. Left open it is a button any visitor can hold down
+    to get our IP throttled by stats.nba.com, which takes every live feature
+    down with it. The arena reads the cached GET instead and never needs this.
+    """
     return _envelope(fetch_current_players())
