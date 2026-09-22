@@ -25,7 +25,7 @@ export function gradeClasses(grade) {
 // which uses inline styles for reliable image capture).
 // Must stay in step with MAP above: stat-up green, ink, muted ink, basketball
 // dim, stat-down red.
-const HEX = { a: "#2F7D5B", b: "#2431C4", c: "#6B72D8", d: "#C6672E", f: "#C0392B", na: "#6B72D8" };
+const HEX = { a: "#257C56", b: "#2431C4", c: "#6B72D8", d: "#C6672E", f: "#C0392B", na: "#6B72D8" };
 
 export function gradeHex(grade) {
   return HEX[gradeTier(grade)];

@@ -10,7 +10,7 @@ function LineupCard({ entry, target }) {
         {entry.overTarget ? (
           <span className="text-xs font-semibold text-stat-down">Over Target</span>
         ) : entry.perfect ? (
-          <span className="text-xs font-semibold text-basketball">Perfect</span>
+          <span className="text-xs font-semibold text-basketball-dim">Perfect</span>
         ) : null}
       </div>
       <div className="grid grid-cols-5 gap-2 text-center">

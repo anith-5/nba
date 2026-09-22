@@ -18,6 +18,7 @@ export const api = {
   scoreboard: () => request("/live/scoreboard"),
   teams: () => request("/teams"),
   standings: () => request("/standings"),
+  powerRankings: () => request("/power-rankings"),
   searchPlayers: (q) => request(`/players/search?q=${encodeURIComponent(q)}`),
   playerProfile: (id) => request(`/players/${id}/profile`),
   validateTrade: (body) =>

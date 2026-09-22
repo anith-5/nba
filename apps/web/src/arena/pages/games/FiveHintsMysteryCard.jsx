@@ -47,7 +47,7 @@ export default function FiveHintsMysteryCard({ round, maxHints, winners, players
           </div>
         ) : (
           <div className="rounded-xl border border-ink/20 bg-paper p-4">
-            <p className="text-sm text-basketball">Nobody guessed it in time.</p>
+            <p className="text-sm text-basketball-dim">Nobody guessed it in time.</p>
           </div>
         )}
       </div>

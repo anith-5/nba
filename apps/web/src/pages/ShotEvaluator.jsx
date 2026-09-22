@@ -193,7 +193,7 @@ export default function ShotEvaluator() {
             ) : "Grade This Shot"}
           </button>
 
-          {error && <p className="text-sm text-basketball">{error}</p>}
+          {error && <p className="text-sm text-basketball-dim">{error}</p>}
         </div>
 
         {/* ── Result ── */}
@@ -292,7 +292,7 @@ export default function ShotEvaluator() {
                   </p>
                 </div>
                 <span className={`font-hoop text-lg font-bold ${
-                  result.defender_matchup.pct_plusminus <= -0.02 ? "text-stat-down" : result.defender_matchup.pct_plusminus < 0.02 ? "text-basketball" : "text-stat-up"
+                  result.defender_matchup.pct_plusminus <= -0.02 ? "text-stat-down" : result.defender_matchup.pct_plusminus < 0.02 ? "text-basketball-dim" : "text-stat-up"
                 }`}>
                   {result.defender_matchup.pct_plusminus > 0 ? "+" : ""}{(result.defender_matchup.pct_plusminus * 100).toFixed(1)}%
                 </span>
@@ -301,7 +301,7 @@ export default function ShotEvaluator() {
               <div className="hoop-card-outline flex items-center justify-between p-3">
                 <span className="text-sm text-ink/70">{result.defender_name} Defensive Rating</span>
                 <span className={`font-hoop text-lg font-bold ${
-                  result.defender_drtg <= 110 ? "text-stat-down" : result.defender_drtg <= 114 ? "text-basketball" : "text-stat-up"
+                  result.defender_drtg <= 110 ? "text-stat-down" : result.defender_drtg <= 114 ? "text-basketball-dim" : "text-stat-up"
                 }`}>
                   {result.defender_drtg.toFixed(0)}
                 </span>

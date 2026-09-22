@@ -69,7 +69,7 @@ export default function EightyTwoOhSpinner({
             </div>
           )}
           {playersLoading && <p className="text-center text-sm text-ink/60">Loading roster…</p>}
-          {playersError && <p className="text-center text-sm text-basketball">{playersError}</p>}
+          {playersError && <p className="text-center text-sm text-basketball-dim">{playersError}</p>}
           {players && (
             <EightyTwoOhPlayerPicker
               players={players}

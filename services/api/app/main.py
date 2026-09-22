@@ -28,6 +28,7 @@ from app.routers import (
     standings,
     draft_comp,
     rosters,
+    power_rankings,
     team_players,
     head_to_head,
 )
@@ -123,6 +124,7 @@ app.include_router(draft_simulator.router)
 app.include_router(standings.router)
 app.include_router(draft_comp.router)
 app.include_router(rosters.router)
+app.include_router(power_rankings.router)
 app.include_router(team_players.router)
 app.include_router(head_to_head.router)
 

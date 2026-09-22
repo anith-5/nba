@@ -2,10 +2,11 @@ from app.config import settings
 """Player Development Trajectory — two-layer comp matching (archetype + badges)."""
 
 import threading
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from nba_api.stats.static import players as static_players
 
 from app import comp_database, data_cache
+from app.security import require_admin
 
 router = APIRouter(prefix="/trajectory", tags=["trajectory"])
 SEASON = settings.current_season
@@ -16,9 +17,15 @@ def trajectory_status():
     return comp_database.get_status()
 
 
-@router.post("/rebuild")
+@router.post("/rebuild", dependencies=[Depends(require_admin)])
 def trajectory_rebuild():
-    """Trigger a manual rebuild of the comp database."""
+    """Trigger a manual rebuild of the comp database.
+
+    Admin-gated for the same reason as the training endpoints: a rebuild is a
+    minutes-long NBA pull on a 512MB instance. The `_is_building` check below
+    bounds concurrent work to one thread, but an open endpoint could still be
+    re-triggered the instant each build finishes, keeping the box saturated.
+    """
     if comp_database._is_building:
         return {"status": "already_building"}
     t = threading.Thread(target=comp_database._background_build, daemon=True)

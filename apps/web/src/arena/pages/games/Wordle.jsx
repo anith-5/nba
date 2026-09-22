@@ -65,7 +65,7 @@ export default function Wordle() {
       <p className="text-center text-xs text-ink/50">
         Rosters last updated {freshness.dateLabel}
         {freshness.isStale && (
-          <span className="ml-1 text-basketball">— roster data may be outdated, check for updates</span>
+          <span className="ml-1 text-basketball-dim">— roster data may be outdated, check for updates</span>
         )}
       </p>
     </div>

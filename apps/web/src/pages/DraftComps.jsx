@@ -207,7 +207,7 @@ export default function DraftComps() {
         </div>
       )}
 
-      {error && <div className="hoop-card-outline border border-basketball/30 p-3 text-sm text-basketball">{error}</div>}
+      {error && <div className="hoop-card-outline border border-basketball/30 p-3 text-sm text-basketball-dim">{error}</div>}
       {loading && <div className="hoop-card-outline p-6 text-center text-ink/70">Loading comparison…</div>}
 
       {cards && !loading && (

@@ -4,19 +4,30 @@ import { api } from "../api.js";
 import LatestNewsModule from "./home/LatestNewsModule.jsx";
 import NavBallArc from "./home/NavBallArc.jsx";
 
+// Fallback for when the standings API can't be reached. The API is the source
+// of truth; this only renders while it's unavailable -- which on Render's free
+// tier means the ~70s cold start on the first visit after an idle period, i.e.
+// for a lot of real first impressions.
+//
+// These were previously invented mid-season 2024-25 numbers (Celtics 41-12,
+// Luka on Dallas), so a cold start showed records that had never been final and
+// a player on the wrong team. They are now the real 2025-26 final figures, so
+// the cold-start view matches what loads a moment later instead of contradicting
+// it.
+const FALLBACK_SEASON = "2025-26";
 const STANDINGS = {
-  East: [["BOS", "Celtics", 41, 12], ["CLE", "Cavaliers", 39, 14], ["NYK", "Knicks", 36, 17],
-    ["MIL", "Bucks", 33, 20], ["ORL", "Magic", 32, 22], ["IND", "Pacers", 30, 23]],
-  West: [["OKC", "Thunder", 43, 10], ["DEN", "Nuggets", 38, 15], ["MEM", "Grizzlies", 36, 18],
-    ["HOU", "Rockets", 34, 19], ["LAL", "Lakers", 32, 21], ["DAL", "Mavericks", 31, 22]],
+  East: [["DET", "Pistons", 60, 22], ["BOS", "Celtics", 56, 26], ["NYK", "Knicks", 53, 29],
+    ["CLE", "Cavaliers", 52, 30], ["TOR", "Raptors", 46, 36], ["ATL", "Hawks", 46, 36]],
+  West: [["OKC", "Thunder", 64, 18], ["SAS", "Spurs", 62, 20], ["DEN", "Nuggets", 54, 28],
+    ["LAL", "Lakers", 53, 29], ["HOU", "Rockets", 52, 30], ["MIN", "Timberwolves", 49, 33]],
 };
 const SCORING_LEADERS = [
-  ["Shai Gilgeous-Alexander", "OKC", 32.6], ["Giannis Antetokounmpo", "MIL", 30.4],
-  ["Nikola Jokić", "DEN", 29.7], ["Luka Dončić", "DAL", 28.1], ["Jayson Tatum", "BOS", 27.8],
+  ["Luka Dončić", "LAL", 33.5], ["Shai Gilgeous-Alexander", "OKC", 31.1],
+  ["Anthony Edwards", "MIN", 28.8], ["Jaylen Brown", "BOS", 28.7], ["Tyrese Maxey", "PHI", 28.3],
 ];
 const CLUTCH_LEADERS = [
   ["Shai Gilgeous-Alexander", "OKC", 6.5], ["Anthony Edwards", "MIN", 5.6],
-  ["Luka Dončić", "DAL", 5.4], ["Jalen Brunson", "NYK", 5.1], ["Nikola Jokić", "DEN", 4.8],
+  ["Nikola Jokić", "DEN", 4.8], ["Stephen Curry", "GSW", 4.5], ["Jamal Murray", "DEN", 4.4],
 ];
 
 // Dashboard content sits above the hero, both in NORMAL page flow -- real
@@ -71,6 +82,7 @@ export default function Home() {
   const clutch = summary?.clutch_leaders?.length
     ? summary.clutch_leaders.map((c) => [c.name, c.tri, c.ppg])
     : CLUTCH_LEADERS;
+  const season = summary?.season || FALLBACK_SEASON;
 
   return (
     <div className="animate-fade-in -mx-4 -my-6 min-h-[calc(100dvh-4rem)] bg-paper px-4 py-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -79,7 +91,7 @@ export default function Home() {
         style={{ opacity: dashboardOpacity, scale: dashboardScale }}
         className="mx-auto max-w-5xl"
       >
-        <LatestNewsModule scoring={scoring} clutch={clutch} standings={standings} />
+        <LatestNewsModule scoring={scoring} clutch={clutch} standings={standings} season={season} />
       </motion.div>
 
       <motion.div

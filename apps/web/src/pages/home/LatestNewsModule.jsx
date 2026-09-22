@@ -12,10 +12,11 @@ function FeaturedCard({ scoringLeader }) {
   );
 }
 
-function SmallCard({ title, rows, unit }) {
+function SmallCard({ title, rows, unit, note, id }) {
   return (
-    <div className="hoop-card-outline p-4">
+    <div className="hoop-card-outline p-4" id={id}>
       <p className="hoop-stat-label">{title}</p>
+      {note && <p className="mt-0.5 text-[11px] text-ink/60">{note}</p>}
       <ul className="mt-2 space-y-1.5">
         {rows.slice(0, 3).map((r, i) => (
           <li key={r[0]} className="flex items-center justify-between gap-2 text-sm">
@@ -45,8 +46,14 @@ function SmallCard({ title, rows, unit }) {
 // scroll, no inner overflow-y-auto), and there's no single hard-edged
 // container around the group -- just the individual cards, the same way
 // any other section of the page would render.
-export default function LatestNewsModule({ scoring, clutch, standings }) {
-  const westRows = standings.West.map(([tri, name, w, l]) => [`${name} (${tri})`, null, `${w}-${l}`]);
+export default function LatestNewsModule({ scoring, clutch, standings, season }) {
+  // Best records league-wide, most wins first. This card previously showed the
+  // West alone, which hid teams with better records than the ones it listed:
+  // Detroit finished 60-22, third-best in the league, and never appeared
+  // because it plays in the East. Ties break on fewer losses.
+  const bestRecords = [...standings.East, ...standings.West]
+    .sort(([, , aWins, aLosses], [, , bWins, bLosses]) => bWins - aWins || aLosses - bLosses)
+    .map(([tri, name, w, l]) => [`${name} (${tri})`, null, `${w}-${l}`]);
 
   return (
     <div className="space-y-4">
@@ -54,7 +61,13 @@ export default function LatestNewsModule({ scoring, clutch, standings }) {
       <FeaturedCard scoringLeader={scoring[0]} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <SmallCard title="Leaders" rows={scoring} unit=" PPG" />
-        <SmallCard title="Standings" rows={westRows} unit="" />
+        <SmallCard
+          id="standings"
+          title="Best Records"
+          note={season ? `${season} final` : undefined}
+          rows={bestRecords}
+          unit=""
+        />
         <SmallCard title="Clutch Leaders" rows={clutch} unit=" CLU" />
       </div>
     </div>

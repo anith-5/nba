@@ -1,7 +1,7 @@
 import { TEAM_FULL_NAMES, POSITION_NAMES } from "../../utils/fiveHintsGenerator.js";
 
 const TIER_STYLES = {
-  Elite: "border-basketball/50 bg-basketball/10 text-basketball",
+  Elite: "border-basketball/50 bg-basketball/10 text-basketball-dim",
   Star: "border-terracotta/50 bg-terracotta/10 text-terracotta",
   "Role Player": "border-ink/20 bg-ink/30 text-ink",
   "Deep Bench": "border-ink/20 bg-ink/5 text-ink/70",
@@ -60,7 +60,7 @@ export default function HintAuctionMysteryCard({ round, players }) {
 
         {round.unsold ? (
           <div className="rounded-xl border border-ink/20 bg-paper p-4">
-            <p className="text-sm text-basketball">Nobody bid — this player went unsold.</p>
+            <p className="text-sm text-basketball-dim">Nobody bid — this player went unsold.</p>
           </div>
         ) : (
           <div className="animate-slide-up space-y-1 rounded-xl border border-terracotta/40 bg-paper p-4">

@@ -44,7 +44,7 @@ export default function CreateRoom() {
             className="w-full rounded-lg border border-ink/20 bg-paper px-3 py-2 text-ink outline-none focus:border-terracotta"
           />
         </div>
-        {error && <p className="text-sm text-basketball">{error}</p>}
+        {error && <p className="text-sm text-basketball-dim">{error}</p>}
         <button type="submit" disabled={!name.trim() || submitting} className="hoop-btn-primary w-full disabled:opacity-50">
           {submitting ? "Creating…" : "Create Room"}
         </button>

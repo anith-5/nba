@@ -19,6 +19,7 @@ const navGroups = [
   {
     label: "Teams",
     items: [
+      { to: "/power-rankings", label: "Power Rankings" },
       { to: "/lineups", label: "Lineup Optimizer" },
       { to: "/defense", label: "Defense Scanner" },
       { to: "/trade", label: "Trade Machine" },
@@ -265,7 +266,17 @@ export default function Shell() {
         {/* Sidebar (desktop) */}
         <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r-2 border-ink bg-paper lg:block">
           <SidebarNav />
-          <p className="px-5 py-4 text-[10px] text-ink/40">HoopIQ · 11 AI/ML features</p>
+          {/* Privacy and Terms live here so they are reachable from every page.
+              A legal page nothing links to is one users can't find and crawlers
+              treat as orphaned. */}
+          <div className="space-y-1 px-5 py-4 text-[10px] text-ink/40">
+            <p>HoopIQ · 11 AI/ML features</p>
+            <p className="flex gap-2">
+              <NavLink to="/privacy" className="hover:text-ink/70">Privacy</NavLink>
+              <span aria-hidden="true">·</span>
+              <NavLink to="/terms" className="hover:text-ink/70">Terms</NavLink>
+            </p>
+          </div>
         </aside>
 
         {/* Mobile drawer */}
