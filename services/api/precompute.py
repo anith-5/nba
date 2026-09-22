@@ -27,7 +27,7 @@ import time
 
 from nba_api.stats.static import teams as static_teams
 
-from app import data_cache, comp_database, lineup_model, espn_rosters
+from app import data_cache, comp_database, lineup_model, espn_rosters, power_rankings
 from app.routers import defense_scanner, clutch_dna, standings, draft_simulator, lineup_optimizer, trades, rule_simulator
 
 # Draft-history snapshots cover this range (Redraft / Historical grounding)
@@ -225,6 +225,24 @@ def precompute_rules():
         print(f"      {len(data['teams'])} teams, season {data['season']}")
 
 
+def precompute_power():
+    """Team power rankings.
+
+    Four league-wide calls (game log, advanced, four factors, player minutes),
+    so it is quick -- but it needs stats.nba.com, so run it locally.
+    """
+    print("[power] team strength + four factors projection...")
+    data = power_rankings.fetch_power_rankings_live()
+
+    def count_teams(blob):
+        return len((blob or {}).get("teams") or [])
+
+    if _write_if_sane(power_rankings.POWER_CACHE, data, "power ranking teams", count_teams):
+        top = data["teams"][0]
+        print(f"      season {data['season']}, {len(data['teams'])} teams, "
+              f"leader {top['tri']} ({top['strength']:+.2f})")
+
+
 STEPS = {
     "defense": precompute_defense,
     "clutch": precompute_clutch,
@@ -236,6 +254,7 @@ STEPS = {
     "rosters": precompute_espn_rosters,
     "arena": precompute_arena_players,
     "rules": precompute_rules,
+    "power": precompute_power,
 }
 
 

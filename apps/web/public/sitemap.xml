@@ -67,6 +67,10 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://hoopiq-nba.com/power-rankings</loc>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
     <loc>https://hoopiq-nba.com/lineups</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>weekly</changefreq>

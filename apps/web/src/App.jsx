@@ -4,6 +4,7 @@ import Home from "./pages/Home.jsx";
 import Games from "./pages/Games.jsx";
 import Players from "./pages/Players.jsx";
 import TradeMachine from "./pages/TradeMachine.jsx";
+import PowerRankings from "./pages/PowerRankings.jsx";
 import Predictions from "./pages/Predictions.jsx";
 import Research from "./pages/Research.jsx";
 import Simulator from "./pages/Simulator.jsx";
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="win-prob" element={<WinProbability />} />
           <Route path="lineups" element={<LineupOptimizer />} />
           <Route path="defense" element={<DefenseScanner />} />
+          <Route path="power-rankings" element={<PowerRankings />} />
           <Route path="trajectory" element={<PlayerTrajectory />} />
           <Route path="clutch" element={<ClutchDNA />} />
           <Route path="scouting" element={<ScoutingReport />} />

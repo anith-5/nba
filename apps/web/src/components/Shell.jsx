@@ -19,6 +19,7 @@ const navGroups = [
   {
     label: "Teams",
     items: [
+      { to: "/power-rankings", label: "Power Rankings" },
       { to: "/lineups", label: "Lineup Optimizer" },
       { to: "/defense", label: "Defense Scanner" },
       { to: "/trade", label: "Trade Machine" },

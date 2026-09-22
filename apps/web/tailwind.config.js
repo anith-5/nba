@@ -98,7 +98,11 @@ export default {
           // `up` was #2F7D5B at 4.41:1 -- just under the AA floor, and delta
           // figures render small. Nudged 2% darker to 4.53:1; the pairing with
           // `down` is unchanged to the eye.
-          up: "#2E7B59",
+          // Also used as a chart fill on the power rankings, which is a
+          // stricter bar than text: #2E7B59 cleared 4.5:1 contrast but fell
+          // below the OKLCH chroma floor, meaning it read as gray rather than
+          // green. This clears both, 0.9 OKLab dE from the old value.
+          up: "#257C56",
           down: "#C0392B",
         },
       },
