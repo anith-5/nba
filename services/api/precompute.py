@@ -243,6 +243,58 @@ def precompute_power():
               f"leader {top['tri']} ({top['strength']:+.2f})")
 
 
+def precompute_shots():
+    """Per-player shot charts for Shot Quality xFG%.
+
+    One ShotChartDetail call per active player -- the only step here that is
+    per-player rather than league-wide, because that endpoint has no league-wide
+    form. At ~1.5s each this is roughly a fifteen-minute run, so it skips players
+    already cached for the current season: an interrupted run resumes instead of
+    starting over, and a re-run after a few trades only fetches what is missing.
+
+    Pass --refresh-shots to rebuild every player instead of resuming.
+    """
+    from app.routers import shot_quality
+
+    roster = data_cache.read_json("current_players.json") or {}
+    players = [p for p in (roster.get("players") or []) if p.get("player_id")]
+    if not players:
+        print("[shots] no current_players.json -- run `precompute.py arena` first")
+        return
+
+    refresh = "--refresh-shots" in sys.argv
+    print(f"[shots] shot charts for {len(players)} players (season {shot_quality.SEASON})...")
+
+    done = skipped = empty = failed = 0
+    for i, player in enumerate(players, start=1):
+        pid = int(player["player_id"])
+        name = shot_quality.shot_cache_name(pid)
+        if not refresh and data_cache.exists(name):
+            skipped += 1
+            continue
+        try:
+            payload = shot_quality.build_player_shot_quality(pid)
+        except Exception as exc:
+            failed += 1
+            print(f"      [{i}/{len(players)}] {player.get('name','?')}: {type(exc).__name__}")
+            continue
+        if payload is None:
+            # Players who have not attempted a shot this season are cached as an
+            # explicit empty rather than left absent, so the endpoint can tell
+            # "no shots" apart from "never fetched".
+            data_cache.write_json(name, {"player_id": pid, "season": shot_quality.SEASON,
+                                         "shots": [], "shot_zones": [], "total_attempts": 0})
+            empty += 1
+            continue
+        data_cache.write_json(name, {**payload,
+                                     "shots": shot_quality._pack_shots(payload["shots"])})
+        done += 1
+        if done % 25 == 0:
+            print(f"      [{i}/{len(players)}] {done} fetched...")
+
+    print(f"      {done} fetched, {skipped} already cached, {empty} with no shots, {failed} failed")
+
+
 STEPS = {
     "defense": precompute_defense,
     "clutch": precompute_clutch,
@@ -255,6 +307,7 @@ STEPS = {
     "arena": precompute_arena_players,
     "rules": precompute_rules,
     "power": precompute_power,
+    "shots": precompute_shots,
 }
 
 

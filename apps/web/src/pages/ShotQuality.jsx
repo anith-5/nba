@@ -104,7 +104,7 @@ export default function ShotQuality() {
         {loading && <p className="animate-pulse text-sm text-ink/70">Fetching shot chart… ~15s</p>}
       </div>
 
-      {error && <p className="rounded-xl border border-terracotta/50 bg-terracotta/30 px-4 py-3 text-sm text-stat-down">{error}</p>}
+      {error && <p className="rounded-xl border-l-4 border border-terracotta bg-terracotta/[0.12] px-4 py-3 text-sm text-ink">{error}</p>}
 
       {result && (
         <div className="animate-slide-up space-y-5">
