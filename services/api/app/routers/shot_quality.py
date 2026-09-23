@@ -15,6 +15,7 @@ from nba_api.stats.endpoints import (
 from nba_api.stats.static import players as static_players
 
 from app.config import settings
+from app import data_cache
 
 router = APIRouter(prefix="/shot-quality", tags=["shot-quality"])
 SEASON = settings.current_season
@@ -52,26 +53,101 @@ def _grade(player_fg: float, xfg: float) -> str:
     return "F"
 
 
+def shot_cache_name(player_id: int, season: str = None) -> str:
+    return f"shot_quality_{player_id}_{season or SEASON}.json"
+
+
+# Shots are stored as flat arrays rather than objects. The field names repeat
+# once per attempt, and a busy season is ~1,000 attempts per player across ~530
+# players -- as objects that is roughly 22MB of committed cache, most of it the
+# words "made" and "value". Packed it is under half that. The wire format the
+# frontend sees is unchanged; only the snapshot is compact.
+def _pack_shots(shots: list[dict]) -> list[list]:
+    return [[s["x"], s["y"], 1 if s["made"] else 0, s["value"]] for s in shots]
+
+
+def _unpack_shots(packed) -> list[dict]:
+    out = []
+    for row in packed or []:
+        if isinstance(row, dict):  # tolerate an older unpacked snapshot
+            out.append(row)
+            continue
+        x, y, made, value = row
+        out.append({"x": x, "y": y, "made": bool(made), "value": value})
+    return out
+
+
+def build_player_shot_quality(player_id: int) -> dict | None:
+    """Live fetch + xFG model for one player. None when the player has no shots.
+
+    Split out from the endpoint so precompute.py can build the snapshot with the
+    same code path that serves it.
+    """
+    time.sleep(0.7)
+    chart = shotchartdetail.ShotChartDetail(
+        player_id=player_id,
+        team_id=0,
+        game_id_nullable="",
+        season_nullable=SEASON,
+        season_type_all_star="Regular Season",
+        context_measure_simple="FGA",
+        timeout=120,
+    )
+    shots_df = chart.get_data_frames()[0]
+    if shots_df.empty:
+        return None
+    return _compute_payload(player_id, shots_df)
+
+
 @router.get("/player/{player_id}")
 def player_shot_quality(player_id: int):
-    time.sleep(0.7)
-    try:
-        chart = shotchartdetail.ShotChartDetail(
-            player_id=player_id,
-            team_id=0,
-            game_id_nullable="",
-            season_nullable=SEASON,
-            season_type_all_star="Regular Season",
-            context_measure_simple="FGA",
-            timeout=120,
-        )
-        shots_df = chart.get_data_frames()[0]
-        league_df = chart.get_data_frames()[1]
-    except Exception as e:
-        raise HTTPException(status_code=502, detail=f"NBA API error: {e}")
+    """Cache-first on the cloud, live-first locally.
 
-    if shots_df.empty:
+    stats.nba.com does not answer from Render's IP -- that is the whole reason
+    data_cache exists -- so a live call there does not fail, it hangs for the
+    full 120s timeout and then surfaces the raw urllib exception to the user.
+    On the cloud the snapshot is the only source, and a miss says so promptly
+    instead of making someone wait two minutes to be told about a socket.
+    """
+    name = shot_cache_name(player_id)
+
+    if data_cache.IS_CLOUD:
+        hit = data_cache.read_json(name)
+        if hit is None:
+            raise HTTPException(
+                status_code=503,
+                detail=(
+                    "Shot data for this player is not in the current snapshot. "
+                    "Snapshots are refreshed from a network that can reach the NBA "
+                    "stats API; this one has not been built yet."
+                ),
+            )
+        hit["shots"] = _unpack_shots(hit.get("shots"))
+        return hit
+
+    try:
+        payload = build_player_shot_quality(player_id)
+    except Exception:
+        cached = data_cache.read_json(name)
+        if cached is not None:
+            cached["shots"] = _unpack_shots(cached.get("shots"))
+            return cached
+        # Deliberately not f"...{e}": the underlying exception carries the
+        # upstream host and socket detail, which tells the visitor nothing and
+        # describes our infrastructure to everyone else.
+        raise HTTPException(
+            status_code=502,
+            detail="The NBA stats API did not respond. Please try again shortly.",
+        )
+
+    if payload is None:
         raise HTTPException(status_code=404, detail="No shot data found for this player this season.")
+
+    data_cache.write_json(name, {**payload, "shots": _pack_shots(payload["shots"])})
+    return payload
+
+
+def _compute_payload(player_id: int, shots_df) -> dict:
 
     # Build per-zone breakdown
     zone_col = "SHOT_ZONE_BASIC"
