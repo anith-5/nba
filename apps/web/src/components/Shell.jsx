@@ -43,6 +43,10 @@ const navGroups = [
     ],
   },
   {
+    label: "Train",
+    items: [{ to: "/iq-sim", label: "IQ Simulator" }],
+  },
+  {
     label: "Arena",
     items: [{ to: "/arena", label: "Arena" }],
   },
