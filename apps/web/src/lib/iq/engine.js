@@ -1,5 +1,5 @@
 /*
- * Decision evaluation for the Basketball IQ simulator.
+ * Decision evaluation for Ball Knowledge, the decision simulator.
  *
  * WHY EXPECTED POINTS AND NOT RIGHT/WRONG
  * ---------------------------------------

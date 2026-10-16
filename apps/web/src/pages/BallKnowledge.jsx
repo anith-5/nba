@@ -88,7 +88,7 @@ function Report({ summary, history, onRestart }) {
   return (
     <div className="animate-fade-in space-y-6">
       <div className="hoop-card-outline p-6 text-center">
-        <p className="hoop-stat-label">Basketball IQ</p>
+        <p className="hoop-stat-label">Ball Knowledge</p>
         <p className="mt-1 font-hoop text-6xl font-bold text-ink">{summary.iq}</p>
         <p className="mt-1 text-lg font-semibold text-ink">{summary.label}</p>
         <p className="mx-auto mt-3 max-w-xl text-sm text-ink/70">
@@ -182,14 +182,14 @@ function Report({ summary, history, onRestart }) {
         </div>
       </div>
 
-      <button type="button" onClick={onRestart} className="hoop-btn">
+      <button type="button" onClick={onRestart} className="hoop-btn-primary">
         Run another set
       </button>
     </div>
   );
 }
 
-export default function IQSim() {
+export default function BallKnowledge() {
   const [difficulty, setDifficulty] = useState("beginner");
   const [roles, setRoles] = useState(["onball", "offball", "defense"]);
   const [length, setLength] = useState(10);
@@ -292,7 +292,10 @@ export default function IQSim() {
       <div className="animate-fade-in max-w-3xl space-y-6">
         <header>
           <p className="hoop-stat-label">{SCENARIOS.length} situations</p>
-          <h1 className="mt-1 text-3xl font-bold text-ink">Basketball IQ Simulator</h1>
+          <h1 className="mt-1 text-3xl font-bold text-ink">Ball Knowledge</h1>
+          <p className="mt-2 text-lg font-semibold text-ink">
+            Let&apos;s see if you really have ball knowledge.
+          </p>
           <p className="mt-2 text-ink/70">
             A possession freezes at the moment a decision has to be made. Read the floor — spacing,
             help, the shot clock, the score — and choose. Every option is graded on expected points
@@ -378,7 +381,7 @@ export default function IQSim() {
             </div>
           </div>
 
-          <button type="button" onClick={start} className="hoop-btn w-full sm:w-auto">
+          <button type="button" onClick={start} className="hoop-btn-primary w-full sm:w-auto">
             Start
           </button>
         </div>
@@ -516,7 +519,7 @@ export default function IQSim() {
                 </p>
               </details>
 
-              <button type="button" onClick={next} className="hoop-btn w-full">
+              <button type="button" onClick={next} className="hoop-btn-primary w-full">
                 {index + 1 >= session.length ? "See report" : "Next possession"}
                 <span className="ml-2 text-xs opacity-60">Enter</span>
               </button>

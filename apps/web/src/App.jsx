@@ -5,7 +5,7 @@ import Games from "./pages/Games.jsx";
 import Players from "./pages/Players.jsx";
 import TradeMachine from "./pages/TradeMachine.jsx";
 import PowerRankings from "./pages/PowerRankings.jsx";
-import IQSim from "./pages/IQSim.jsx";
+import BallKnowledge from "./pages/BallKnowledge.jsx";
 import Predictions from "./pages/Predictions.jsx";
 import Research from "./pages/Research.jsx";
 import Simulator from "./pages/Simulator.jsx";
@@ -58,7 +58,7 @@ export default function App() {
           <Route path="lineups" element={<LineupOptimizer />} />
           <Route path="defense" element={<DefenseScanner />} />
           <Route path="power-rankings" element={<PowerRankings />} />
-          <Route path="iq-sim" element={<IQSim />} />
+          <Route path="ball-knowledge" element={<BallKnowledge />} />
           <Route path="trajectory" element={<PlayerTrajectory />} />
           <Route path="clutch" element={<ClutchDNA />} />
           <Route path="scouting" element={<ScoutingReport />} />

@@ -1,5 +1,5 @@
 /*
- * Court geometry for the Basketball IQ simulator.
+ * Court geometry for Ball Knowledge, the decision simulator.
  *
  * Shares the coordinate space the shot charts already use, so a position here
  * means the same thing it means there:
