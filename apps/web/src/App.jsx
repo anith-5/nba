@@ -1,10 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import Shell from "./components/Shell.jsx";
+import SeoHead from "./components/SeoHead.jsx";
 import Home from "./pages/Home.jsx";
 import Games from "./pages/Games.jsx";
 import Players from "./pages/Players.jsx";
 import TradeMachine from "./pages/TradeMachine.jsx";
 import PowerRankings from "./pages/PowerRankings.jsx";
+import BallKnowledge from "./pages/BallKnowledge.jsx";
 import Predictions from "./pages/Predictions.jsx";
 import Research from "./pages/Research.jsx";
 import Simulator from "./pages/Simulator.jsx";
@@ -43,6 +45,7 @@ import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 export default function App() {
   return (
     <div className="min-h-dvh bg-paper">
+      <SeoHead />
       <Routes>
         <Route element={<Shell />}>
           <Route index element={<Home />} />
@@ -57,6 +60,7 @@ export default function App() {
           <Route path="lineups" element={<LineupOptimizer />} />
           <Route path="defense" element={<DefenseScanner />} />
           <Route path="power-rankings" element={<PowerRankings />} />
+          <Route path="ball-knowledge" element={<BallKnowledge />} />
           <Route path="trajectory" element={<PlayerTrajectory />} />
           <Route path="clutch" element={<ClutchDNA />} />
           <Route path="scouting" element={<ScoutingReport />} />

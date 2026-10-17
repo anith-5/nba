@@ -43,6 +43,10 @@ const navGroups = [
     ],
   },
   {
+    label: "Train",
+    items: [{ to: "/ball-knowledge", label: "Ball Knowledge" }],
+  },
+  {
     label: "Arena",
     items: [{ to: "/arena", label: "Arena" }],
   },
