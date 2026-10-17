@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Shell from "./components/Shell.jsx";
+import SeoHead from "./components/SeoHead.jsx";
 import Home from "./pages/Home.jsx";
 import Games from "./pages/Games.jsx";
 import Players from "./pages/Players.jsx";
@@ -44,6 +45,7 @@ import ComingSoon from "./arena/pages/games/ComingSoon.jsx";
 export default function App() {
   return (
     <div className="min-h-dvh bg-paper">
+      <SeoHead />
       <Routes>
         <Route element={<Shell />}>
           <Route index element={<Home />} />
