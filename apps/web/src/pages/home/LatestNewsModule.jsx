@@ -46,7 +46,7 @@ function SmallCard({ title, rows, unit, note, id }) {
 // scroll, no inner overflow-y-auto), and there's no single hard-edged
 // container around the group -- just the individual cards, the same way
 // any other section of the page would render.
-export default function LatestNewsModule({ scoring, clutch, standings, season }) {
+export default function LatestNewsModule({ scoring, clutch, standings, season, seasonNote }) {
   // Best records league-wide, most wins first. This card previously showed the
   // West alone, which hid teams with better records than the ones it listed:
   // Detroit finished 60-22, third-best in the league, and never appeared
@@ -64,7 +64,7 @@ export default function LatestNewsModule({ scoring, clutch, standings, season })
         <SmallCard
           id="standings"
           title="Best Records"
-          note={season ? `${season} final` : undefined}
+          note={seasonNote || (season ? `${season}` : undefined)}
           rows={bestRecords}
           unit=""
         />
