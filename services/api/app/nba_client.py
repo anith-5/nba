@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import unicodedata
 import time
 from typing import Any
 
@@ -32,16 +33,54 @@ def get_all_teams() -> list[dict[str, Any]]:
     return sorted(teams, key=lambda t: t.get("full_name", ""))
 
 
+def _fold(text: str) -> str:
+    """Lowercase and strip diacritics so a plain-ASCII query matches.
+
+    Nobody types "Jokic" with the acute, and before this the search was a plain
+    substring match on the raw name, so "jokic" returned nothing while "jokic"
+    with the accent returned him. The same held for Doncic, Vucevic, Porzingis
+    and every other accented name -- a meaningful slice of the league was
+    simply unreachable from the search box.
+    """
+    return "".join(
+        c for c in unicodedata.normalize("NFD", text or "")
+        if not unicodedata.combining(c)
+    ).lower()
+
+
+def _rank(player: dict, q: str) -> tuple:
+    """Sort key: how well this player matches, best first.
+
+    Plain substring matching returned players in whatever order the bundled
+    list happened to hold, so "curry" led with Dell, Eddy, JamesOn and Michael
+    Curry and buried Stephen. Surname matches beat full-name matches, prefixes
+    beat mid-string hits, and active players come first -- someone typing a
+    surname almost always means the one currently playing.
+    """
+    last = _fold(player.get("last_name", ""))
+    full = _fold(player.get("full_name", ""))
+    active = bool(player.get("is_active"))
+
+    if last.startswith(q):
+        tier = 0 if active else 3
+    elif full.startswith(q):
+        tier = 1 if active else 4
+    else:
+        tier = 2 if active else 5
+    return (tier, full)
+
+
 def search_players(query: str, limit: int = 20) -> list[dict[str, Any]]:
-    q = query.strip().lower()
+    q = _fold(query.strip())
     if not q:
         return []
     all_players = static_players.get_players()
     matches = [
         p
         for p in all_players
-        if q in p.get("full_name", "").lower() or q in p.get("last_name", "").lower()
+        if q in _fold(p.get("full_name", "")) or q in _fold(p.get("last_name", ""))
     ]
+    matches.sort(key=lambda p: _rank(p, q))
     return matches[:limit]
 
 

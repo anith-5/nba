@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { InitialsTile, TeamTile } from "../components/TeamTile.jsx";
@@ -163,13 +164,28 @@ function PlayerProfile({ profile }) {
 }
 
 export default function Players() {
-  const [query, setQuery] = useState("");
+  const [searchParams] = useSearchParams();
+  // Seed from ?q= so a search from the header (or a shared link) arrives with
+  // the term already in the box; the debounced effect below then runs it.
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const boxRef = useRef(null);
+
+  // Searching again from the header while already on this page changes the URL
+  // without remounting, so the initialiser above does not re-run. Watch the
+  // param itself. Deliberately not depending on `query`: typing in the box
+  // must not be fought by this effect.
+  useEffect(() => {
+    const incoming = searchParams.get("q");
+    if (incoming) {
+      setQuery(incoming);
+      setProfile(null);
+    }
+  }, [searchParams]);
 
   // Live autocomplete (debounced)
   useEffect(() => {
