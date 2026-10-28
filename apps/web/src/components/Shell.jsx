@@ -224,7 +224,9 @@ export default function Shell() {
             ))}
           </nav>
 
-          {/* Right: search + profile */}
+          {/* Right: search. There is no profile control because there are
+              no accounts -- a button that opens nothing is worse than no
+              button, since it implies a sign-in that does not exist. */}
           <div className="ml-auto flex items-center gap-2">
             <form onSubmit={onSearch} className="hidden md:block">
               <div className="relative">
@@ -248,16 +250,6 @@ export default function Shell() {
                 />
               </div>
             </form>
-            <button
-              type="button"
-              aria-label="Profile"
-              className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink bg-paper text-sm font-semibold text-ink hover:bg-ink/5"
-            >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
-              </svg>
-            </button>
           </div>
         </div>
       </header>
