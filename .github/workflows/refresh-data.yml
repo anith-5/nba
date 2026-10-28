@@ -1,0 +1,122 @@
+# Nightly refresh of the committed NBA snapshots.
+#
+# WHY THIS EXISTS
+# ---------------
+# data_cache holds JSON snapshots that are committed to the repo and served
+# cache-first on Render, because stats.nba.com does not answer from Render's
+# IP. That design is sound but the snapshots only change when somebody runs
+# precompute.py by hand, so the home page silently drifts: standings keyed to
+# "through 4 games" stay that way until a human notices.
+#
+# THE OPEN QUESTION THIS ANSWERS
+# ------------------------------
+# stats.nba.com blocks datacenter IPs -- that is the whole reason data_cache
+# exists. GitHub's runners are Azure IPs and may well be blocked the same way.
+# So the first thing this does is make one real call and say plainly whether
+# it worked. If runners are blocked we find out from a red X on the first run
+# rather than from months of a job that quietly commits nothing.
+#
+# It is deliberately noisy about failure for that reason. A refresh job that
+# fails silently is worse than no refresh job, because the data looks
+# maintained when it is not.
+#
+# COST: each successful run pushes a commit, which triggers a Vercel and a
+# Render deploy. That is the mechanism by which the site actually picks the
+# new data up -- the snapshots are read at request time, but they only reach
+# the server through a deploy.
+name: Refresh NBA snapshots
+
+on:
+  schedule:
+    # 11:00 UTC = 6am ET, after the previous night's games have all finished
+    # and been finalised.
+    - cron: "0 11 * * *"
+  workflow_dispatch: # so the reachability question can be answered right now
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: services/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: services/api/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Answer the only question that matters before doing any work.
+      - name: Can this runner reach stats.nba.com?
+        id: probe
+        run: |
+          python - <<'PY'
+          import sys
+          from nba_api.stats.endpoints import leaguestandingsv3
+          from app.config import settings
+          try:
+              df = leaguestandingsv3.LeagueStandingsV3(
+                  season=settings.current_season, timeout=45
+              ).get_data_frames()[0]
+          except Exception as exc:
+              print(f"::error::stats.nba.com is NOT reachable from this runner: "
+                    f"{type(exc).__name__}: {exc}")
+              print("GitHub's runners are datacenter IPs and the NBA blocks many of them.")
+              print("If this fails consistently, the snapshots cannot be refreshed here --")
+              print("see the notes in this workflow for the alternative.")
+              sys.exit(1)
+          print(f"Reachable. {len(df)} teams returned for {settings.current_season}.")
+          PY
+
+      - name: Refresh standings, scoring and clutch snapshots
+        run: python precompute.py standings clutch
+
+      # A partial or empty fetch must never be committed over good data.
+      - name: Sanity-check the snapshots before committing
+        run: |
+          python - <<'PY'
+          import json, io, sys
+          from app.routers import standings
+          name = standings.standings_cache(standings.SEASON)
+          blob = json.load(io.open(f"data_cache/{name}", encoding="utf-8"))
+          teams = len(blob.get("East", [])) + len(blob.get("West", []))
+          if teams != 30:
+              print(f"::error::{name} has {teams} teams, expected 30 — refusing to commit")
+              sys.exit(1)
+          played = standings._games_played(blob)
+          print(f"{name}: 30 teams, through {played} games.")
+          if blob.get("season") != standings.SEASON:
+              print(f"::error::payload season {blob.get('season')} != {standings.SEASON}")
+              sys.exit(1)
+          PY
+
+      - name: Commit if anything changed
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          # `git diff` only sees modifications. On a season rollover precompute
+          # writes a brand-new file (standings_2027-28.json), which is
+          # untracked and would be missed entirely -- so check status, which
+          # covers both.
+          if [ -z "$(git status --porcelain -- services/api/data_cache)" ]; then
+            echo "Snapshots unchanged — nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add services/api/data_cache
+          git commit -m "Refresh NBA snapshots $(date -u +%Y-%m-%d)"
+          git push
