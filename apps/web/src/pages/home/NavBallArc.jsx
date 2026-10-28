@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import BasketballIcon from "../../components/BasketballIcon.jsx";
 
 // The homepage hero's right-hand illustration: a hoop above an arc of 5
@@ -86,19 +86,38 @@ function HoopIllustration({ rippleKey }) {
   );
 }
 
-const LAUNCH_DURATION_S = 0.65;
-// The x/y keyframes below are [start, mid-arc, rim] at times [0, MID_FRACTION, 1]
-// -- the ball only reaches the FULL measured rim offset at t=1, the mid
-// keyframe is deliberately short of it (that's what makes it read as an
-// arc, not a straight slide). ARRIVAL_FRACTION (the net-swish trigger) has
-// to be driven off t=1, not off MID_FRACTION -- tried wiring it to
-// MID_FRACTION first and confirmed live via measurement that the ripple
-// fired while the ball was still 80-170px short of the rim for every ball
-// except the one already horizontally centered. Set close to but just
-// under 1 so the ripple fires right as the ball visually arrives, not
-// after it's already faded out.
-const MID_FRACTION = 0.5;
-const ARRIVAL_FRACTION = 0.93;
+// The shot runs in three phases rather than one, because a single tween from
+// the arc to the rim is what made this read as a slide instead of a shot.
+//
+//   DIP     a short crouch before release. Anticipation is what makes a
+//           launch feel driven rather than teleported.
+//   FLIGHT  the ball travels. Horizontal speed is CONSTANT and only the
+//           vertical axis eases -- that is what a projectile actually does,
+//           and applying one easing curve to both axes (the previous
+//           behaviour) makes the ball speed up and slow down sideways, which
+//           is the single biggest reason it felt mechanical.
+//   SETTLE  the net is left alone to finish its swish before navigating.
+//           Previously the route changed 565ms before the ripple ended, so
+//           the net animation existed but was never actually seen.
+const DIP_S = 0.08;
+const FLIGHT_S = 0.55;
+const SETTLE_S = 0.24;
+
+// Apex sits ABOVE the rim and late in the flight: a shot rises, hangs, then
+// drops in. The old midpoint sat below the rim at exactly halfway, which is a
+// straight line with a kink in it rather than an arc.
+const APEX_FRACTION = 0.62;
+const APEX_RISE_PX = 52;
+
+// Degrees of backspin over the flight. A ball that holds one fixed angle for
+// the whole shot is the other half of why this read as a slide.
+const BACKSPIN_DEG = 260;
+
+// The swish is triggered from a timer set to DIP_S + FLIGHT_S -- i.e. the
+// moment the ball actually reaches the rim. An earlier version derived it from
+// the mid-flight keyframe instead, which fired the ripple while the ball was
+// still 80-170px short of the rim for every ball except the one already
+// horizontally centred. Keep it tied to arrival, not to the middle of the arc.
 
 export default function NavBallArc() {
   const navigate = useNavigate();
@@ -106,8 +125,15 @@ export default function NavBallArc() {
   const [launchOffset, setLaunchOffset] = useState({ dx: 0, dy: -150 });
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [rippleKey, setRippleKey] = useState(0);
+  const [phase, setPhase] = useState("idle"); // idle | dip | flight
   const hoopRef = useRef(null);
   const ballRefs = useRef([]);
+  const timers = useRef([]);
+  const reduceMotion = useReducedMotion();
+
+  // Navigation unmounts this component, so the later timers in a shot would
+  // fire against a gone tree if anything else moved the route first.
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   function handleClick(item, index) {
     if (launchingIndex !== null) return; // ignore clicks mid-flight
@@ -137,8 +163,21 @@ export default function NavBallArc() {
     }
 
     setLaunchingIndex(index);
-    window.setTimeout(() => setRippleKey((k) => k + 1), LAUNCH_DURATION_S * 1000 * ARRIVAL_FRACTION);
-    window.setTimeout(() => navigate(item.to), LAUNCH_DURATION_S * 1000 + 30);
+
+    // Someone who has asked their system for reduced motion should not be made
+    // to sit through a shot animation to use a nav link.
+    if (reduceMotion) {
+      navigate(item.to);
+      return;
+    }
+
+    const at = (ms, fn) => timers.current.push(window.setTimeout(fn, ms));
+    setPhase("dip");
+    at(DIP_S * 1000, () => setPhase("flight"));
+    // The swish fires as the ball reaches the rim, not on its own timer.
+    at((DIP_S + FLIGHT_S) * 1000, () => setRippleKey((k) => k + 1));
+    // ...and the route waits for the net to actually move before changing.
+    at((DIP_S + FLIGHT_S + SETTLE_S) * 1000, () => navigate(item.to));
   }
 
   return (
@@ -155,6 +194,11 @@ export default function NavBallArc() {
           const hoverOpacity = isHovered ? 1 : anyHovered ? 0.55 : 1;
           const hoverLift = isHovered ? -14 : 0;
           const isLaunching = launchingIndex === i;
+          const isDipping = isLaunching && phase === "dip";
+          const inFlight = isLaunching && phase === "flight";
+          // While a shot is in the air the other balls settle out of the way
+          // instead of holding whatever hover state they were left in.
+          const isBystander = launchingIndex !== null && !isLaunching;
 
           return (
             <button
@@ -181,46 +225,84 @@ export default function NavBallArc() {
                   contains ONLY the ball fixes that at the source. */}
               <motion.div
                 animate={
-                  isLaunching
+                  inFlight
                     ? {
-                        x: [0, launchOffset.dx * 0.5, launchOffset.dx],
-                        // Midpoint overshoots higher than a straight
-                        // lerp toward the rim -- that's what reads as a
-                        // real shot arc rather than a mechanical slide.
+                        // Two keyframes, travelled at a constant rate. Real
+                        // projectiles do not accelerate sideways.
+                        x: [0, launchOffset.dx],
+                        // Three: release, apex ABOVE the rim, then down into
+                        // it. Rising decelerates and falling accelerates,
+                        // which is why the two segments ease oppositely.
                         y: [
                           item.bounce,
-                          item.bounce + launchOffset.dy * 0.55 - 36,
+                          item.bounce + launchOffset.dy - APEX_RISE_PX,
                           item.bounce + launchOffset.dy,
                         ],
                       }
-                    : { x: 0, y: item.bounce + hoverLift }
+                    : isDipping
+                      ? { x: 0, y: item.bounce + 7 }
+                      : { x: 0, y: item.bounce + (isBystander ? 4 : hoverLift) }
                 }
                 transition={
-                  isLaunching
-                    ? { duration: LAUNCH_DURATION_S, ease: ["easeOut", "easeIn"], times: [0, MID_FRACTION, 1] }
-                    : HOVER_SPRING
+                  inFlight
+                    ? {
+                        x: { duration: FLIGHT_S, ease: "linear" },
+                        y: {
+                          duration: FLIGHT_S,
+                          ease: ["easeOut", "easeIn"],
+                          times: [0, APEX_FRACTION, 1],
+                        },
+                      }
+                    : isDipping
+                      ? { duration: DIP_S, ease: "easeOut" }
+                      : HOVER_SPRING
                 }
                 className="flex flex-col items-center gap-1"
               >
                 <motion.div
                   ref={(el) => (ballRefs.current[i] = el)}
                   animate={
-                    isLaunching
-                      ? { scale: [1, 1.05, 0.25], opacity: [1, 1, 0], rotate: rotationDeg }
-                      : { scale: hoverScale, opacity: hoverOpacity, rotate: rotationDeg }
+                    inFlight
+                      ? {
+                          // Shrinks with distance, but only to 0.5 -- the old
+                          // 0.25 plus a fade to nothing read as the ball
+                          // evaporating rather than dropping through the net.
+                          scale: [1, 1.06, 0.5],
+                          // Stays fully opaque until it is actually at the
+                          // rim, then clears in the last fraction as it goes
+                          // through.
+                          opacity: [1, 1, 1, 0],
+                          rotate: rotationDeg - BACKSPIN_DEG,
+                        }
+                      : isDipping
+                        ? { scale: 0.88, opacity: 1, rotate: rotationDeg }
+                        : {
+                            scale: isBystander ? 0.78 : hoverScale,
+                            opacity: isBystander ? 0.4 : hoverOpacity,
+                            rotate: rotationDeg,
+                          }
                   }
                   transition={
-                    isLaunching
-                      ? { duration: LAUNCH_DURATION_S, ease: ["easeOut", "easeIn"], times: [0, MID_FRACTION, 1] }
-                      : HOVER_SPRING
+                    inFlight
+                      ? {
+                          scale: { duration: FLIGHT_S, ease: "easeIn", times: [0, APEX_FRACTION, 1] },
+                          opacity: { duration: FLIGHT_S, times: [0, 0.6, 0.86, 1] },
+                          // Spin at a constant rate; easing the rotation is
+                          // what makes a spinning ball look like it is being
+                          // dragged rather than turning.
+                          rotate: { duration: FLIGHT_S, ease: "linear" },
+                        }
+                      : isDipping
+                        ? { duration: DIP_S, ease: "easeOut" }
+                        : HOVER_SPRING
                   }
                   style={{ transformOrigin: "center" }}
                 >
                   <BasketballIcon className="h-10 w-10 drop-shadow-[3px_3px_0_rgba(0,0,0,0.9)] sm:h-12 sm:w-12" />
                 </motion.div>
                 <motion.span
-                  animate={{ opacity: isLaunching ? 0 : hoverOpacity }}
-                  transition={{ duration: isLaunching ? 0.15 : 0.2 }}
+                  animate={{ opacity: isLaunching ? 0 : isBystander ? 0.35 : hoverOpacity }}
+                  transition={{ duration: isLaunching ? DIP_S : 0.2 }}
                   className="font-hoop text-xs font-semibold text-ink"
                   style={{ transform: `rotate(${rotationDeg * 0.5}deg)` }}
                 >
