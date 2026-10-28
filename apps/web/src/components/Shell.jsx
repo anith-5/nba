@@ -189,7 +189,14 @@ export default function Shell() {
 
   function onSearch(e) {
     e.preventDefault();
-    navigate("/players");
+    // Previously this navigated to /players and dropped whatever was typed, so
+    // the box looked like a search and behaved like a link. The Players page
+    // already has debounced autocomplete against /players/search, so handing it
+    // the term through the URL reuses that rather than duplicating it here --
+    // and it makes the result linkable and shareable.
+    const term = q.trim();
+    navigate(term ? `/players?q=${encodeURIComponent(term)}` : "/players");
+    setQ("");
   }
 
   return (
