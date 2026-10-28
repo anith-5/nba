@@ -83,6 +83,15 @@ export default function Home() {
     ? summary.clutch_leaders.map((c) => [c.name, c.tri, c.ppg])
     : CLUTCH_LEADERS;
   const season = summary?.season || FALLBACK_SEASON;
+  // The API now says how far into the season its data goes, so the card can
+  // label itself honestly instead of asserting "final" over a four-game table.
+  const seasonNote = summary
+    ? summary.complete
+      ? `${summary.season} final`
+      : summary.games_played > 0
+        ? `${summary.season} · through ${summary.games_played} game${summary.games_played === 1 ? "" : "s"}`
+        : `${summary.season} · season not started`
+    : `${FALLBACK_SEASON} final`;
 
   return (
     <div className="animate-fade-in -mx-4 -my-6 min-h-[calc(100dvh-4rem)] bg-paper px-4 py-10 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -91,7 +100,7 @@ export default function Home() {
         style={{ opacity: dashboardOpacity, scale: dashboardScale }}
         className="mx-auto max-w-5xl"
       >
-        <LatestNewsModule scoring={scoring} clutch={clutch} standings={standings} season={season} />
+        <LatestNewsModule scoring={scoring} clutch={clutch} standings={standings} season={season} seasonNote={seasonNote} />
       </motion.div>
 
       <motion.div

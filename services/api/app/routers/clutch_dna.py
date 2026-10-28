@@ -12,7 +12,10 @@ from app import data_cache
 router = APIRouter(prefix="/clutch", tags=["clutch"])
 SEASON = settings.current_season
 MIN_CLUTCH_MINUTES = 1.0
-CLUTCH_CACHE = "clutch_leaderboard.json"
+# Season-keyed for the same reason as the standings cache: an unkeyed file
+# survives a season rollover and goes on being served under the new
+# season's label, which reads as a current leaderboard but is not one.
+CLUTCH_CACHE = f"clutch_leaderboard_{SEASON}.json"
 
 _leaderboard_cache: Optional[dict] = None
 _cache_ts: float = 0.0
