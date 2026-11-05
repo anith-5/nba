@@ -16,6 +16,10 @@ from nba_api.stats.static import players as static_players
 
 from app.config import settings
 from app import data_cache
+from app.utils.season import (
+    get_current_nba_season_start_year,
+    season_string_for_start_year,
+)
 
 router = APIRouter(prefix="/shot-quality", tags=["shot-quality"])
 SEASON = settings.current_season
@@ -55,6 +59,44 @@ def _grade(player_fg: float, xfg: float) -> str:
 
 def shot_cache_name(player_id: int, season: str = None) -> str:
     return f"shot_quality_{player_id}_{season or SEASON}.json"
+
+
+# Below this many attempts a shot-quality chart is noise rather than signal:
+# zone percentages swing wildly on single makes, and the xFG% comparison that
+# is the whole point of the page says nothing. Four games into a season nobody
+# clears it, so the completed season is the more useful answer until they do.
+MIN_MEANINGFUL_ATTEMPTS = 120
+
+
+def _seasons_to_try() -> list[str]:
+    """Current season first, then the one before it.
+
+    The caches are keyed by season, which is right -- a rollover misses instead
+    of serving last year's chart under this year's name. But a miss with no
+    fallback is a dead feature every October, which is exactly what happened:
+    on 1 October the season label moved to 2026-27 while every one of the 530
+    cached charts was 2025-26, so every lookup 503'd.
+    """
+    prior = season_string_for_start_year(get_current_nba_season_start_year() - 1)
+    return [SEASON, prior]
+
+
+def _best_cached(player_id: int):
+    """The most useful cached chart for this player, or None.
+
+    Prefers the current season once it carries enough volume to mean anything,
+    otherwise falls back to the completed one. The payload names the season it
+    describes, so whichever is served labels itself in the UI.
+    """
+    fallback = None
+    for season in _seasons_to_try():
+        hit = data_cache.read_json(shot_cache_name(player_id, season))
+        if hit is None:
+            continue
+        if hit.get("total_attempts", 0) >= MIN_MEANINGFUL_ATTEMPTS:
+            return hit
+        fallback = fallback or hit
+    return fallback
 
 
 # Shots are stored as flat arrays rather than objects. The field names repeat
@@ -112,7 +154,7 @@ def player_shot_quality(player_id: int):
     name = shot_cache_name(player_id)
 
     if data_cache.IS_CLOUD:
-        hit = data_cache.read_json(name)
+        hit = _best_cached(player_id)
         if hit is None:
             raise HTTPException(
                 status_code=503,
@@ -128,7 +170,7 @@ def player_shot_quality(player_id: int):
     try:
         payload = build_player_shot_quality(player_id)
     except Exception:
-        cached = data_cache.read_json(name)
+        cached = _best_cached(player_id)
         if cached is not None:
             cached["shots"] = _unpack_shots(cached.get("shots"))
             return cached
