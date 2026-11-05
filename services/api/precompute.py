@@ -103,12 +103,23 @@ def precompute_clutch():
 
 
 def precompute_standings():
-    print("[3/7] Standings + scoring leaders…")
-    st = standings._fetch_standings_live()
-    data_cache.write_json(standings.STANDINGS_CACHE, st)
-    print(f"      saved {len(st.get('East', []))} East / {len(st.get('West', []))} West teams")
-    sc = standings._fetch_scoring_live()
-    data_cache.write_json(standings.SCORING_CACHE, sc)
+    """Standings + scoring leaders for the current season.
+
+    Written to season-keyed files. The previous version wrote to one fixed
+    name, so after a season rollover the API kept serving last season's final
+    records under the new season's label until someone noticed.
+    """
+    season = standings.SEASON
+    print(f"[3/7] Standings + scoring leaders ({season})…")
+
+    st = standings.fetch_standings_live(season)
+    played = standings._games_played(st)
+    data_cache.write_json(standings.standings_cache(season), st)
+    print(f"      saved {len(st.get('East', []))} East / {len(st.get('West', []))} West teams"
+          f" — through {played} game{'' if played == 1 else 's'}")
+
+    sc = standings.fetch_scoring_live(season)
+    data_cache.write_json(standings.scoring_cache(season), sc)
     print(f"      saved {len(sc)} scoring leaders")
 
 
